@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_crontab_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_crontab_newgroup: "0"
+
+- name: Test for existence /etc/crontab
+  ansible.builtin.stat:
+    path: "/etc/crontab"
+  register: file_exists
+
+- name: Ensure group owner on /etc/crontab
+  ansible.builtin.file:
+    path: "/etc/crontab"
+    follow: false
+    group: "{{ file_groupowner_crontab_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

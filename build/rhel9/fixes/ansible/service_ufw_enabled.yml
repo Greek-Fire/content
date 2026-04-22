@@ -1,0 +1,43 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_ufw_enabled
+
+- name: Verify ufw Enabled - Enable service ufw
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Verify ufw Enabled - Enable Service ufw
+    ansible.builtin.systemd:
+      name: ufw
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"ufw" in ansible_facts.packages'
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_ufw_enabled
+  - special_service_block
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "ufw" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )

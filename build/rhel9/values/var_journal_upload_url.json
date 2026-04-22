@@ -1,0 +1,1 @@
+{"description": "The setting for URL in the journal-upload config file.", "type": "string", "operator": "equals", "interactive": true, "options": {"default": "remotelogserver"}, "warnings": [], "title": "Remote server for systemd-journal-upload service", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/system/logging/journald/var_journal_upload_url.var"}

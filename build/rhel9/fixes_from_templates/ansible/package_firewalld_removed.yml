@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall firewalld Package: Ensure firewalld is removed"
+  ansible.builtin.package:
+    name: "firewalld"
+    state: absent

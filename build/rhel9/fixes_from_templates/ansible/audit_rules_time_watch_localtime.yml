@@ -1,0 +1,68 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+
+
+
+
+
+
+- name: Record Attempts to Alter the localtime File - Check if watch rule for /etc/localtime already exists in /etc/audit/rules.d/
+  ansible.builtin.find:
+    paths: "/etc/audit/rules.d"
+
+    contains: '^\s*-w\s+/etc/localtime\s+-p\s+wa(\s|$)+'
+
+    patterns: "*.rules"
+  register: find_existing_watch_rules_d
+
+- name: Record Attempts to Alter the localtime File - Search /etc/audit/rules.d for other rules with specified key audit_time_rules
+  ansible.builtin.find:
+    paths: "/etc/audit/rules.d"
+    contains: '^.*(?:-F key=|-k\s+)audit_time_rules$'
+    patterns: "*.rules"
+  register: find_watch_key
+  when: find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+
+- name: Record Attempts to Alter the localtime File - Use /etc/audit/rules.d/audit_time_rules.rules as the recipient for the rule
+  ansible.builtin.set_fact:
+    all_files:
+      - /etc/audit/rules.d/audit_time_rules.rules
+  when: find_watch_key.matched is defined and find_watch_key.matched == 0 and find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+
+- name: Record Attempts to Alter the localtime File - Use matched file as the recipient for the rule
+  ansible.builtin.set_fact:
+    all_files:
+      - "{{ find_watch_key.files | map(attribute='path') | list | first }}"
+  when: find_watch_key.matched is defined and find_watch_key.matched > 0 and find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+
+- name: Record Attempts to Alter the localtime File - Add watch rule for /etc/localtime in /etc/audit/rules.d/
+  ansible.builtin.lineinfile:
+    path: "{{ all_files[0] }}"
+
+    line: "-w /etc/localtime -p wa -k audit_time_rules"
+
+    create: yes
+    mode: '0600'
+  when: find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+- name: Record Attempts to Alter the localtime File - Check if watch rule for /etc/localtime already exists in /etc/audit/audit.rules
+  ansible.builtin.find:
+    paths: "/etc/audit/"
+
+    contains: '^\s*-w\s+/etc/localtime\s+-p\s+wa(\s|$)+'
+
+    patterns: "audit.rules"
+  register: find_existing_watch_audit_rules
+
+- name: Record Attempts to Alter the localtime File - Add watch rule for /etc/localtime in /etc/audit/audit.rules
+  ansible.builtin.lineinfile:
+
+    line: "-w /etc/localtime -p wa -k audit_time_rules"
+
+    state: present
+    dest: /etc/audit/audit.rules
+    create: yes
+    mode: '0600'
+  when: find_existing_watch_audit_rules.matched is defined and find_existing_watch_audit_rules.matched == 0

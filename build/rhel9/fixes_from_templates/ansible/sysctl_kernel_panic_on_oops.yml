@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Kernel panic on oops - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Kernel panic on oops - Find all files that contain kernel.panic_on_oops
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.panic_on_oops\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Kernel panic on oops - Find all files that set kernel.panic_on_oops to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.panic_on_oops\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Kernel panic on oops - Comment out any occurrences of kernel.panic_on_oops from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*kernel.panic_on_oops'
+    replace: '#kernel.panic_on_oops'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Kernel panic on oops - Comment out any occurrences of kernel.panic_on_oops from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*kernel.panic_on_oops'
+    replace: '#kernel.panic_on_oops'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Kernel panic on oops - Ensure sysctl kernel.panic_on_oops is set to 1
+  ansible.posix.sysctl:
+    name: "kernel.panic_on_oops"
+    value: "1"
+
+    sysctl_file: "/etc/sysctl.d/kernel_panic_on_oops.conf"
+
+    state: present
+    reload: yes

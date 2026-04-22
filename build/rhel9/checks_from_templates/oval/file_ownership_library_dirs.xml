@@ -1,0 +1,109 @@
+<def-group>
+  <definition class="compliance" id="file_ownership_library_dirs" version="1">
+  
+    <metadata>
+        <title>Verify that Shared Library Files Have Root Ownership</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /lib/, /lib64/, /usr/lib/, /usr/lib64/ is owned by 0.</description>
+    </metadata>
+     <criteria>
+   
+     <criterion comment="Check file ownership of /lib/" test_ref="test_file_ownership_library_dirs_0" />
+   
+     <criterion comment="Check file ownership of /lib64/" test_ref="test_file_ownership_library_dirs_1" />
+   
+     <criterion comment="Check file ownership of /usr/lib/" test_ref="test_file_ownership_library_dirs_2" />
+   
+     <criterion comment="Check file ownership of /usr/lib64/" test_ref="test_file_ownership_library_dirs_3" />
+   
+  
+    </criteria>
+  </definition>
+  <local_variable id="var_file_ownership_library_dirs_0_uid" comment="Set the uid to 0" datatype="int" version="1">
+    <literal_component datatype="int">0</literal_component>
+  </local_variable>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /lib/" id="test_file_ownership_library_dirs_0" version="1">
+    <unix:object object_ref="object_file_ownership_library_dirs_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/lib/" id="object_file_ownership_library_dirs_0" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/lib</unix:path>
+      <unix:filename operation="pattern match">^.*\.so.*$</unix:filename>
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_ownership_library_dirs_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_ownership_library_dirs_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_ownership_library_dirs_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /lib64/" id="test_file_ownership_library_dirs_1" version="1">
+    <unix:object object_ref="object_file_ownership_library_dirs_1" />
+  </unix:file_test>
+
+  <unix:file_object comment="/lib64/" id="object_file_ownership_library_dirs_1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/lib64</unix:path>
+      <unix:filename operation="pattern match">^.*\.so.*$</unix:filename>
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_ownership_library_dirs_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_ownership_library_dirs_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_ownership_library_dirs_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /usr/lib/" id="test_file_ownership_library_dirs_2" version="1">
+    <unix:object object_ref="object_file_ownership_library_dirs_2" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/lib/" id="object_file_ownership_library_dirs_2" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/lib</unix:path>
+      <unix:filename operation="pattern match">^.*\.so.*$</unix:filename>
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_ownership_library_dirs_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_ownership_library_dirs_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_ownership_library_dirs_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /usr/lib64/" id="test_file_ownership_library_dirs_3" version="1">
+    <unix:object object_ref="object_file_ownership_library_dirs_3" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/lib64/" id="object_file_ownership_library_dirs_3" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/lib64</unix:path>
+      <unix:filename operation="pattern match">^.*\.so.*$</unix:filename>
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_ownership_library_dirs_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_ownership_library_dirs_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_ownership_library_dirs_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_state id="symlink_file_owner" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

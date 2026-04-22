@@ -1,0 +1,29 @@
+<def-group>
+<definition class="compliance" id="package_unbound_removed" version="1">
+  <metadata>
+        <title>Uninstall unbound Package</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package unbound should be removed.</description>
+    </metadata>
+  <criteria>
+  
+    <criterion comment="package unbound is removed" test_ref="test_package_unbound_removed" />
+  
+  </criteria>
+</definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="test_package_unbound_removed" version="1"
+  comment="package unbound is removed">
+    <linux:object object_ref="obj_test_package_unbound_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_test_package_unbound_removed" version="1">
+    <linux:name>unbound</linux:name>
+  </linux:rpminfo_object>
+
+
+
+</def-group>

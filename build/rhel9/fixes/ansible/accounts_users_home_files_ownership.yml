@@ -1,0 +1,81 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87041-0
+  - accounts_users_home_files_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Get all local users from /etc/passwd
+  ansible.builtin.getent:
+    database: passwd
+    split: ':'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87041-0
+  - accounts_users_home_files_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Create local_users variable from the getent output
+  ansible.builtin.set_fact:
+    local_users: '{{ ansible_facts.getent_passwd|dict2items }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87041-0
+  - accounts_users_home_files_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Test for existence of home directories to avoid creating them, but only fixing
+    ownership
+  ansible.builtin.stat:
+    path: '{{ item.value[4] }}'
+  register: path_exists
+  loop: '{{ local_users }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.value[1]|int >= 1000
+  - item.value[1]|int != 65534
+  - item.value[4] != "/"
+  tags:
+  - CCE-87041-0
+  - accounts_users_home_files_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure interactive local users are the owners of their respective home directories
+  ansible.builtin.file:
+    path: '{{ item.0.value[4] }}'
+    owner: '{{ item.0.value[1] }}'
+    recurse: true
+  loop: '{{ local_users|zip(path_exists.results)|list }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.1.stat is defined and item.1.stat.exists
+  tags:
+  - CCE-87041-0
+  - accounts_users_home_files_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

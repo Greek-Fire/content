@@ -1,0 +1,1 @@
+{"name": "cpe:/o:oracle:linux:10", "check_id": "installed_OS_is_ol10", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Oracle Linux 10", "definition_location": "", "template": null}

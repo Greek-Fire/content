@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/security/opasswd.old
+  ansible.builtin.stat:
+    path: "/etc/security/opasswd.old"
+  register: file_exists
+
+- name: Ensure permission u-xs,g-xwrs,o-xwrt on /etc/security/opasswd.old
+  ansible.builtin.file:
+    path: "/etc/security/opasswd.old"
+    mode: "u-xs,g-xwrs,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

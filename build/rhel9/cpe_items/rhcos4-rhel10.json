@@ -1,0 +1,1 @@
+{"name": "cpe:/o:redhat:rhcos4:10", "check_id": "installed_OS_is_rhcos4_rhel10", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Red Hat Enterprise Linux CoreOS 4 RHEL10 Based", "definition_location": "/home/greek_fire/.git/content/shared/applicability/rhcos4-rhel10.yml", "template": null}

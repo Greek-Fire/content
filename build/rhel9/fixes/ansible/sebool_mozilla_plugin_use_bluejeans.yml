@@ -1,0 +1,55 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sebool_mozilla_plugin_use_bluejeans
+
+- name: Disable the mozilla_plugin_use_bluejeans SELinux Boolean - Ensure python3-libsemanage
+    Installed
+  ansible.builtin.package:
+    name: python3-libsemanage
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline or lookup("env", "container") == "bwrap-osbuild"
+    or ansible_facts.selinux.status != "disabled" )
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sebool_mozilla_plugin_use_bluejeans
+- (xccdf-var var_mozilla_plugin_use_bluejeans)
+
+- name: Disable the mozilla_plugin_use_bluejeans SELinux Boolean - Set SELinux Boolean
+    mozilla_plugin_use_bluejeans Accordingly
+  ansible.posix.seboolean:
+    name: mozilla_plugin_use_bluejeans
+    state: '{{ var_mozilla_plugin_use_bluejeans }}'
+    persistent: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline or lookup("env", "container") == "bwrap-osbuild"
+    or ansible_facts.selinux.status != "disabled" )
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sebool_mozilla_plugin_use_bluejeans

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-ssh_client_rekey_limit:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure session renegotiation for SSH client</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-87522-9" source="CCE" />
+        <oval-def:reference ref_id="ssh_client_rekey_limit" source="ssg" />
+        <oval-def:description>Ensure 'RekeyLimit' is configured with the correct value in /etc/ssh/ssh_config and /etc/ssh/ssh_config.d/*.conf</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="RekeyLimit is correctly configured for ssh client" operator="AND">
+        <oval-def:criterion negate="true" comment="check that RekeyLimit is not configured in /etc/ssh/ssh_config" test_ref="oval:ssg-test_ssh_client_rekey_limit_main_config:tst:1" />
+        <oval-def:criterion comment="check correct RekeyLimit configuration in /etc/ssh/ssh_config.d/*.conf" test_ref="oval:ssg-test_ssh_client_rekey_limit_include_configs:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_ssh_client_rekey_limit_main_config:tst:1" version="1" check="all" comment="tests the value of RekeyLimit setting in /etc/ssh/ssh_config" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_ssh_client_rekey_limit_main_config:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_ssh_client_rekey_limit_include_configs:tst:1" version="1" check="all" comment="tests the value of RekeyLimit setting in /etc/ssh/ssh_config.d/*.conf" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_ssh_client_rekey_limit_include_configs:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_ssh_client_rekey_limit_main_config:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config</ind:filepath>
+      <ind:pattern operation="pattern match">^[\s]*RekeyLimit.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_ssh_client_rekey_limit_include_configs:obj:1" version="1">
+      <ind:path>/etc/ssh/ssh_config.d</ind:path>
+      <ind:filename operation="pattern match">.*\.conf$</ind:filename>
+      <ind:pattern var_ref="oval:ssg-ssh_client_line_regex:var:1" operation="pattern match" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-ssh_client_line_regex:var:1" version="1" datatype="string" comment="The regex of the directive">
+      <oval-def:concat>
+        <oval-def:literal_component>^[\s]*RekeyLimit[\s]+</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_ssh_client_rekey_limit_size:var:1" />
+        <oval-def:literal_component>[\s]+</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_ssh_client_rekey_limit_time:var:1" />
+        <oval-def:literal_component>[\s]*$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_ssh_client_rekey_limit_size:var:1" version="1" datatype="string" comment="Size component of the rekey limit" />
+    <oval-def:external_variable id="oval:ssg-var_ssh_client_rekey_limit_time:var:1" version="1" datatype="string" comment="Time component of the rekey limit" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

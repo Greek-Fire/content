@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_var_log_syslog_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_var_log_syslog_newgroup: "4"
+
+- name: Test for existence /var/log/syslog
+  ansible.builtin.stat:
+    path: "/var/log/syslog"
+  register: file_exists
+
+- name: Ensure group owner on /var/log/syslog
+  ansible.builtin.file:
+    path: "/var/log/syslog"
+    follow: false
+    group: "{{ file_groupowner_var_log_syslog_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

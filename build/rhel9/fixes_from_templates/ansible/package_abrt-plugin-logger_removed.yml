@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall abrt-plugin-logger Package: Ensure abrt-plugin-logger is removed"
+  ansible.builtin.package:
+    name: "abrt-plugin-logger"
+    state: absent

@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Ensure rear is installed
+  ansible.builtin.package:
+    name: rear
+    state: present
+  when: not ( ( ( ansible_architecture == "aarch64" and ansible_distribution == 'OracleLinux'
+    and ansible_distribution_version is version('9.0', '>=') ) or ( ansible_architecture
+    == "aarch64" and ansible_distribution == 'RedHat' and ansible_distribution_version
+    is version('9.0', '>=') ) or ( ansible_distribution == 'RedHat' and ansible_distribution_version
+    is version('8.4', '<=') and ansible_architecture == "s390x" ) ) )
+  tags:
+  - CCE-83503-3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_rear_installed

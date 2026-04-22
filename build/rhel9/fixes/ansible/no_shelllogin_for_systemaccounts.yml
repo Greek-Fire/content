@@ -1,0 +1,93 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83623-9
+  - DISA-STIG-RHEL-09-411035
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.2
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - no_shelllogin_for_systemaccounts
+  - restrict_strategy
+
+- name: Ensure that System Accounts Do Not Run a Shell Upon Login - Get All Local
+    Users From /etc/passwd
+  ansible.builtin.getent:
+    database: passwd
+    split: ':'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83623-9
+  - DISA-STIG-RHEL-09-411035
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.2
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - no_shelllogin_for_systemaccounts
+  - restrict_strategy
+
+- name: Ensure that System Accounts Do Not Run a Shell Upon Login - Create local_users
+    Variable From getent_passwd Facts
+  ansible.builtin.set_fact:
+    local_users: '{{ ansible_facts.getent_passwd | dict2items }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83623-9
+  - DISA-STIG-RHEL-09-411035
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.2
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - no_shelllogin_for_systemaccounts
+  - restrict_strategy
+
+- name: Ensure that System Accounts Do Not Run a Shell Upon Login -  Disable Login
+    Shell for System Accounts
+  ansible.builtin.user:
+    name: '{{ item.key }}'
+    shell: /sbin/nologin
+  loop: '{{ local_users }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.key not in ['root']
+  - item.value[1]|int < 1000
+  - item.value[5] not in ['/sbin/shutdown', '/sbin/halt', '/bin/sync']
+  tags:
+  - CCE-83623-9
+  - DISA-STIG-RHEL-09-411035
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.2
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - no_shelllogin_for_systemaccounts
+  - restrict_strategy

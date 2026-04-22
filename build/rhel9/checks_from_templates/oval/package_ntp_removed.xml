@@ -1,0 +1,29 @@
+<def-group>
+<definition class="compliance" id="package_ntp_removed" version="1">
+  <metadata>
+        <title>Remove the ntp service</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package ntp should be removed.</description>
+    </metadata>
+  <criteria>
+  
+    <criterion comment="package ntp is removed" test_ref="test_package_ntp_removed" />
+  
+  </criteria>
+</definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="test_package_ntp_removed" version="1"
+  comment="package ntp is removed">
+    <linux:object object_ref="obj_test_package_ntp_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_test_package_ntp_removed" version="1">
+    <linux:name>ntp</linux:name>
+  </linux:rpminfo_object>
+
+
+
+</def-group>

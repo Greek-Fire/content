@@ -1,0 +1,38 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83523-1
+  - DISA-STIG-RHEL-09-432010
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_sudo_installed
+
+- name: Ensure sudo is installed
+  ansible.builtin.package:
+    name: sudo
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83523-1
+  - DISA-STIG-RHEL-09-432010
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_sudo_installed

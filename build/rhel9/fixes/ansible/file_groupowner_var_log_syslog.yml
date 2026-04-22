@@ -1,0 +1,57 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_var_log_syslog_newgroup variable if represented by
+    gid
+  ansible.builtin.set_fact:
+    file_groupowner_var_log_syslog_newgroup: '4'
+  when: '"rsyslog" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /var/log/syslog
+  ansible.builtin.stat:
+    path: /var/log/syslog
+  register: file_exists
+  when: '"rsyslog" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /var/log/syslog
+  ansible.builtin.file:
+    path: /var/log/syslog
+    follow: false
+    group: '{{ file_groupowner_var_log_syslog_newgroup }}'
+  when:
+  - '"rsyslog" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

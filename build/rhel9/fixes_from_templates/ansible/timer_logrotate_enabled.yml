@@ -1,0 +1,18 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Enable timer logrotate
+  block:
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable timer logrotate
+    ansible.builtin.systemd:
+      name: "logrotate.timer"
+      enabled: "yes"
+      state: "started"
+    when:
+    - '"logrotate" in ansible_facts.packages'

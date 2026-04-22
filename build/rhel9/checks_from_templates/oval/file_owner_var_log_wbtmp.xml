@@ -1,0 +1,45 @@
+<def-group>
+  <definition class="compliance" id="file_owner_var_log_wbtmp" version="1">
+  
+    <metadata>
+        <title>Verify User Who Owns /var/log/(b|w)tmp(.*|-*) File</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /var/log/ is owned by 0.</description>
+    </metadata>
+     <criteria>
+   
+     <criterion comment="Check file ownership of /var/log/" test_ref="test_file_owner_var_log_wbtmp_0" />
+   
+  
+    </criteria>
+  </definition>
+  <local_variable id="var_file_owner_var_log_wbtmp_0_uid" comment="Set the uid to 0" datatype="int" version="1">
+    <literal_component datatype="int">0</literal_component>
+  </local_variable>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /var/log/" id="test_file_owner_var_log_wbtmp_0" version="1">
+    <unix:object object_ref="object_file_owner_var_log_wbtmp_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/var/log/" id="object_file_owner_var_log_wbtmp_0" version="1">
+      <unix:path>/var/log</unix:path>
+      <unix:filename operation="pattern match">.*(b|w)tmp((\.|-)[^\/]+)?$</unix:filename>
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_owner_var_log_wbtmp_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_owner_var_log_wbtmp_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_owner_var_log_wbtmp_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_state id="symlink_file_owner" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

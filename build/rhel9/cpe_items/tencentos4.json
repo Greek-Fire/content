@@ -1,0 +1,1 @@
+{"name": "cpe:/o:tencentos:tencentos_server:4", "check_id": "installed_OS_is_tencentos4", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "TencentOS Server 4", "definition_location": "", "template": null}

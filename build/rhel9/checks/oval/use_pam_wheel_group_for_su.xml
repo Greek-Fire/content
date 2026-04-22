@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-use_pam_wheel_group_for_su:def:1" version="3" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Enforce Usage of pam_wheel with Group Parameter for su Authentication</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86065-0" source="CCE" />
+        <oval-def:reference ref_id="use_pam_wheel_group_for_su" source="ssg" />
+        <oval-def:description>Configure PAM module</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Make sure arguments are properly configured in /etc/pam.d/su" operator="AND">
+        <oval-def:criterion comment="Verify group is set to the desired state" test_ref="oval:ssg-test_pam_auth_pam_wheel_group:tst:1" />
+        <oval-def:criterion comment="Verify use_uid is set to the desired state" test_ref="oval:ssg-test_pam_auth_pam_wheel_use_uid:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_pam_auth_pam_wheel_use_uid:tst:1" version="1" check="all" comment="Verify use_uid configuation of pam_wheel.so" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_pam_auth_pam_wheel_use_uid:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_pam_auth_pam_wheel_group:tst:1" version="1" check="all" comment="Verify group configuation of pam_wheel.so" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_pam_auth_pam_wheel_group:obj:1" />
+      <ind:state state_ref="oval:ssg-state_pam_auth_pam_wheel_group:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_pam_auth_pam_wheel_use_uid:obj:1" version="1" comment="Check use_uid configuration of PAM pam_wheel.so module">
+      <ind:filepath>/etc/pam.d/su</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*auth(?:(?!\n)\s)+required(?:(?!\n)\s)+pam_wheel.so((?!\n)\s[^\n]+)?(?!\n)\s+use_uid((\s+\S+)*\s*\\*\s*)$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_pam_auth_pam_wheel_group:obj:1" version="1" comment="Check group configuration of PAM pam_wheel.so module">
+      <ind:filepath>/etc/pam.d/su</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*auth\s+required\s+pam_wheel.so.*\sgroup=(-?[a-zA-Z0-9]+)(?:\s+.*)?</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_pam_auth_pam_wheel_group:ste:1" version="3" operator="AND">
+      <ind:subexpression datatype="string" operation="equals" var_ref="oval:ssg-var_pam_wheel_group_for_su:var:1" />
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:external_variable id="oval:ssg-var_pam_wheel_group_for_su:var:1" version="1" datatype="string" comment="name of the group used by pam_wheel.so group option" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86216-9
+  - DISA-STIG-RHEL-09-255115
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_permissions_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/ssh/sshd_config.d/ file(s)
+  ansible.builtin.command: find -P /etc/ssh/sshd_config.d/ -maxdepth 1 -perm /u+xs,g+xwrs,o+xwrt  -type
+    f -regextype posix-extended -regex "^.*$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86216-9
+  - DISA-STIG-RHEL-09-255115
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_permissions_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /etc/ssh/sshd_config.d/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-xs,g-xwrs,o-xwrt
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86216-9
+  - DISA-STIG-RHEL-09-255115
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_permissions_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

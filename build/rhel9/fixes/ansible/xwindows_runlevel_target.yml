@@ -1,0 +1,40 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84105-6
+  - DISA-STIG-RHEL-09-211030
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+  - xwindows_runlevel_target
+
+- name: Switch to multi-user runlevel
+  ansible.builtin.file:
+    src: /usr/lib/systemd/system/multi-user.target
+    dest: /etc/systemd/system/default.target
+    state: link
+    force: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84105-6
+  - DISA-STIG-RHEL-09-211030
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+  - xwindows_runlevel_target

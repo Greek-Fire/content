@@ -1,0 +1,16 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+
+- name: Ensure that /etc/cron.allow exists - Add empty /etc/cron.allow
+  ansible.builtin.file:
+      path: /etc/cron.allow
+      state: touch
+      owner: "0"
+      mode: "0640"
+      modification_time: preserve
+      access_time: preserve

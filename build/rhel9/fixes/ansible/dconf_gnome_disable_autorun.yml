@@ -1,0 +1,90 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_sle
+# reboot = false
+# strategy = unknown
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90257-7
+  - DISA-STIG-RHEL-09-271030
+  - DISA-STIG-RHEL-09-271035
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - dconf_gnome_disable_autorun
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Disable GNOME3 Automounting - autorun-never
+  community.general.ini_file:
+    dest: /etc/dconf/db/local.d/00-security-settings
+    section: org/gnome/desktop/media-handling
+    option: autorun-never
+    value: 'true'
+    create: true
+    no_extra_spaces: true
+  register: result_ini
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - CCE-90257-7
+  - DISA-STIG-RHEL-09-271030
+  - DISA-STIG-RHEL-09-271035
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - dconf_gnome_disable_autorun
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Prevent user modification of GNOME3 Automounting - autorun-never
+  ansible.builtin.lineinfile:
+    path: /etc/dconf/db/local.d/locks/00-security-settings-lock
+    regexp: ^/org/gnome/desktop/media-handling/autorun-never$
+    line: /org/gnome/desktop/media-handling/autorun-never
+    create: true
+  register: result_lineinfile
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - CCE-90257-7
+  - DISA-STIG-RHEL-09-271030
+  - DISA-STIG-RHEL-09-271035
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - dconf_gnome_disable_autorun
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Dconf Update
+  ansible.builtin.command: dconf update
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - result_ini is changed or result_lineinfile is changed
+  tags:
+  - CCE-90257-7
+  - DISA-STIG-RHEL-09-271030
+  - DISA-STIG-RHEL-09-271035
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - dconf_gnome_disable_autorun
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy

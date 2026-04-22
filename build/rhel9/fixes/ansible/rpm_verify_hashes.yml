@@ -1,0 +1,181 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_rhv,multi_platform_sle,multi_platform_almalinux
+# reboot = false
+# strategy = restrict
+# complexity = high
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90841-8
+  - CJIS-5.10.4.1
+  - NIST-800-171-3.3.8
+  - NIST-800-171-3.4.1
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(c)
+  - NIST-800-53-CM-6(d)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - NIST-800-53-SI-7(6)
+  - PCI-DSS-Req-11.5
+  - PCI-DSSv4-11.5.2
+  - high_complexity
+  - high_severity
+  - medium_disruption
+  - no_reboot_needed
+  - restrict_strategy
+  - rpm_verify_hashes
+
+- name: 'Set fact: Package manager reinstall command'
+  ansible.builtin.set_fact:
+    package_manager_reinstall_cmd: dnf reinstall -y
+  when:
+  - not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline )
+  - ansible_distribution in [ "Fedora", "RedHat", "CentOS", "OracleLinux", "AlmaLinux"
+    ]
+  tags:
+  - CCE-90841-8
+  - CJIS-5.10.4.1
+  - NIST-800-171-3.3.8
+  - NIST-800-171-3.4.1
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(c)
+  - NIST-800-53-CM-6(d)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - NIST-800-53-SI-7(6)
+  - PCI-DSS-Req-11.5
+  - PCI-DSSv4-11.5.2
+  - high_complexity
+  - high_severity
+  - medium_disruption
+  - no_reboot_needed
+  - restrict_strategy
+  - rpm_verify_hashes
+
+- name: 'Set fact: Package manager reinstall command (zypper)'
+  ansible.builtin.set_fact:
+    package_manager_reinstall_cmd: zypper in -f -y
+  when:
+  - not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline )
+  - ansible_distribution == "SLES"
+  tags:
+  - CCE-90841-8
+  - CJIS-5.10.4.1
+  - NIST-800-171-3.3.8
+  - NIST-800-171-3.4.1
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(c)
+  - NIST-800-53-CM-6(d)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - NIST-800-53-SI-7(6)
+  - PCI-DSS-Req-11.5
+  - PCI-DSSv4-11.5.2
+  - high_complexity
+  - high_severity
+  - medium_disruption
+  - no_reboot_needed
+  - restrict_strategy
+  - rpm_verify_hashes
+
+- name: Read files with incorrect hash
+  ansible.builtin.command: rpm -Va --nodeps --nosize --nomtime --nordev --nocaps --nolinkto
+    --nouser --nogroup --nomode --noghost --noconfig
+  register: files_with_incorrect_hash
+  changed_when: false
+  failed_when: files_with_incorrect_hash.rc > 1
+  check_mode: false
+  when:
+  - not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline )
+  - (package_manager_reinstall_cmd is defined)
+  tags:
+  - CCE-90841-8
+  - CJIS-5.10.4.1
+  - NIST-800-171-3.3.8
+  - NIST-800-171-3.4.1
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(c)
+  - NIST-800-53-CM-6(d)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - NIST-800-53-SI-7(6)
+  - PCI-DSS-Req-11.5
+  - PCI-DSSv4-11.5.2
+  - high_complexity
+  - high_severity
+  - medium_disruption
+  - no_reboot_needed
+  - restrict_strategy
+  - rpm_verify_hashes
+
+- name: Create list of packages
+  ansible.builtin.command: rpm -qf "{{ item }}"
+  with_items: '{{ files_with_incorrect_hash.stdout_lines | map(''regex_findall'',
+    ''^[.]+[5]+.* (\/.*)'', ''\1'') | map(''join'') | select(''match'', ''(\/.*)'')
+    | list | unique }}'
+  register: list_of_packages
+  changed_when: false
+  check_mode: false
+  when:
+  - not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline )
+  - files_with_incorrect_hash.stdout_lines is defined
+  - (files_with_incorrect_hash.stdout_lines | length > 0)
+  tags:
+  - CCE-90841-8
+  - CJIS-5.10.4.1
+  - NIST-800-171-3.3.8
+  - NIST-800-171-3.4.1
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(c)
+  - NIST-800-53-CM-6(d)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - NIST-800-53-SI-7(6)
+  - PCI-DSS-Req-11.5
+  - PCI-DSSv4-11.5.2
+  - high_complexity
+  - high_severity
+  - medium_disruption
+  - no_reboot_needed
+  - restrict_strategy
+  - rpm_verify_hashes
+
+- name: Reinstall packages of files with incorrect hash
+  ansible.builtin.command: '{{ package_manager_reinstall_cmd }} ''{{ item }}'''
+  with_items: '{{ list_of_packages.results | map(attribute=''stdout_lines'') | list
+    | unique }}'
+  when:
+  - not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline )
+  - files_with_incorrect_hash.stdout_lines is defined
+  - (package_manager_reinstall_cmd is defined and (files_with_incorrect_hash.stdout_lines
+    | length > 0))
+  tags:
+  - CCE-90841-8
+  - CJIS-5.10.4.1
+  - NIST-800-171-3.3.8
+  - NIST-800-171-3.4.1
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(c)
+  - NIST-800-53-CM-6(d)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - NIST-800-53-SI-7(6)
+  - PCI-DSS-Req-11.5
+  - PCI-DSSv4-11.5.2
+  - high_complexity
+  - high_severity
+  - medium_disruption
+  - no_reboot_needed
+  - restrict_strategy
+  - rpm_verify_hashes

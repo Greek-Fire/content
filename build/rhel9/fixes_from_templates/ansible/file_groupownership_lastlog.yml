@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupownership_lastlog_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupownership_lastlog_newgroup: "0"
+
+- name: Test for existence /usr/bin/lastlog
+  ansible.builtin.stat:
+    path: "/usr/bin/lastlog"
+  register: file_exists
+
+- name: Ensure group owner on /usr/bin/lastlog
+  ansible.builtin.file:
+    path: "/usr/bin/lastlog"
+    follow: false
+    group: "{{ file_groupownership_lastlog_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

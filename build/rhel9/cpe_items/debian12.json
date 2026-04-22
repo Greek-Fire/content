@@ -1,0 +1,1 @@
+{"name": "cpe:/o:debian:debian_linux:12", "check_id": "installed_OS_is_debian12", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Debian Linux 12", "definition_location": "", "template": null}

@@ -1,0 +1,45 @@
+<def-group>
+  <definition class="compliance" id="auditd_audispd_remote_daemon_activated" version="1">
+    <metadata>
+        <title>Configure auditd to use audispd's remote logging daemon</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'active' is configured with value 'yes' in /etc/audit/plugins.d/au-remote.conf</description>
+    </metadata>
+    <criteria comment="audispd is configured correctly and configuration file exists"
+    operator="AND">
+    <criteria comment="audispd is configured correctly"
+    operator="OR"><criterion comment="Check the active in /etc/audit/plugins.d/au-remote.conf"
+  test_ref="test_auditd_audispd_remote_daemon_activated" />
+    </criteria><criterion comment="test if configuration file /etc/audit/plugins.d/au-remote.conf exists for auditd_audispd_remote_daemon_activated" test_ref="test_auditd_audispd_remote_daemon_activated_config_file_exists" />
+    </criteria>
+  </definition>
+
+  
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of active setting in the /etc/audit/plugins.d/au-remote.conf file"
+  id="test_auditd_audispd_remote_daemon_activated" version="1">
+  <ind:object object_ref="obj_auditd_audispd_remote_daemon_activated" />
+  <ind:state state_ref="state_auditd_audispd_remote_daemon_activated" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_auditd_audispd_remote_daemon_activated" version="1">
+  <ind:filepath>/etc/audit/plugins.d/au-remote.conf</ind:filepath>
+  <ind:pattern operation="pattern match">^\s*active\s*=\s*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+<ind:textfilecontent54_state id="state_auditd_audispd_remote_daemon_activated" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^yes$</ind:subexpression>
+</ind:textfilecontent54_state>
+  <unix:file_test id="test_auditd_audispd_remote_daemon_activated_config_file_exists" check="all" check_existence="all_exist" comment="The configuration file /etc/audit/plugins.d/au-remote.conf exists for auditd_audispd_remote_daemon_activated" version="1">
+    <unix:object object_ref="obj_auditd_audispd_remote_daemon_activated_config_file" />
+  </unix:file_test>
+  <unix:file_object id="obj_auditd_audispd_remote_daemon_activated_config_file" comment="The configuration file /etc/audit/plugins.d/au-remote.conf for auditd_audispd_remote_daemon_activated" version="1">
+    <unix:filepath operation="pattern match">^/etc/audit/plugins.d/au-remote.conf</unix:filepath>
+  </unix:file_object>
+
+</def-group>

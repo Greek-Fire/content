@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall gssproxy Package: Ensure gssproxy is removed"
+  ansible.builtin.package:
+    name: "gssproxy"
+    state: absent

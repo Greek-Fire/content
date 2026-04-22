@@ -1,0 +1,140 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid
+
+- name: Disallow kernel profiling by unprivileged users - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid
+
+- name: Disallow kernel profiling by unprivileged users - Find all files that contain
+    kernel.perf_event_paranoid
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*kernel.perf_event_paranoid\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid
+
+- name: Disallow kernel profiling by unprivileged users - Find all files that set
+    kernel.perf_event_paranoid to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*kernel.perf_event_paranoid\s*=\s*2$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid
+
+- name: Disallow kernel profiling by unprivileged users - Comment out any occurrences
+    of kernel.perf_event_paranoid from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*kernel.perf_event_paranoid
+    replace: '#kernel.perf_event_paranoid'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid
+
+- name: Disallow kernel profiling by unprivileged users - Comment out any occurrences
+    of kernel.perf_event_paranoid from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*kernel.perf_event_paranoid
+    replace: '#kernel.perf_event_paranoid'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid
+
+- name: Disallow kernel profiling by unprivileged users - Ensure sysctl kernel.perf_event_paranoid
+    is set to 2
+  ansible.posix.sysctl:
+    name: kernel.perf_event_paranoid
+    value: '2'
+    sysctl_file: /etc/sysctl.d/kernel_perf_event_paranoid.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83959-7
+  - DISA-STIG-RHEL-09-213015
+  - NIST-800-53-AC-6
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_perf_event_paranoid

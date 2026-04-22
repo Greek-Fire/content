@@ -1,0 +1,18 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall tuned Package: Ensure tuned is removed'
+  ansible.builtin.package:
+    name: tuned
+    state: absent
+  tags:
+  - CCE-83521-5
+  - DISA-STIG-RHEL-09-215055
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_tuned_removed

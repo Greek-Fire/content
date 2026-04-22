@@ -1,0 +1,46 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-28
+  - NIST-800-53-SI-3(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_nails_enabled
+
+- name: Enable nails Service - Enable service nails
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable nails Service - Enable Service nails
+    ansible.builtin.systemd:
+      name: nails
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"nails" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-28
+  - NIST-800-53-SI-3(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_nails_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

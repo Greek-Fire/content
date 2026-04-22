@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-aide_periodic_cron_checking:def:1" version="3" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure Periodic Execution of AIDE</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83437-4" source="CCE" />
+        <oval-def:reference ref_id="aide_periodic_cron_checking" source="ssg" />
+        <oval-def:description>By default, AIDE does not install itself for periodic
+      execution. Periodically running AIDE is necessary to reveal
+      unexpected changes in installed files.
+      </oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Aide is installed" definition_ref="oval:ssg-package_aide_installed:def:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="run aide with cron" test_ref="oval:ssg-test_aide_periodic_cron_checking:tst:1" />
+          <oval-def:criterion comment="run aide with cron" test_ref="oval:ssg-test_aide_crond_checking:tst:1" />
+          <oval-def:criterion comment="run aide with cron" test_ref="oval:ssg-test_aide_var_cron_checking:tst:1" />
+          <oval-def:criterion comment="run aide with cron.(daily|weekly)" test_ref="oval:ssg-test_aide_crontabs_checking:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-package_aide_installed:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Install AIDE</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-90843-4" source="CCE" />
+        <oval-def:reference ref_id="package_aide_installed" source="ssg" />
+        <oval-def:description>The RPM package aide should be installed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="package aide is installed" test_ref="oval:ssg-test_package_aide_installed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_aide_periodic_cron_checking:tst:1" version="1" check="all" comment="run aide with cron" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_test_aide_periodic_cron_checking:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_aide_crond_checking:tst:1" version="1" check="all" comment="run aide with cron" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_test_aide_crond_checking:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_aide_var_cron_checking:tst:1" version="1" check="all" comment="run aide with cron" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_aide_var_cron_checking:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_aide_crontabs_checking:tst:1" version="2" check="all" comment="run aide with cron.(daily|weekly)" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_aide_crontabs_checking:obj:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-test_package_aide_installed:tst:1" version="1" check="all" comment="package aide is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_test_package_aide_installed:obj:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_test_aide_periodic_cron_checking:obj:1" version="1" comment="run aide with cron">
+      <ind:filepath>/etc/crontab</ind:filepath>
+      <ind:pattern operation="pattern match">^(([0-9]*[\s]*[0-9]*[\s]*\*[\s]*\*[\s]*(\*|([0-7]|mon|tue|wed|thu|fri|sat|sun)|[0-7]-[0-7]))|@(hourly|daily|weekly))[\s]*root[\s]*\/usr\/sbin\/aide[\s]*\-\-check.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_test_aide_crond_checking:obj:1" version="1" comment="run aide with cron">
+      <ind:path>/etc/cron.d</ind:path>
+      <ind:filename operation="pattern match">^.*$</ind:filename>
+      <ind:pattern operation="pattern match">^(([0-9]*[\s]*[0-9]*[\s]*\*[\s]*\*[\s]*(\*|([0-7]|mon|tue|wed|thu|fri|sat|sun)|[0-7]-[0-7]))|@(hourly|daily|weekly))[\s]*root[\s]*\/usr\/sbin\/aide[\s]*\-\-check.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_aide_var_cron_checking:obj:1" version="1" comment="run aide with cron">
+      <ind:filepath>/var/spool/cron/root</ind:filepath>
+      <ind:pattern operation="pattern match">^(([0-9]*[\s]*[0-9]*[\s]*\*[\s]*\*[\s]*(\*|([0-7]|mon|tue|wed|thu|fri|sat|sun)|[0-7]-[0-7]))|@(hourly|daily|weekly))[\s]*(root)?[\s]*\/usr\/sbin\/aide[\s]*\-\-check.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_aide_crontabs_checking:obj:1" version="1" comment="run aide with cron.(daily|weekly)">
+      <ind:path operation="pattern match">^/etc/cron.(daily|weekly)$</ind:path>
+      <ind:filename operation="pattern match">^.*$</ind:filename>
+      <ind:pattern operation="pattern match">^[^#]*\/usr\/sbin\/aide\s+\-\-check\s*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_test_package_aide_installed:obj:1" version="1">
+      <linux:name>aide</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

@@ -1,0 +1,5 @@
+# platform = multi_platform_rhel,multi_platform_fedora
+
+[[customizations.filesystem]]
+mountpoint = "/home"
+size = 1073741824

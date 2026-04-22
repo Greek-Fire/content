@@ -1,0 +1,51 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86158-3
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.7
+  - PCI-DSSv4-10.5
+  - PCI-DSSv4-10.5.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - timer_logrotate_enabled
+
+- name: Enable timer logrotate
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable timer logrotate
+    ansible.builtin.systemd:
+      name: logrotate.timer
+      enabled: 'yes'
+      state: started
+    when:
+    - '"logrotate" in ansible_facts.packages'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( ansible_distribution == 'RedHat' and ansible_distribution_version is version('9',
+    '>=') and "logrotate" in ansible_facts.packages )
+  tags:
+  - CCE-86158-3
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.7
+  - PCI-DSSv4-10.5
+  - PCI-DSSv4-10.5.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - timer_logrotate_enabled

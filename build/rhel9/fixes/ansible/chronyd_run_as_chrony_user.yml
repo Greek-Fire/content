@@ -1,0 +1,58 @@
+# platform = multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_sle,multi_platform_slmicro,multi_platform_almalinux
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84108-0
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.3
+  - chronyd_run_as_chrony_user
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Detect if file /etc/sysconfig/chronyd is not empty or missing
+  ansible.builtin.find:
+    path: /etc/sysconfig/
+    patterns: chronyd
+    contains: ^([\s]*OPTIONS=["]?[^"]*)("?)
+  register: chronyd_file
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - CCE-84108-0
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.3
+  - chronyd_run_as_chrony_user
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Remove any previous configuration of user used to run chronyd process
+  ansible.builtin.replace:
+    path: /etc/sysconfig/chronyd
+    regexp: \s*-u\s*\w+\s*
+    replace: ' '
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chronyd_file is defined and chronyd_file.matched > 0
+  tags:
+  - CCE-84108-0
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.3
+  - chronyd_run_as_chrony_user
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

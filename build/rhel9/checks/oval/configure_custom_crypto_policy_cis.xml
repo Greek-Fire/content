@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-configure_custom_crypto_policy_cis:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Implement Custom Crypto Policy Modules for CIS Benchmark</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-88900-6" source="CCE" />
+        <oval-def:reference ref_id="configure_custom_crypto_policy_cis" source="ssg" />
+        <oval-def:description>Ensure that the custom crypto policy module is configured</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Ensure that all of the correct lines are in the file." operator="AND">
+        <oval-def:criterion comment="Check that cipher@SSH is configured in NO-SSHCBC.pmod" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_NO-SSHCBC:tst:1" />
+        <oval-def:criterion comment="Check that cipher@SSH is configured in NO-SSHWEAKCIPHERS.pmod" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS:tst:1" />
+        <oval-def:criterion comment="Check that mac@SSH is configured in NO-SSHWEAKMACS.pmod" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS:tst:1" />
+        <oval-def:criterion comment="Check that mac is configured in NO-WEAKMAC.pmod" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_NO-WEAKMAC:tst:1" />
+        <oval-def:criteria comment="If rpm-sequoia scope is available then hash@rpm must be configured in NO-RPMSHA1.pmod" operator="OR">
+          <oval-def:criterion negate="true" comment="Check that rpm-sequoia scope is not available" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_rpm-sequoia:tst:1" />
+          <oval-def:criteria comment="Check that rpm-sequoia scope is available AND hash@rpm is configured in NO-RPMSHA1.pmod" operator="AND">
+            <oval-def:criterion comment="Check that rpm-sequoia scope is available" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_rpm-sequoia:tst:1" />
+            <oval-def:criterion comment="Check that hash@rpm is configured in NO-RPMSHA1.pmod" test_ref="oval:ssg-test_configure_custom_crypto_policy_cis_NO-RPMSHA1:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_custom_crypto_policy_cis_NO-SSHCBC:tst:1" version="1" check="all" comment="Tests that cipher@SSH is configured correctly." state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-SSHCBC:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS:tst:1" version="1" check="all" comment="Tests that cipher@SSH is configured correctly." state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS:tst:1" version="1" check="all" comment="Tests that mac@SSH is configured correctly." state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_custom_crypto_policy_cis_NO-WEAKMAC:tst:1" version="1" check="all" comment="Tests that mac is configured correctly." state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-WEAKMAC:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_custom_crypto_policy_cis_NO-RPMSHA1:tst:1" version="1" check="all" comment="Tests that hash@rpm is configured correctly." state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-RPMSHA1:obj:1" />
+    </ind:textfilecontent54_test>
+    <unix:file_test id="oval:ssg-test_configure_custom_crypto_policy_cis_rpm-sequoia:tst:1" version="1" check="all" comment="Check that rpm-sequoia scope is available" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_configure_custom_crypto_policy_cis_rpm-sequoia:obj:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-SSHCBC:obj:1" version="1">
+      <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+      <ind:filename>NO-SSHCBC.pmod</ind:filename>
+      <ind:pattern operation="pattern match">^cipher@SSH = \-\*\-CBC$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS:obj:1" version="1">
+      <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+      <ind:filename>NO-SSHWEAKCIPHERS.pmod</ind:filename>
+      <ind:pattern operation="pattern match">^cipher@SSH = \-3DES\-CBC \-AES\-128\-CBC \-AES\-192\-CBC \-AES\-256\-CBC \-CHACHA20\-POLY1305$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS:obj:1" version="1">
+      <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+      <ind:filename>NO-SSHWEAKMACS.pmod</ind:filename>
+      <ind:pattern operation="pattern match">^mac@SSH = \-HMAC\-MD5\* \-UMAC\-64\* \-UMAC\-128\*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-WEAKMAC:obj:1" version="1">
+      <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+      <ind:filename>NO-WEAKMAC.pmod</ind:filename>
+      <ind:pattern operation="pattern match">^mac = \-\*\-128\*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_configure_custom_crypto_policy_cis_NO-RPMSHA1:obj:1" version="1">
+      <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+      <ind:filename>NO-RPMSHA1.pmod</ind:filename>
+      <ind:pattern operation="pattern match">^hash@rpm = \-SHA1$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_configure_custom_crypto_policy_cis_rpm-sequoia:obj:1" version="1" comment="/etc/crypto-policies/back-ends/rpm-sequoia.config">
+      <unix:filepath>/etc/crypto-policies/back-ends/rpm-sequoia.config</unix:filepath>
+    </unix:file_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

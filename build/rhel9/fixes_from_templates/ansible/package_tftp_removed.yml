@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove tftp Daemon: Ensure tftp is removed"
+  ansible.builtin.package:
+    name: "tftp"
+    state: absent

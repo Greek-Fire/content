@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-audit_ospp_general_ppc64le:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Perform general configuration of Audit for OSPP (ppc64le)</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-90786-5" source="CCE" />
+        <oval-def:reference ref_id="audit_ospp_general_ppc64le" source="ssg" />
+        <oval-def:description>Inspect the contents of /etc/audit/rules.d/30-ospp-v42.rules</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check contents of file" test_ref="oval:ssg-audit_ospp_general_ppc64le_test_whole_file_contents_tc_audit_rules_d_30_ospp_v42_rules:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-audit_ospp_general_ppc64le_test_whole_file_contents_tc_audit_rules_d_30_ospp_v42_rules:tst:1" version="1" check="all" comment="Tests if contents of /etc/audit/rules.d/30-ospp-v42.rules is exactly what is defined in rule description" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-audit_ospp_general_ppc64le_object_whole_file_contents_tc_audit_rules_d_30_ospp_v42_rules:obj:1" />
+      <ind:state state_ref="oval:ssg-audit_ospp_general_ppc64le_state_whole_file_contents_tc_audit_rules_d_30_ospp_v42_rules:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-audit_ospp_general_ppc64le_object_whole_file_contents_tc_audit_rules_d_30_ospp_v42_rules:obj:1" version="1">
+      <ind:behaviors singleline="true" multiline="false" />
+      <ind:filepath>/etc/audit/rules.d/30-ospp-v42.rules</ind:filepath>
+      <ind:pattern operation="pattern match">^.*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-audit_ospp_general_ppc64le_state_whole_file_contents_tc_audit_rules_d_30_ospp_v42_rules:ste:1" version="1" operator="AND">
+      <ind:text operation="equals">## The purpose of these rules is to meet the requirements for Operating
+## System Protection Profile (OSPP)v4.2. These rules depends on having
+## the following rule files copied to /etc/audit/rules.d:
+##
+## 10-base-config.rules, 11-loginuid.rules,
+## 30-ospp-v42-1-create-failed.rules, 30-ospp-v42-1-create-success.rules,
+## 30-ospp-v42-2-modify-failed.rules, 30-ospp-v42-2-modify-success.rules,
+## 30-ospp-v42-3-access-failed.rules, 30-ospp-v42-3-access-success.rules,
+## 30-ospp-v42-4-delete-failed.rules, 30-ospp-v42-4-delete-success.rules,
+## 30-ospp-v42-5-perm-change-failed.rules,
+## 30-ospp-v42-5-perm-change-success.rules,
+## 30-ospp-v42-6-owner-change-failed.rules,
+## 30-ospp-v42-6-owner-change-success.rules
+##
+## original copies may be found in /usr/share/audit/sample-rules/
+
+
+## User add delete modify. This is covered by pam. However, someone could
+## open a file and directly create or modify a user, so we'll watch passwd and
+## shadow for writes
+-a always,exit -F arch=b64 -S openat,open_by_handle_at -F a2&amp;03 -F path=/etc/passwd -F auid&gt;=1000 -F auid!=unset -F key=user-modify
+-a always,exit -F arch=b64 -S open -F a1&amp;03 -F path=/etc/passwd -F auid&gt;=1000 -F auid!=unset -F key=user-modify
+-a always,exit -F arch=b64 -S openat,open_by_handle_at -F a2&amp;03 -F path=/etc/shadow -F auid&gt;=1000 -F auid!=unset -F key=user-modify
+-a always,exit -F arch=b64 -S open -F a1&amp;03 -F path=/etc/shadow -F auid&gt;=1000 -F auid!=unset -F key=user-modify
+
+## User enable and disable. This is entirely handled by pam.
+
+## Group add delete modify. This is covered by pam. However, someone could
+## open a file and directly create or modify a user, so we'll watch group and
+## gshadow for writes
+-a always,exit -F arch=b64 -F path=/etc/passwd -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=user-modify
+-a always,exit -F arch=b64 -F path=/etc/shadow -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=user-modify
+-a always,exit -F arch=b64 -F path=/etc/group -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=group-modify
+-a always,exit -F arch=b64 -F path=/etc/gshadow -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=group-modify
+
+
+## Use of special rights for config changes. This would be use of setuid
+## programs that relate to user accts. This is not all setuid apps because
+## requirements are only for ones that affect system configuration.
+-a always,exit -F arch=b64 -F path=/usr/sbin/unix_chkpwd -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/sbin/usernetctl -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/sbin/userhelper -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/sbin/seunshare -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/mount -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/newgrp -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/newuidmap -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/gpasswd -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/newgidmap -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/umount -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/passwd -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/crontab -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/bin/at -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+-a always,exit -F arch=b64 -F path=/usr/sbin/grub2-set-bootflag -F perm=x -F auid&gt;=1000 -F auid!=unset -F key=special-config-changes
+
+## Privilege escalation via su or sudo. This is entirely handled by pam.
+## Special case for systemd-run. It is not audit aware, specifically watch it
+-a always,exit -F arch=b64 -F path=/usr/bin/systemd-run -F perm=x -F auid!=unset -F key=maybe-escalation
+## Special case for pkexec. It is not audit aware, specifically watch it
+-a always,exit -F arch=b64 -F path=/usr/bin/pkexec -F perm=x -F key=maybe-escalation
+
+
+## Watch for configuration changes to privilege escalation.
+-a always,exit -F arch=b64 -F path=/etc/sudoers -F perm=wa -F key=special-config-changes
+-a always,exit -F arch=b64 -F dir=/etc/sudoers.d/ -F perm=wa -F key=special-config-changes
+
+## Audit log access
+-a always,exit -F arch=b64 -F dir=/var/log/audit/ -F perm=r -F auid&gt;=1000 -F auid!=unset -F key=access-audit-trail
+## Attempts to Alter Process and Session Initiation Information
+-a always,exit -F arch=b64 -F path=/var/run/utmp -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=session
+-a always,exit -F arch=b64 -F path=/var/log/btmp -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=session
+-a always,exit -F arch=b64 -F path=/var/log/wtmp -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=session
+
+## Attempts to modify MAC controls
+-a always,exit -F arch=b64 -F dir=/etc/selinux/ -F perm=wa -F auid&gt;=1000 -F auid!=unset -F key=MAC-policy
+
+## Software updates. This is entirely handled by rpm.
+
+## System start and shutdown. This is entirely handled by systemd
+
+## Kernel Module loading. This is handled in 43-module-load.rules
+
+## Application invocation. The requirements list an optional requirement
+## FPT_SRP_EXT.1 Software Restriction Policies. This event is intended to
+## state results from that policy. This would be handled entirely by
+## that daemon.
+
+</ind:text>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

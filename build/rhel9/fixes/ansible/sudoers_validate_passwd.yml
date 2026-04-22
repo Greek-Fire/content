@@ -1,0 +1,415 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Find out if /etc/sudoers.d/* files contain Defaults targetpw to be deduplicated
+  ansible.builtin.find:
+    path: /etc/sudoers.d
+    patterns: '*'
+    contains: ^Defaults targetpw$
+  register: sudoers_d_defaults
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Remove found occurrences of Defaults targetpw from /etc/sudoers.d/* files
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^Defaults targetpw$
+    state: absent
+  with_items: '{{ sudoers_d_defaults.files }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Find out if /etc/sudoers.d/* files contain Defaults rootpw to be deduplicated
+  ansible.builtin.find:
+    path: /etc/sudoers.d
+    patterns: '*'
+    contains: ^Defaults rootpw$
+  register: sudoers_d_defaults
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Remove found occurrences of Defaults rootpw from /etc/sudoers.d/* files
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^Defaults rootpw$
+    state: absent
+  with_items: '{{ sudoers_d_defaults.files }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Find out if /etc/sudoers.d/* files contain Defaults runaspw to be deduplicated
+  ansible.builtin.find:
+    path: /etc/sudoers.d
+    patterns: '*'
+    contains: ^Defaults runaspw$
+  register: sudoers_d_defaults
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Remove found occurrences of Defaults runaspw from /etc/sudoers.d/* files
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^Defaults runaspw$
+    state: absent
+  with_items: '{{ sudoers_d_defaults.files }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Remove any occurrences of Defaults targetpw in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: ^Defaults targetpw$
+    validate: /usr/sbin/visudo -cf %s
+    state: absent
+  register: sudoers_file_defaults
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Remove any occurrences of Defaults rootpw in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: ^Defaults rootpw$
+    validate: /usr/sbin/visudo -cf %s
+    state: absent
+  register: sudoers_file_defaults
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Remove any occurrences of Defaults runaspw in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: ^Defaults runaspw$
+    validate: /usr/sbin/visudo -cf %s
+    state: absent
+  register: sudoers_file_defaults
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Check for duplicate values
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !targetpw$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: dupes
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Deduplicate values from /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !targetpw$
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  - dupes.found is defined and dupes.found > 1
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Insert correct line into /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !targetpw$
+    line: Defaults !targetpw
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Check for duplicate values
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !rootpw$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: dupes
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Deduplicate values from /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !rootpw$
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  - dupes.found is defined and dupes.found > 1
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Insert correct line into /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !rootpw$
+    line: Defaults !rootpw
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Check for duplicate values
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !runaspw$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: dupes
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Deduplicate values from /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !runaspw$
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  - dupes.found is defined and dupes.found > 1
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd
+
+- name: Insert correct line into /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^Defaults !runaspw$
+    line: Defaults !runaspw
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sudo" in ansible_facts.packages'
+  tags:
+  - CCE-83529-8
+  - DISA-STIG-RHEL-09-432020
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudoers_validate_passwd

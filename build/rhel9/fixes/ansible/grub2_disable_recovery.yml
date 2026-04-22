@@ -1,0 +1,49 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-85986-8
+  - grub2_disable_recovery
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+
+- name: Disable Recovery Booting - Verify GRUB_DISABLE_RECOVERY=true
+  ansible.builtin.lineinfile:
+    path: /etc/default/grub
+    regexp: ^GRUB_DISABLE_RECOVERY=.*
+    line: GRUB_DISABLE_RECOVERY=true
+    state: present
+  register: grub_config_changed
+  when: ( "grub2-common" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  tags:
+  - CCE-85986-8
+  - grub2_disable_recovery
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+
+- name: Disable Recovery Booting - Update grub defaults and the bootloader menu
+  ansible.builtin.command: /sbin/grubby --update-kernel=ALL
+  when:
+  - ( "grub2-common" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  - grub_config_changed is changed
+  tags:
+  - CCE-85986-8
+  - grub2_disable_recovery
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy

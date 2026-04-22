@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv4_conf_all_arp_ignore_value)
+
+
+- name: Configure Response Mode of ARP Requests for All IPv4 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Configure Response Mode of ARP Requests for All IPv4 Interfaces - Find all files that contain net.ipv4.conf.all.arp_ignore
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.conf.all.arp_ignore\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Response Mode of ARP Requests for All IPv4 Interfaces - Find all files that set net.ipv4.conf.all.arp_ignore to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.conf.all.arp_ignore\s*=\s*{{ sysctl_net_ipv4_conf_all_arp_ignore_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Response Mode of ARP Requests for All IPv4 Interfaces - Comment out any occurrences of net.ipv4.conf.all.arp_ignore from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv4.conf.all.arp_ignore'
+    replace: '#net.ipv4.conf.all.arp_ignore'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Configure Response Mode of ARP Requests for All IPv4 Interfaces - Comment out any occurrences of net.ipv4.conf.all.arp_ignore from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv4.conf.all.arp_ignore'
+    replace: '#net.ipv4.conf.all.arp_ignore'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Configure Response Mode of ARP Requests for All IPv4 Interfaces - Ensure sysctl net.ipv4.conf.all.arp_ignore is set
+  ansible.posix.sysctl:
+    name: "net.ipv4.conf.all.arp_ignore"
+    value: "{{ sysctl_net_ipv4_conf_all_arp_ignore_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv4_conf_all_arp_ignore.conf"
+
+    state: present
+    reload: yes

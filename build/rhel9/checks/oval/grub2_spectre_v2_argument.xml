@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-grub2_spectre_v2_argument:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Enforce Spectre v2 mitigation</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-90345-0" source="CCE" />
+        <oval-def:reference ref_id="grub2_spectre_v2_argument" source="ssg" />
+        <oval-def:description>Ensure spectre_v2=on is configured in the kernel line in /etc/default/grub.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition negate="true" comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+          <oval-def:criterion comment="Check if spectre_v2=on is present in the boot parameters in the /boot/loader/entries/*.conf" test_ref="oval:ssg-test_grub2_spectre_v2_entries:tst:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:criteria operator="OR">
+              <oval-def:criterion comment="check for spectre_v2=on in /etc/default/grub via GRUB_CMDLINE_LINUX" test_ref="oval:ssg-test_grub2_spectre_v2_argument:tst:1" />
+            </oval-def:criteria>
+            <oval-def:criteria operator="AND">
+              <oval-def:criteria operator="OR">
+                <oval-def:criterion comment="check for spectre_v2=on in /etc/default/grub via GRUB_CMDLINE_LINUX_DEFAULT" test_ref="oval:ssg-test_grub2_spectre_v2_argument_default:tst:1" />
+              </oval-def:criteria>
+              <oval-def:extend_definition comment="Check GRUB_DISABLE_RECOVERY=true in /etc/default/grub" definition_ref="oval:ssg-bootloader_disable_recovery_set_to_true:def:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+        </oval-def:criteria>
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+          <oval-def:criterion comment="The spectre_v2=on is present in the /usr/lib/bootc/kargs.d/*.toml files" test_ref="oval:ssg-test_grub2_spectre_v2_usr_lib_bootc_kargs_d:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-bootc:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title />
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="bootc" source="ssg" />
+        <oval-def:description>Bootable container or bootc system</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="kernel is installed" test_ref="oval:ssg-bootc_platform_test_kernel_installed:tst:1" />
+        <oval-def:criterion comment="rpm-ostree is installed" test_ref="oval:ssg-bootc_platform_test_rpm_ostree_installed:tst:1" />
+        <oval-def:criterion comment="bootc is installed" test_ref="oval:ssg-bootc_platform_test_bootc_installed:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="/run/ostree-booted exists, suggesting that we are in a running bootc environment" test_ref="oval:ssg-bootc_platform_test_run_ostree_booted_exists:tst:1" />
+          <oval-def:criterion comment="/ostree symlink exists, suggesting that we are in a bootc environment being built and hardened" test_ref="oval:ssg-bootc_platform_test_ostree_symlink_exists:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criterion comment="openshift-kubelet is not installed" test_ref="oval:ssg-bootc_platform_test_openshift_kubelet_removed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-bootloader_disable_recovery_set_to_true:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Verify GRUB_DISABLE_RECOVERY Set to true</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="bootloader_disable_recovery_set_to_true" source="ssg" />
+        <oval-def:description>GRUB_DISABLE_RECOVERY set to 'true' in
+      /etc/default/grub</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check GRUB_DISABLE_RECOVERY=true in /etc/default/grub" test_ref="oval:ssg-test_bootloader_disable_recovery_set_to_true:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_grub2_spectre_v2_argument:tst:1" version="1" check="all" comment="check for spectre_v2=on in /etc/default/grub via GRUB_CMDLINE_LINUX" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_grub2_spectre_v2_argument:obj:1" />
+      <ind:state state_ref="oval:ssg-state_grub2_spectre_v2_argument:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_grub2_spectre_v2_argument_default:tst:1" version="1" check="all" comment="check for spectre_v2=on in /etc/default/grub via GRUB_CMDLINE_LINUX_DEFAULT" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_grub2_spectre_v2_argument_default:obj:1" />
+      <ind:state state_ref="oval:ssg-state_grub2_spectre_v2_argument:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_grub2_spectre_v2_entries:tst:1" version="1" check="all" comment="check kernel command line parameters for spectre_v2=on for all boot entries." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_grub2_spectre_v2_entries:obj:1" />
+      <ind:state state_ref="oval:ssg-state_grub2_spectre_v2_argument:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_grub2_spectre_v2_usr_lib_bootc_kargs_d:tst:1" version="1" check="at least one" comment="check kernel command line parameters for spectre_v2=on for all boot entries." state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_grub2_spectre_v2_usr_lib_bootc_kargs_d:obj:1" />
+      <ind:state state_ref="oval:ssg-state_grub2_spectre_v2_usr_lib_bootc_kargs_d:ste:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_kernel_installed:tst:1" version="1" check="all" comment="package kernel-core is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_kernel_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_rpm_ostree_installed:tst:1" version="1" check="all" comment="package rpm-ostree is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_rpm_ostree_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_bootc_installed:tst:1" version="1" check="all" comment="package bootc is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_bootc_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_openshift_kubelet_removed:tst:1" version="1" check="all" comment="package openshift-kubelet is removed" check_existence="none_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_openshift_kubelet_removed:obj:1" />
+    </linux:rpminfo_test>
+    <unix:file_test id="oval:ssg-bootc_platform_test_run_ostree_booted_exists:tst:1" version="1" check="all" comment="The file /run/ostree-booted exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-bootc_platform_obj_run_ostree_booted_exists:obj:1" />
+    </unix:file_test>
+    <unix:file_test id="oval:ssg-bootc_platform_test_ostree_symlink_exists:tst:1" version="1" check="all" comment="The file /ostree is a symlink" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-bootc_platform_obj_ostree_symlink_exists:obj:1" />
+      <unix:state state_ref="oval:ssg-bootc_platform_ste_ostree_symlink_exists:ste:1" />
+    </unix:file_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_bootloader_disable_recovery_set_to_true:tst:1" version="1" check="all" comment="Check for GRUB_DISABLE_RECOVERY=true in /etc/default/grub" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_bootloader_disable_recovery_argument:obj:1" />
+      <ind:state state_ref="oval:ssg-state_bootloader_disable_recovery_argument:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_grub2_spectre_v2_argument:obj:1" version="1">
+      <ind:filepath>/etc/default/grub</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*GRUB_CMDLINE_LINUX="(.*)"$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_grub2_spectre_v2_argument_default:obj:1" version="1">
+      <ind:filepath>/etc/default/grub</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*GRUB_CMDLINE_LINUX_DEFAULT="(.*)"$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_grub2_spectre_v2_entries:obj:1" version="1">
+      <ind:path>/boot/loader/entries/</ind:path>
+      <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+      <ind:pattern operation="pattern match">^options (.*)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_grub2_rescue_entry_for_grub2_spectre_v2_argument:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_grub2_spectre_v2_usr_lib_bootc_kargs_d:obj:1" version="1">
+      <ind:path>/usr/lib/bootc/kargs.d/</ind:path>
+      <ind:filename operation="pattern match">^.*\.toml$</ind:filename>
+      <ind:pattern operation="pattern match">^kargs = \[([^\]]+)\]$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_kernel_installed:obj:1" version="1">
+      <linux:name>kernel-core</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_rpm_ostree_installed:obj:1" version="1">
+      <linux:name>rpm-ostree</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_bootc_installed:obj:1" version="1">
+      <linux:name>bootc</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_openshift_kubelet_removed:obj:1" version="1">
+      <linux:name>openshift-kubelet</linux:name>
+    </linux:rpminfo_object>
+    <unix:file_object id="oval:ssg-bootc_platform_obj_run_ostree_booted_exists:obj:1" version="1" comment="The file /run/ostree-booted exists">
+      <unix:filepath operation="equals">/run/ostree-booted</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-bootc_platform_obj_ostree_symlink_exists:obj:1" version="1" comment="The file /ostree exists">
+      <unix:filepath operation="equals">/ostree</unix:filepath>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_bootloader_disable_recovery_argument:obj:1" version="1">
+      <ind:filepath>/etc/default/grub</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*GRUB_DISABLE_RECOVERY=(.*)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_grub2_rescue_entry_for_grub2_spectre_v2_argument:ste:1" version="1" operator="AND">
+      <ind:filename operation="pattern match">.*rescue\.conf$</ind:filename>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_grub2_spectre_v2_argument:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^(?:.*\s)?spectre_v2=on(?:\s.*)?$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_grub2_spectre_v2_usr_lib_bootc_kargs_d:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">^.*"spectre_v2=on".*$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <unix:file_state id="oval:ssg-bootc_platform_ste_ostree_symlink_exists:ste:1" version="1" operator="AND" comment="The file /ostree is a symlink">
+      <unix:filepath operation="equals">/ostree</unix:filepath>
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_bootloader_disable_recovery_argument:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^(true|"true")$</ind:subexpression>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

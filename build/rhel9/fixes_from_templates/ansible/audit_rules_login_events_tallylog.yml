@@ -1,0 +1,68 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+
+
+
+
+
+
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Check if watch rule for /var/log/tallylog already exists in /etc/audit/rules.d/
+  ansible.builtin.find:
+    paths: "/etc/audit/rules.d"
+
+    contains: '^\s*-w\s+/var/log/tallylog\s+-p\s+wa(\s|$)+'
+
+    patterns: "*.rules"
+  register: find_existing_watch_rules_d
+
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Search /etc/audit/rules.d for other rules with specified key logins
+  ansible.builtin.find:
+    paths: "/etc/audit/rules.d"
+    contains: '^.*(?:-F key=|-k\s+)logins$'
+    patterns: "*.rules"
+  register: find_watch_key
+  when: find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Use /etc/audit/rules.d/logins.rules as the recipient for the rule
+  ansible.builtin.set_fact:
+    all_files:
+      - /etc/audit/rules.d/logins.rules
+  when: find_watch_key.matched is defined and find_watch_key.matched == 0 and find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Use matched file as the recipient for the rule
+  ansible.builtin.set_fact:
+    all_files:
+      - "{{ find_watch_key.files | map(attribute='path') | list | first }}"
+  when: find_watch_key.matched is defined and find_watch_key.matched > 0 and find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Add watch rule for /var/log/tallylog in /etc/audit/rules.d/
+  ansible.builtin.lineinfile:
+    path: "{{ all_files[0] }}"
+
+    line: "-w /var/log/tallylog -p wa -k logins"
+
+    create: yes
+    mode: '0600'
+  when: find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched == 0
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Check if watch rule for /var/log/tallylog already exists in /etc/audit/audit.rules
+  ansible.builtin.find:
+    paths: "/etc/audit/"
+
+    contains: '^\s*-w\s+/var/log/tallylog\s+-p\s+wa(\s|$)+'
+
+    patterns: "audit.rules"
+  register: find_existing_watch_audit_rules
+
+- name: Record Attempts to Alter Logon and Logout Events - tallylog - Add watch rule for /var/log/tallylog in /etc/audit/audit.rules
+  ansible.builtin.lineinfile:
+
+    line: "-w /var/log/tallylog -p wa -k logins"
+
+    state: present
+    dest: /etc/audit/audit.rules
+    create: yes
+    mode: '0600'
+  when: find_existing_watch_audit_rules.matched is defined and find_existing_watch_audit_rules.matched == 0

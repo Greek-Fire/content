@@ -1,0 +1,31 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - verify_use_mappers
+
+- name: Verify that 'use_mappers' is set to 'pwent' in PAM
+  ansible.builtin.lineinfile:
+    path: /etc/pam_pkcs11/pam_pkcs11.conf
+    create: true
+    regexp: ''
+    line: use_mappers = pwent
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - verify_use_mappers

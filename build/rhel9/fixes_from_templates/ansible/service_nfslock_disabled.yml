@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable Network File System Lock Service (nfslock) - Disable service nfslock"
+  block:
+  - name: "Disable Network File System Lock Service (nfslock) - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Network File System Lock Service (nfslock) - Ensure nfslock.service is Masked"
+    ansible.builtin.systemd:
+      name: "nfslock.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("nfslock.service", multiline=True)'
+
+  - name: "Unit Socket Exists - nfslock.socket"
+    ansible.builtin.command: systemctl -q list-unit-files nfslock.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Network File System Lock Service (nfslock) - Disable Socket nfslock"
+    ansible.builtin.systemd:
+      name: "nfslock.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("nfslock.socket", multiline=True)'
+  tags:
+  - special_service_block

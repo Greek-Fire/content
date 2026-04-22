@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-ensure_gpgcheck_local_packages:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure gpgcheck Enabled for Local Packages</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83463-0" source="CCE" />
+        <oval-def:reference ref_id="ensure_gpgcheck_local_packages" source="ssg" />
+        <oval-def:description>The localpkg_gpgcheck option should be used to ensure that checking 
+      of an RPM package's signature always occurs prior to its
+      installation.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="check value of localpkg_gpgcheck in /etc/dnf/dnf.conf" test_ref="oval:ssg-test_yum_ensure_gpgcheck_local_packages:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_yum_ensure_gpgcheck_local_packages:tst:1" version="1" check="all" comment="check value of localpkg_gpgcheck in /etc/dnf/dnf.conf" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_yum_ensure_gpgcheck_local_packages:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_yum_ensure_gpgcheck_local_packages:obj:1" version="1" comment="localpkg_gpgcheck set in /etc/dnf/dnf.conf">
+      <ind:filepath>/etc/dnf/dnf.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*localpkg_gpgcheck\s*=\s*(1|True|yes)\s*$</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

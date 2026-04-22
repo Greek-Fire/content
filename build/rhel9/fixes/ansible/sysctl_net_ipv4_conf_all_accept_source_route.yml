@@ -1,0 +1,179 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route
+- (xccdf-var sysctl_net_ipv4_conf_all_accept_source_route_value)
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv4 Interfaces
+    - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv4 Interfaces
+    - Find all files that contain net.ipv4.conf.all.accept_source_route
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv4.conf.all.accept_source_route\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv4 Interfaces
+    - Find all files that set net.ipv4.conf.all.accept_source_route to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv4.conf.all.accept_source_route\s*=\s*{{ sysctl_net_ipv4_conf_all_accept_source_route_value
+      }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv4 Interfaces
+    - Comment out any occurrences of net.ipv4.conf.all.accept_source_route from config
+    files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*net.ipv4.conf.all.accept_source_route
+    replace: '#net.ipv4.conf.all.accept_source_route'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv4 Interfaces
+    - Comment out any occurrences of net.ipv4.conf.all.accept_source_route from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*net.ipv4.conf.all.accept_source_route
+    replace: '#net.ipv4.conf.all.accept_source_route'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv4 Interfaces
+    - Ensure sysctl net.ipv4.conf.all.accept_source_route is set
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.all.accept_source_route
+    value: '{{ sysctl_net_ipv4_conf_all_accept_source_route_value }}'
+    sysctl_file: /etc/sysctl.d/net_ipv4_conf_all_accept_source_route.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84001-7
+  - DISA-STIG-RHEL-09-253020
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_accept_source_route

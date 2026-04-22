@@ -1,0 +1,36 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86612-9
+  - PCI-DSSv4-3.5
+  - PCI-DSSv4-3.5.1
+  - PCI-DSSv4-3.5.1.2
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_cryptsetup-luks_installed
+
+- name: Ensure cryptsetup is installed
+  ansible.builtin.package:
+    name: cryptsetup
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86612-9
+  - PCI-DSSv4-3.5
+  - PCI-DSSv4-3.5.1
+  - PCI-DSSv4-3.5.1.2
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_cryptsetup-luks_installed

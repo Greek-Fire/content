@@ -1,0 +1,70 @@
+# platform = multi_platform_sle,multi_platform_slmicro
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+
+# NOTE(gyee): Ansible's pamd module is very rigid, it doesn't do
+# what we wanted, which is to conditionally replace an existing value
+# if it doesn't match what we wanted. Till someday some good samaritan
+# updated the Ansible pamd module to do that, we will need to use regexp
+# for now.
+
+
+
+- name: Set control_flag fact
+  ansible.builtin.set_fact:
+    control_flag: 'required'
+
+- name: Check to see if 'pam_wheel.so' module is configured in '/etc/pam.d/su'
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -E '^\s*auth\s+\S+\s+pam_wheel.so' /etc/pam.d/su || true
+  register: check_pam_module_result
+
+- name: Configure 'pam_wheel.so' module in '/etc/pam.d/su'
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/su
+    line: 'auth required pam_wheel.so'
+    state: present
+  when: check_pam_module_result is not skipped and check_pam_module_result.stdout is defined and "pam_wheel.so" not in check_pam_module_result.stdout
+
+- name: Ensure 'pam_wheel.so' module has conforming control flag
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/su
+    regexp: '^(\s*auth\s+)\S+(\s+pam_wheel.so\s+.*)'
+    line: '\g<1>required\g<2>'
+    backrefs: yes
+  when: check_pam_module_result is not skipped and control_flag|length
+
+
+# NOTE: if 'remove_argument' is present and set to some value, we assume
+# user's intention is to remove the argument. Therefore, no need to check what
+# it is set to.
+
+- name: Set argument_value fact
+  ansible.builtin.set_fact:
+    argument_value: ""
+
+- name: Ensure "pam_wheel.so" module has argument "use_uid"
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/su
+    regexp: '^(\s*auth\s+required\s+pam_wheel.so(?:\s+\S+)*\s+use_uid=)(?!)\S*((\s+\S+)*\s*\\*\s*)$'
+    line: '\g<1>\g<2>'
+    backrefs: yes
+  when: argument_value|length
+
+- name: Check the presence of "use_uid" argument in "pam_wheel.so" module
+  ansible.builtin.shell: |
+    set -o pipefail
+    grep -E '^\s*auth\s+required\s+pam_wheel.so.*\s+use_uid(=|\s|\s*$)' /etc/pam.d/su || true
+  register: check_pam_module_argument_result
+
+- name: Add "use_uid" argument to "pam_wheel.so" module
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/su
+    regexp: '^(\s*auth\s+required\s+pam_wheel.so)((\s+\S+)*\s*(\\)*$)'
+    line: '\g<1> use_uid\g<2>'
+    backrefs: yes
+  when: check_pam_module_argument_result is not skipped and "use_uid" not in check_pam_module_argument_result.stdout
+

@@ -1,0 +1,76 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90817-8
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_sshd_config_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_sshd_config_newgroup: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90817-8
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /etc/ssh/sshd_config
+  ansible.builtin.stat:
+    path: /etc/ssh/sshd_config
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90817-8
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/ssh/sshd_config
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config
+    follow: false
+    group: '{{ file_groupowner_sshd_config_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-90817-8
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

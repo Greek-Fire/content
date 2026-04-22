@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove the ntp service: Ensure ntp is removed"
+  ansible.builtin.package:
+    name: "ntp"
+    state: absent

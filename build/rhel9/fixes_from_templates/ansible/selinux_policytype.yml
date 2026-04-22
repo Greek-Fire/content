@@ -1,0 +1,36 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+- (xccdf-var var_selinux_policy_name)
+
+
+
+- name: "Configure SELinux Policy"
+  block:
+    - name: "Check for duplicate values"
+      ansible.builtin.lineinfile:
+        path: '/etc/selinux/config'
+        create: True
+        regexp: '(?i)^SELINUXTYPE='
+        state: 'absent'
+      check_mode: yes
+      changed_when: no
+      register: 'dupes'
+    - name: "Deduplicate values from /etc/selinux/config"
+      ansible.builtin.lineinfile:
+        path: '/etc/selinux/config'
+        create: True
+        regexp: '(?i)^SELINUXTYPE='
+        state: 'absent'
+      when: 'dupes.found is defined and dupes.found > 1'
+    - name: "Insert correct line to /etc/selinux/config"
+      ansible.builtin.lineinfile:
+        path: '/etc/selinux/config'
+        create: True
+        regexp: '(?i)^SELINUXTYPE='
+        line: 'SELINUXTYPE={{ var_selinux_policy_name }}'
+        state: present

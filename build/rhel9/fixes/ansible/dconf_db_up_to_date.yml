@@ -1,0 +1,148 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = unknown
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Make sure that the dconf databases are up-to-date with regards to respective
+    keyfiles - Get database modification time for distro
+  ansible.builtin.stat:
+    path: /etc/dconf/db/distro
+  register: distro_db
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Make sure that the dconf databases are up-to-date with regards to respective
+    keyfiles - Get keyfiles for distro
+  ansible.builtin.find:
+    paths: /etc/dconf/db/distro.d/
+  register: distro_keyfiles
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Make sure that the dconf databases are up-to-date with regards to respective
+    keyfiles - Run dconf update for distro
+  ansible.builtin.command:
+    cmd: dconf update
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - not distro_db.stat.exists or distro_keyfiles.files | length > 0 and distro_keyfiles.files
+    | map(attribute='mtime') | max > distro_db.stat.mtime
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Make sure that the dconf databases are up-to-date with regards to respective
+    keyfiles - Get database modification time for local
+  ansible.builtin.stat:
+    path: /etc/dconf/db/local
+  register: local_db
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Make sure that the dconf databases are up-to-date with regards to respective
+    keyfiles - Get keyfiles for local
+  ansible.builtin.find:
+    paths: /etc/dconf/db/local.d/
+  register: local_keyfiles
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Make sure that the dconf databases are up-to-date with regards to respective
+    keyfiles - Run dconf update for local
+  ansible.builtin.command:
+    cmd: dconf update
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - not local_db.stat.exists or local_keyfiles.files | length > 0 and local_keyfiles.files
+    | map(attribute='mtime') | max > local_db.stat.mtime
+  tags:
+  - CCE-87295-2
+  - DISA-STIG-RHEL-09-271090
+  - PCI-DSS-Req-6.2
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_db_up_to_date
+  - high_severity
+  - low_complexity
+  - medium_disruption
+  - no_reboot_needed
+  - unknown_strategy

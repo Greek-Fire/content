@@ -1,0 +1,35 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86891-9
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - systemd_tmp_mount_enabled
+
+- name: Enable mount tmp
+  ansible.builtin.systemd:
+    name: tmp.mount
+    enabled: 'yes'
+    state: started
+    masked: 'false'
+  when: ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  tags:
+  - CCE-86891-9
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - systemd_tmp_mount_enabled

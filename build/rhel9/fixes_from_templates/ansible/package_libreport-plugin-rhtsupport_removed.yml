@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall libreport-plugin-rhtsupport Package: Ensure libreport-plugin-rhtsupport is removed"
+  ansible.builtin.package:
+    name: "libreport-plugin-rhtsupport"
+    state: absent

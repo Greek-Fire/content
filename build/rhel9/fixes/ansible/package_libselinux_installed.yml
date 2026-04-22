@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84069-4
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.6
+  - enable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - package_libselinux_installed
+
+- name: Ensure libselinux is installed
+  ansible.builtin.package:
+    name: libselinux
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84069-4
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.6
+  - enable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - package_libselinux_installed

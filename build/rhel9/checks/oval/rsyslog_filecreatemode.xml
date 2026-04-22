@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-rsyslog_filecreatemode:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure rsyslog Default File Permissions Configured</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-88322-3" source="CCE" />
+        <oval-def:reference ref_id="rsyslog_filecreatemode" source="ssg" />
+        <oval-def:description>FileCreateMode setting controls permissions applied to newly created files.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="FileCreateMode declared once in either /etc/rsyslog.conf or /etc/rsyslog.d/*" test_ref="oval:ssg-tst_filecreatemode_declared:tst:1" />
+        <oval-def:criterion comment="FileCreateMode value is valid" test_ref="oval:ssg-tst_filecreatemode_valid:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-tst_filecreatemode_declared:tst:1" version="1" check="all" comment="rsyslog FileCreateMode is configured in only one place" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_filecreatemode:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-tst_filecreatemode_valid:tst:1" version="1" check="all" comment="Test if FileCreateMode value is valid" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_filecreatemode_dec:obj:1" />
+      <ind:state state_ref="oval:ssg-ste_filecreatemode_is_0640_or_stricter:ste:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_filecreatemode:obj:1" version="1">
+      <ind:filepath operation="pattern match">^\/etc\/rsyslog(\.conf|\.d\/.*\.conf)$</ind:filepath>
+      <ind:pattern operation="pattern match">^\$FileCreateMode\s+(\d+)</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-obj_filecreatemode_dec:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_filecreatemode_dec:var:1</ind:var_ref>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-ste_filecreatemode_is_0640_or_stricter:ste:1" version="1" operator="AND">
+      <ind:value operation="bitwise or" datatype="int">416</ind:value>
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_filecreatemode_dec:var:1" version="1" datatype="int" comment="decimal conversion of octal value from FileCreateMode parameter">
+      <oval-def:arithmetic arithmetic_operation="add">
+        <oval-def:arithmetic arithmetic_operation="multiply">
+          <oval-def:literal_component datatype="int">64</oval-def:literal_component>
+          <oval-def:regex_capture pattern="\d(\d)\d\d">
+            <oval-def:object_component object_ref="oval:ssg-obj_filecreatemode:obj:1" item_field="subexpression" />
+          </oval-def:regex_capture>
+        </oval-def:arithmetic>
+        <oval-def:arithmetic arithmetic_operation="multiply">
+          <oval-def:literal_component datatype="int">8</oval-def:literal_component>
+          <oval-def:regex_capture pattern="\d\d(\d)\d">
+            <oval-def:object_component object_ref="oval:ssg-obj_filecreatemode:obj:1" item_field="subexpression" />
+          </oval-def:regex_capture>
+        </oval-def:arithmetic>
+        <oval-def:regex_capture pattern="\d\d\d(\d)">
+          <oval-def:object_component object_ref="oval:ssg-obj_filecreatemode:obj:1" item_field="subexpression" />
+        </oval-def:regex_capture>
+      </oval-def:arithmetic>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

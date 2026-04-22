@@ -1,0 +1,78 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86149-2
+  - configure_strategy
+  - configure_tmux_lock_keybinding
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+
+- name: Check for duplicate values
+  ansible.builtin.lineinfile:
+    path: /etc/tmux.conf
+    create: true
+    regexp: (?i)\s*bind\s+\w\s+lock-session.*$
+    mode: '0644'
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: dupes
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"tmux" in ansible_facts.packages'
+  tags:
+  - CCE-86149-2
+  - configure_strategy
+  - configure_tmux_lock_keybinding
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+
+- name: Deduplicate values from /etc/tmux.conf
+  ansible.builtin.lineinfile:
+    path: /etc/tmux.conf
+    create: true
+    regexp: (?i)\s*bind\s+\w\s+lock-session.*$
+    mode: '0644'
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"tmux" in ansible_facts.packages'
+  - dupes.found is defined and dupes.found > 1
+  tags:
+  - CCE-86149-2
+  - configure_strategy
+  - configure_tmux_lock_keybinding
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+
+- name: Insert correct line into /etc/tmux.conf
+  ansible.builtin.lineinfile:
+    path: /etc/tmux.conf
+    create: true
+    regexp: (?i)\s*bind\s+\w\s+lock-session.*$
+    mode: '0644'
+    line: bind X lock-session
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"tmux" in ansible_facts.packages'
+  tags:
+  - CCE-86149-2
+  - configure_strategy
+  - configure_tmux_lock_keybinding
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed

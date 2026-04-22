@@ -1,0 +1,156 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_sle
+# reboot = false
+# strategy = unknown
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy
+
+- name: Test for id_provider different than Active Directory (ad)
+  ansible.builtin.command: grep -qzosP '[[:space:]]*\[domain\/[^]]*]([^(\n)]*(\n)+)+?[[:space:]]*id_provider[[:space:]]*=[[:space:]]*((?i)ad)[[:space:]]*$'
+    /etc/sssd/sssd.conf
+  register: test_id_provider
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy
+
+- name: Test for domain group
+  ansible.builtin.command: grep '\s*\[domain\/[^]]*]' /etc/sssd/sssd.conf
+  register: test_grep_domain
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy
+
+- name: Add default domain group and set ldap_tls_reqcert in sssd configuration (if
+    no domain there)
+  community.general.ini_file:
+    path: /etc/sssd/sssd.conf
+    section: '{{ item.section }}'
+    option: '{{ item.option }}'
+    value: '{{ item.value }}'
+    mode: 384
+  with_items:
+  - section: sssd
+    option: domains
+    value: default
+  - section: domain/default
+    option: ldap_tls_reqcert
+    value: demand
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sssd-common" in ansible_facts.packages'
+  - test_grep_domain.stdout is defined
+  - test_grep_domain.stdout | length < 1
+  - test_id_provider.stdout is defined
+  - test_id_provider.stdout | length < 1
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy
+
+- name: Set ldap_tls_reqcert in sssd configuration
+  community.general.ini_file:
+    path: /etc/sssd/sssd.conf
+    section: '{{ test_grep_domain.stdout | regex_replace(''\[(.*)\]'',''\1'') }}'
+    option: ldap_tls_reqcert
+    value: demand
+    mode: 384
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sssd-common" in ansible_facts.packages'
+  - test_grep_domain.stdout is defined
+  - test_grep_domain.stdout | length > 0
+  - test_id_provider.stdout is defined
+  - test_id_provider.stdout | length < 1
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy
+
+- name: Find all the conf files inside /etc/sssd/conf.d/
+  ansible.builtin.find:
+    paths: /etc/sssd/conf.d/
+    patterns: '*.conf'
+  register: sssd_conf_d_files
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy
+
+- name: Set ldap_tls_reqcert to demand in /etc/sssd/conf.d/ if exists
+  ansible.builtin.replace:
+    path: '{{ item.path }}'
+    regexp: '[^#]*ldap_tls_reqcert.*'
+    replace: ldap_tls_reqcert = demand
+  with_items: '{{ sssd_conf_d_files.files }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-86081-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-12(3)
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_ldap_configure_tls_reqcert
+  - unknown_strategy

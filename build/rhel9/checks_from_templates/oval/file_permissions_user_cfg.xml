@@ -1,0 +1,50 @@
+<def-group>
+  <definition class="compliance" id="file_permissions_user_cfg" version="1">
+  
+    <metadata>
+        <title>Verify /boot/grub2/user.cfg Permissions</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /boot/grub2/user.cfg has mode 0600.
+      If the target file or directory has an extended ACL, then it will fail the mode check.
+      </description>
+    </metadata>
+    <criteria>
+  
+      <criterion comment="Check file mode of /boot/grub2/user.cfg" test_ref="test_file_permissions_user_cfg_0"/>
+  
+  
+    </criteria>
+  </definition>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /boot/grub2/user.cfg" id="test_file_permissions_user_cfg_0" version="3">
+    <unix:object object_ref="object_file_permissions_user_cfg_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/boot/grub2/user.cfg" id="object_file_permissions_user_cfg_0" version="1">
+      <unix:filepath>/boot/grub2/user.cfg</unix:filepath>
+      <filter action="exclude">exclude_symlinks__user_cfg</filter>
+      <filter action="exclude">state_file_permissions_user_cfg_0_mode_0600or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissions_user_cfg_0_mode_0600or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:uexec datatype="boolean">false</unix:uexec>
+      <unix:gread datatype="boolean">false</unix:gread>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:gexec datatype="boolean">false</unix:gexec>
+      <unix:oread datatype="boolean">false</unix:oread>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+      <unix:oexec datatype="boolean">false</unix:oexec>
+  </unix:file_state>
+  
+
+  <unix:file_state id="exclude_symlinks__user_cfg" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

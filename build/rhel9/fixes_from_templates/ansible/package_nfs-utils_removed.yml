@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall nfs-utils Package: Ensure nfs-utils is removed"
+  ansible.builtin.package:
+    name: "nfs-utils"
+    state: absent

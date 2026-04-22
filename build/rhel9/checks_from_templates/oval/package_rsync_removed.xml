@@ -1,0 +1,29 @@
+<def-group>
+<definition class="compliance" id="package_rsync_removed" version="1">
+  <metadata>
+        <title>Uninstall rsync Package</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package rsync-daemon should be removed.</description>
+    </metadata>
+  <criteria>
+  
+    <criterion comment="package rsync-daemon is removed" test_ref="test_package_rsync-daemon_removed" />
+  
+  </criteria>
+</definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="test_package_rsync-daemon_removed" version="1"
+  comment="package rsync-daemon is removed">
+    <linux:object object_ref="obj_test_package_rsync-daemon_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_test_package_rsync-daemon_removed" version="1">
+    <linux:name>rsync-daemon</linux:name>
+  </linux:rpminfo_object>
+
+
+
+</def-group>

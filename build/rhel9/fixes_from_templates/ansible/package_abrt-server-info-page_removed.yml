@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall abrt-server-info-page Package: Ensure abrt-server-info-page is removed"
+  ansible.builtin.package:
+    name: "abrt-server-info-page"
+    state: absent

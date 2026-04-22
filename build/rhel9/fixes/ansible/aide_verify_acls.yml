@@ -1,0 +1,82 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90837-6
+  - DISA-STIG-RHEL-09-651030
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - aide_verify_acls
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Gather list of packages
+  ansible.builtin.package_facts:
+    manager: auto
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90837-6
+  - DISA-STIG-RHEL-09-651030
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - aide_verify_acls
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Get rules groups
+  ansible.builtin.shell: |
+    set -o pipefail
+    LC_ALL=C grep "^[A-Z][A-Za-z_]*" /etc/aide.conf | grep -v "^ALLXTRAHASHES" | cut -f1 -d '=' | tr -d ' ' | sort -u || true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '''aide'' in ansible_facts.packages'
+  register: find_rules_groups_results
+  changed_when: false
+  check_mode: false
+  tags:
+  - CCE-90837-6
+  - DISA-STIG-RHEL-09-651030
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - aide_verify_acls
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure the acl rule is present when aide is installed.
+  ansible.builtin.replace:
+    path: /etc/aide.conf
+    regexp: (^\s*{{ item }}\s*=\s*)(?!.*acl)([^\s]*)
+    replace: \g<1>\g<2>+acl
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_rules_groups_results is not skipped and "'aide' in ansible_facts.packages"
+  with_items: '{{ find_rules_groups_results.stdout_lines | map(''trim'') | list }}'
+  tags:
+  - CCE-90837-6
+  - DISA-STIG-RHEL-09-651030
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SI-7
+  - NIST-800-53-SI-7(1)
+  - aide_verify_acls
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - restrict_strategy

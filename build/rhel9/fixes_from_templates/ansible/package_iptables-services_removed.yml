@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove iptables-services Package: Ensure iptables-services is removed"
+  ansible.builtin.package:
+    name: "iptables-services"
+    state: absent

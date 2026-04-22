@@ -1,0 +1,18 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall gssproxy Package: Ensure gssproxy is removed'
+  ansible.builtin.package:
+    name: gssproxy
+    state: absent
+  tags:
+  - CCE-83516-5
+  - DISA-STIG-RHEL-09-215045
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_gssproxy_removed

@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/gshadow
+  ansible.builtin.stat:
+    path: "/etc/gshadow"
+  register: file_exists
+
+- name: Ensure permission u-xwrs,g-xwrs,o-xwrt on /etc/gshadow
+  ansible.builtin.file:
+    path: "/etc/gshadow"
+    mode: "u-xwrs,g-xwrs,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

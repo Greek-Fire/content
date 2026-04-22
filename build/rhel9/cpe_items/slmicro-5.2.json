@@ -1,0 +1,1 @@
+{"name": "cpe:/o:suse:sle-microos:5.2", "check_id": "installed_OS_is_slmicro5", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "SLE MicroOS 5.2", "definition_location": "", "template": null}

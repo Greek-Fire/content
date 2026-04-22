@@ -1,0 +1,32 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-IA-7
+  - NIST-800-53-IA-7.1
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_krb5-server_removed
+
+- name: 'Remove the Kerberos Server Package: Ensure krb5-server is removed'
+  ansible.builtin.package:
+    name: krb5-server
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-IA-7
+  - NIST-800-53-IA-7.1
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_krb5-server_removed

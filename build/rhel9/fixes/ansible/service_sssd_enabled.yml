@@ -1,0 +1,49 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86088-2
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(10)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_sssd_enabled
+
+- name: Enable the SSSD Service - Enable service sssd
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the SSSD Service - Enable Service sssd
+    ansible.builtin.systemd:
+      name: sssd
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-86088-2
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(10)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_sssd_enabled
+  - special_service_block
+  when:
+  - '"sssd-common" in ansible_facts.packages'
+  - ( "sssd-common" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )

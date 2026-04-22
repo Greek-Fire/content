@@ -1,0 +1,16 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+
+- name: Ensure that /etc/at.allow exists - Add empty /etc/at.allow
+  ansible.builtin.file:
+      path: /etc/at.allow
+      state: touch
+      owner: "0"
+      mode: "0640"
+      modification_time: preserve
+      access_time: preserve

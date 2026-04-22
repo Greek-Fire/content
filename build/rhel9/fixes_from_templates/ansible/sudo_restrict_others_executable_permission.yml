@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /usr/bin/sudo
+  ansible.builtin.stat:
+    path: "/usr/bin/sudo"
+  register: file_exists
+
+- name: Ensure permission u-wr,g-wrs,o-xwrt on /usr/bin/sudo
+  ansible.builtin.file:
+    path: "/usr/bin/sudo"
+    mode: "u-wr,g-wrs,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,77 @@
+# platform = multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_almalinux
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87088-1
+  - DISA-STIG-RHEL-09-611170
+  - NIST-800-53-IA-2(11)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_certificate_verification
+- (xccdf-var var_sssd_certificate_verification_digest_function)
+
+- name: Ensure that "certificate_verification" is not set in /etc/sssd/sssd.conf
+  community.general.ini_file:
+    path: /etc/sssd/sssd.conf
+    section: sssd
+    option: certificate_verification
+    state: absent
+    mode: 384
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87088-1
+  - DISA-STIG-RHEL-09-611170
+  - NIST-800-53-IA-2(11)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_certificate_verification
+
+- name: Ensure that "certificate_verification" is not set in  /etc/sssd/conf.d/*.conf
+  community.general.ini_file:
+    path: /etc/sssd/conf.d/*.conf
+    section: sssd
+    option: certificate_verification
+    state: absent
+    mode: 384
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87088-1
+  - DISA-STIG-RHEL-09-611170
+  - NIST-800-53-IA-2(11)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_certificate_verification
+
+- name: Ensure that "certificate_verification" is set
+  community.general.ini_file:
+    path: /etc/sssd/conf.d/certificate_verification.conf
+    section: sssd
+    option: certificate_verification
+    value: ocsp_dgst={{ var_sssd_certificate_verification_digest_function }}
+    state: present
+    mode: 384
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87088-1
+  - DISA-STIG-RHEL-09-611170
+  - NIST-800-53-IA-2(11)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_certificate_verification

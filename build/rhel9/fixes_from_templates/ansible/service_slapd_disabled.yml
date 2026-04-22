@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable LDAP Server (slapd) - Disable service slapd"
+  block:
+  - name: "Disable LDAP Server (slapd) - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable LDAP Server (slapd) - Ensure slapd.service is Masked"
+    ansible.builtin.systemd:
+      name: "slapd.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("slapd.service", multiline=True)'
+
+  - name: "Unit Socket Exists - slapd.socket"
+    ansible.builtin.command: systemctl -q list-unit-files slapd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable LDAP Server (slapd) - Disable Socket slapd"
+    ansible.builtin.systemd:
+      name: "slapd.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("slapd.socket", multiline=True)'
+  tags:
+  - special_service_block

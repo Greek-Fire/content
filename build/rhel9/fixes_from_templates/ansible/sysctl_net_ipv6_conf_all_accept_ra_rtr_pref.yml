@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv6_conf_all_accept_ra_rtr_pref_value)
+
+
+- name: Configure Accepting Router Preference in Router Advertisements on All IPv6 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Configure Accepting Router Preference in Router Advertisements on All IPv6 Interfaces - Find all files that contain net.ipv6.conf.all.accept_ra_rtr_pref
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.all.accept_ra_rtr_pref\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Accepting Router Preference in Router Advertisements on All IPv6 Interfaces - Find all files that set net.ipv6.conf.all.accept_ra_rtr_pref to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.all.accept_ra_rtr_pref\s*=\s*{{ sysctl_net_ipv6_conf_all_accept_ra_rtr_pref_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Accepting Router Preference in Router Advertisements on All IPv6 Interfaces - Comment out any occurrences of net.ipv6.conf.all.accept_ra_rtr_pref from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv6.conf.all.accept_ra_rtr_pref'
+    replace: '#net.ipv6.conf.all.accept_ra_rtr_pref'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Configure Accepting Router Preference in Router Advertisements on All IPv6 Interfaces - Comment out any occurrences of net.ipv6.conf.all.accept_ra_rtr_pref from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv6.conf.all.accept_ra_rtr_pref'
+    replace: '#net.ipv6.conf.all.accept_ra_rtr_pref'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Configure Accepting Router Preference in Router Advertisements on All IPv6 Interfaces - Ensure sysctl net.ipv6.conf.all.accept_ra_rtr_pref is set
+  ansible.posix.sysctl:
+    name: "net.ipv6.conf.all.accept_ra_rtr_pref"
+    value: "{{ sysctl_net_ipv6_conf_all_accept_ra_rtr_pref_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv6_conf_all_accept_ra_rtr_pref.conf"
+
+    state: present
+    reload: yes

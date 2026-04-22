@@ -1,0 +1,41 @@
+<def-group>
+
+  <definition class="compliance" id="systemd_tmp_mount_enabled" version="1">
+    <metadata>
+        <title>Ensure tmp.mount Unit Is Enabled</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>The tmp mount should be enabled if possible.</description>
+    </metadata>
+    <criteria comment="mount tmp is configured to start and is running" operator="AND">
+      <criterion comment="tmp is running" test_ref="test_mount_running_tmp" />
+      <criterion comment="multi-user.target wants tmp" test_ref="test_multi_user_wants_tmp" />
+    </criteria>
+  </definition>
+
+  <linux:systemdunitdependency_test check="all" check_existence="any_exist" comment="systemd test" id="test_multi_user_wants_tmp" version="1">
+    <linux:object object_ref="object_multi_user_target_for_tmp_enabled" />
+    <linux:state state_ref="state_systemd_tmp_on"/>
+  </linux:systemdunitdependency_test>
+  <linux:systemdunitdependency_object id="object_multi_user_target_for_tmp_enabled" comment="list of dependencies of multi-user.target" version="1">
+    <linux:unit>multi-user.target</linux:unit>
+  </linux:systemdunitdependency_object>
+  <linux:systemdunitdependency_state id="state_systemd_tmp_on" comment="tmp mount is listed at least once in the dependencies" version="1">
+    <linux:dependency entity_check="at least one">tmp.mount</linux:dependency>
+  </linux:systemdunitdependency_state>
+
+  <linux:systemdunitproperty_test id="test_mount_running_tmp" check="at least one" check_existence="at_least_one_exists" comment="Test that the tmp mount is running" version="1">
+    <linux:object object_ref="obj_mount_running_tmp"/>
+    <linux:state state_ref="state_mount_running_tmp"/>
+  </linux:systemdunitproperty_test>
+  <linux:systemdunitproperty_object id="obj_mount_running_tmp" comment="Retrieve the ActiveState property of tmp" version="1">
+    <linux:unit operation="equals">tmp.mount</linux:unit>
+    <linux:property>ActiveState</linux:property>
+  </linux:systemdunitproperty_object>
+  <linux:systemdunitproperty_state id="state_mount_running_tmp" version="1" comment="tmp mount is active">
+    <linux:value>active</linux:value>
+  </linux:systemdunitproperty_state>
+
+</def-group>

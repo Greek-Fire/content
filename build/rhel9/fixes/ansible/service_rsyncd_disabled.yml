@@ -1,0 +1,64 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84140-3
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_rsyncd_disabled
+
+- name: Ensure rsyncd service is disabled - Disable service rsyncd
+  block:
+
+  - name: Ensure rsyncd service is disabled - Collect systemd Services Present in
+      the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Ensure rsyncd service is disabled - Ensure rsyncd.service is Masked
+    ansible.builtin.systemd:
+      name: rsyncd.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("rsyncd.service", multiline=True)
+
+  - name: Unit Socket Exists - rsyncd.socket
+    ansible.builtin.command: systemctl -q list-unit-files rsyncd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Ensure rsyncd service is disabled - Disable Socket rsyncd
+    ansible.builtin.systemd:
+      name: rsyncd.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("rsyncd.socket", multiline=True)
+  tags:
+  - CCE-84140-3
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_rsyncd_disabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_etc_issue_net_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_issue_net_newown: "0"
+
+- name: Test for existence /etc/issue.net
+  ansible.builtin.stat:
+    path: "/etc/issue.net"
+  register: file_exists
+
+- name: Ensure owner on /etc/issue.net
+  ansible.builtin.file:
+    path: "/etc/issue.net"
+    follow: false
+    owner: "{{ file_owner_etc_issue_net_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

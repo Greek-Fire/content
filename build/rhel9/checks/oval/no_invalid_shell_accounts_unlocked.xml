@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-no_invalid_shell_accounts_unlocked:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Verify Non-Interactive Accounts Are Locked</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86746-5" source="CCE" />
+        <oval-def:reference ref_id="no_invalid_shell_accounts_unlocked" source="ssg" />
+        <oval-def:description>Ensure Accounts Without Valid Login Shell Are Locked</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion negate="true" comment="Check that the accounts do not have valid shells" test_ref="oval:ssg-test_no_invalid_shell_accounts_unlocked_no_invalid_shell_accounts:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_no_invalid_shell_accounts_unlocked_no_invalid_shell_accounts:tst:1" version="1" check="all" comment="Verify there is no account with invalid shell which is not locked exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_no_invalid_shell_accounts_unlocked_shells:obj:1" />
+      <ind:state state_ref="oval:ssg-state_no_invalid_shell_accounts_unlocked_valid_shells:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_no_invalid_shell_accounts_unlocked_valid_shells:obj:1" version="1">
+      <ind:filepath>/etc/shells</ind:filepath>
+      <ind:pattern operation="pattern match">^\/[^\n\r]*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-filter_no_invalid_shell_accounts_unlocked_not_valid_shell:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_no_invalid_shell_accounts_unlocked_shells:obj:1" version="1">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-variable_no_invalid_shell_accounts_unlocked_regex:var:1" var_check="at least one" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_no_invalid_shell_accounts_unlocked_local_interactive_users:obj:1" version="1">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match">^([^:]*):[^:]*:\d+:(?:[^:]*:){3}(?!(\/usr)?(\/sbin\/nologin|\/bin\/false))[^:]*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_no_invalid_shell_accounts_unlocked_users_ignored:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_no_invalid_shell_accounts_unlocked_locked_accounts:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_no_invalid_shell_accounts_unlocked_locked_accounts:obj:1" version="1">
+      <ind:filepath>/etc/shadow</ind:filepath>
+      <ind:pattern operation="pattern match">^([^:]*):(?:[ \t\n\r\:\;\*\!\\]*):(?:[^:]*:){6}$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_no_invalid_shell_accounts_unlocked_valid_shells:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="not equal" var_check="all" var_ref="oval:ssg-var_no_invalid_shell_accounts_unlocked_valid_shells:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-filter_no_invalid_shell_accounts_unlocked_not_valid_shell:ste:1" version="1" operator="AND" comment="The nologin shell can be safely ignored">
+      <ind:pattern operation="pattern match">^.*\bnologin\b.*$</ind:pattern>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_no_invalid_shell_accounts_unlocked_users_ignored:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">^(nobody|nfsnobody|root)$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_no_invalid_shell_accounts_unlocked_locked_accounts:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="equals" var_check="at least one" var_ref="oval:ssg-var_no_invalid_shell_accounts_unlocked_locked_accounts:var:1" />
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_no_invalid_shell_accounts_unlocked_valid_shells:var:1" version="1" datatype="string" comment="Local variable which includes all valid shells">
+      <oval-def:object_component item_field="text" object_ref="oval:ssg-obj_no_invalid_shell_accounts_unlocked_valid_shells:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-variable_no_invalid_shell_accounts_unlocked_regex:var:1" version="1" datatype="string" comment="shell rows retrieved from /etc/passwd">
+      <oval-def:concat>
+        <oval-def:literal_component>^(?:</oval-def:literal_component>
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-obj_no_invalid_shell_accounts_unlocked_local_interactive_users:obj:1" />
+        <oval-def:literal_component>):(?:[^:]*:){5}([^:]+)$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_no_invalid_shell_accounts_unlocked_locked_accounts:var:1" version="1" datatype="string" comment="Account name of locked accounts">
+      <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-obj_no_invalid_shell_accounts_unlocked_locked_accounts:obj:1" />
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

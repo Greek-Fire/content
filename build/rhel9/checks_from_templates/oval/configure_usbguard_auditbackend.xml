@@ -1,0 +1,45 @@
+<def-group>
+  <definition class="compliance" id="configure_usbguard_auditbackend" version="1">
+    <metadata>
+        <title>Log USBGuard daemon audit events using Linux Audit</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'AuditBackend' is configured with value 'LinuxAudit' in /etc/usbguard/usbguard-daemon.conf</description>
+    </metadata>
+    <criteria comment="usbguard is configured correctly and configuration file exists"
+    operator="AND">
+    <criteria comment="usbguard is configured correctly"
+    operator="OR"><criterion comment="Check the AuditBackend in /etc/usbguard/usbguard-daemon.conf"
+  test_ref="test_configure_usbguard_auditbackend" />
+    </criteria><criterion comment="test if configuration file /etc/usbguard/usbguard-daemon.conf exists for configure_usbguard_auditbackend" test_ref="test_configure_usbguard_auditbackend_config_file_exists" />
+    </criteria>
+  </definition>
+
+  
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of AuditBackend setting in the /etc/usbguard/usbguard-daemon.conf file"
+  id="test_configure_usbguard_auditbackend" version="1">
+  <ind:object object_ref="obj_configure_usbguard_auditbackend" />
+  <ind:state state_ref="state_configure_usbguard_auditbackend" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_configure_usbguard_auditbackend" version="1">
+  <ind:filepath>/etc/usbguard/usbguard-daemon.conf</ind:filepath>
+  <ind:pattern operation="pattern match">^[ \\t]*AuditBackend=(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+<ind:textfilecontent54_state id="state_configure_usbguard_auditbackend" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^LinuxAudit$</ind:subexpression>
+</ind:textfilecontent54_state>
+  <unix:file_test id="test_configure_usbguard_auditbackend_config_file_exists" check="all" check_existence="all_exist" comment="The configuration file /etc/usbguard/usbguard-daemon.conf exists for configure_usbguard_auditbackend" version="1">
+    <unix:object object_ref="obj_configure_usbguard_auditbackend_config_file" />
+  </unix:file_test>
+  <unix:file_object id="obj_configure_usbguard_auditbackend_config_file" comment="The configuration file /etc/usbguard/usbguard-daemon.conf for configure_usbguard_auditbackend" version="1">
+    <unix:filepath operation="pattern match">^/etc/usbguard/usbguard-daemon.conf</unix:filepath>
+  </unix:file_object>
+
+</def-group>

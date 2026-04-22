@@ -1,0 +1,48 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84227-8
+  - DISA-STIG-RHEL-09-433015
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SI-4(22)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_fapolicyd_enabled
+
+- name: Enable the File Access Policy Service - Enable service fapolicyd
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the File Access Policy Service - Enable Service fapolicyd
+    ansible.builtin.systemd:
+      name: fapolicyd
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"fapolicyd" in ansible_facts.packages'
+  tags:
+  - CCE-84227-8
+  - DISA-STIG-RHEL-09-433015
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SI-4(22)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_fapolicyd_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

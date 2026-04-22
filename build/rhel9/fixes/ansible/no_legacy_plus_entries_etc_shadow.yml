@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = medium
+- name: Ensure there are no legacy + NIS entries in /etc/shadow - Backup the Old /etc/shadow
+    File
+  ansible.builtin.copy:
+    src: /etc/shadow
+    dest: /etc/shadow-
+    remote_src: true
+  tags:
+  - CCE-83612-2
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_legacy_plus_entries_etc_shadow
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure there are no legacy + NIS entries in /etc/shadow - Remove Lines Starting
+    with + From /etc/shadow
+  ansible.builtin.lineinfile:
+    regexp: ^\+.*$
+    state: absent
+    path: /etc/shadow
+  tags:
+  - CCE-83612-2
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_legacy_plus_entries_etc_shadow
+  - no_reboot_needed
+  - restrict_strategy

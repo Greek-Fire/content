@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-firewalld_sshd_port_enabled:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Enable SSH Server firewalld Firewall Exception</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-89175-4" source="CCE" />
+        <oval-def:reference ref_id="firewalld_sshd_port_enabled" source="ssg" />
+        <oval-def:description>If inbound SSH access is needed, the firewall should allow access to
+        the SSH service.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criteria operator="OR">
+          <oval-def:criteria operator="AND">
+            <oval-def:criterion comment="Ensure default file zones have SSH service defined" test_ref="oval:ssg-test_firewalld_sshd_port_enabled_zone_ssh_enabled_usr:tst:1" />
+            <oval-def:criterion comment="Ensure default files from active zones were not overridden" test_ref="oval:ssg-test_firewalld_sshd_port_enabled_usr_zones_not_overridden:tst:1" />
+          </oval-def:criteria>
+          <oval-def:criterion comment="Ensure custom files from active zones have SSH service defined" test_ref="oval:ssg-test_firewalld_sshd_port_enabled_zone_ssh_enabled_etc:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criteria operator="AND">
+          <oval-def:criterion comment="Ensure default file for SSH service is correct" test_ref="oval:ssg-test_firewalld_sshd_port_enabled_ssh_service_usr:tst:1" />
+          <oval-def:criterion comment="Ensure the modified firewalld SSH port is correct" test_ref="oval:ssg-test_firewalld_sshd_port_enabled_ssh_service_etc:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:xmlfilecontent_test id="oval:ssg-test_firewalld_sshd_port_enabled_zone_ssh_enabled_usr:tst:1" version="1" check="all" comment="SSH service is defined in all zones delivered in the firewalld package" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_firewalld_sshd_port_enabled_zone_files_usr:obj:1" />
+    </ind:xmlfilecontent_test>
+    <unix:file_test id="oval:ssg-test_firewalld_sshd_port_enabled_usr_zones_not_overridden:tst:1" version="1" check="all" comment="there is no equivalent zone file defined by the administrator in /etc dir" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_firewalld_sshd_port_enabled_customized_zone_files:obj:1" />
+    </unix:file_test>
+    <ind:variable_test id="oval:ssg-test_firewalld_sshd_port_enabled_zone_ssh_enabled_etc:tst:1" version="1" check="all" comment="SSH service is defined in all zones created or modified by the administrator" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_firewalld_sshd_port_enabled_custom_zone_files_with_ssh_count:obj:1" />
+      <ind:state state_ref="oval:ssg-state_firewalld_sshd_port_enabled_custom_zone_files_count:ste:1" />
+    </ind:variable_test>
+    <ind:xmlfilecontent_test id="oval:ssg-test_firewalld_sshd_port_enabled_ssh_service_usr:tst:1" version="1" check="all" comment="SSH service is integer in the /usr/lib/firewalld/services dir" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_firewalld_sshd_port_enabled_ssh_service_file_usr:obj:1" />
+    </ind:xmlfilecontent_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_firewalld_sshd_port_enabled_ssh_service_etc:tst:1" version="1" check="all" comment="SSH service is properly configured in /etc/firewalld/services dir" check_existence="any_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_firewalld_sshd_port_enabled_ssh_service_file_etc:obj:1" />
+      <ind:state state_ref="oval:ssg-state_firewalld_sshd_port_enabled_ssh_service_file_etc:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:xmlfilecontent_object id="oval:ssg-object_firewalld_sshd_port_enabled_zone_files_usr:obj:1" version="1">
+      <ind:path>/usr/lib/firewalld/zones</ind:path>
+      <ind:filename operation="pattern match" var_check="all" var_ref="oval:ssg-var_firewalld_sshd_port_enabled_default_zones:var:1" />
+      <ind:xpath>/zone/service[@name='ssh']</ind:xpath>
+    </ind:xmlfilecontent_object>
+    <unix:file_object id="oval:ssg-object_firewalld_sshd_port_enabled_customized_zone_files:obj:1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="1" recurse_file_system="all" />
+      <unix:path>/etc/firewalld/zones</unix:path>
+      <unix:filename operation="pattern match" var_check="at least one" var_ref="oval:ssg-var_firewalld_sshd_port_enabled_default_zones:var:1" />
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_firewalld_sshd_port_enabled_custom_zone_files_with_ssh_count:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_firewalld_sshd_port_enabled_custom_zone_files_with_ssh_count:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:xmlfilecontent_object id="oval:ssg-object_firewalld_sshd_port_enabled_zone_files_etc:obj:1" version="1">
+      <ind:path>/etc/firewalld/zones</ind:path>
+      <ind:filename operation="pattern match">^.*\.xml$</ind:filename>
+      <ind:xpath>/zone/service[@name='ssh']</ind:xpath>
+    </ind:xmlfilecontent_object>
+    <unix:file_object id="oval:ssg-object_firewalld_sshd_port_enabled_custom_zone_files:obj:1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="1" recurse_file_system="local" />
+      <unix:path>/etc/firewalld/zones</unix:path>
+      <unix:filename operation="pattern match">^.*\.xml$</unix:filename>
+    </unix:file_object>
+    <ind:xmlfilecontent_object id="oval:ssg-object_firewalld_sshd_port_enabled_ssh_service_file_usr:obj:1" version="1">
+      <ind:filepath>/usr/lib/firewalld/services/ssh.xml</ind:filepath>
+      <ind:xpath>/service/port[@port='22']</ind:xpath>
+    </ind:xmlfilecontent_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_firewalld_sshd_port_enabled_ssh_service_file_etc:obj:1" version="1">
+      <ind:filepath>/etc/firewalld/services/ssh.xml</ind:filepath>
+      <ind:pattern operation="pattern match">&lt;port.*port="(\d+)"</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_firewalld_sshd_port_enabled_custom_zone_files_count:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="equals" var_check="at least one" var_ref="oval:ssg-var_firewalld_sshd_port_enabled_custom_zone_files_count:var:1" />
+    </ind:variable_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_firewalld_sshd_port_enabled_ssh_service_file_etc:ste:1" version="1" operator="AND" comment="expected SSH port as defined by external variable">
+      <ind:subexpression datatype="int" operation="equals" var_ref="oval:ssg-sshd_listening_port:var:1" />
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_firewalld_sshd_port_enabled_default_zones:var:1" version="1" datatype="string" comment="Regex containing the list of zones files delivered in the firewalld package">
+      <oval-def:literal_component>^(dmz|external|home|internal|public|trusted|work)\.xml$</oval-def:literal_component>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_firewalld_sshd_port_enabled_custom_zone_files_with_ssh_count:var:1" version="1" datatype="int" comment="Variable including number of custom zone files allowing ssh">
+      <oval-def:count>
+        <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_firewalld_sshd_port_enabled_zone_files_etc:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_firewalld_sshd_port_enabled_custom_zone_files_count:var:1" version="1" datatype="int" comment="Variable including number of custom zone files present in /etc/firewalld/zones">
+      <oval-def:count>
+        <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_firewalld_sshd_port_enabled_custom_zone_files:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-sshd_listening_port:var:1" version="1" datatype="int" comment="external variable containing the expected SSH port" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

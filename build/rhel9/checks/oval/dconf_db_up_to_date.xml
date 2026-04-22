@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-dconf_db_up_to_date:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Make sure that the dconf databases are up-to-date with regards to respective keyfiles</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-87295-2" source="CCE" />
+        <oval-def:reference ref_id="dconf_db_up_to_date" source="ssg" />
+        <oval-def:description>Make sure that the dconf databases are up-to-date with regards to respective keyfiles.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:extend_definition negate="true" comment="dconf installed" definition_ref="oval:ssg-package_dconf_installed:def:1" />
+        <oval-def:criteria comment="check that all DBs in question are up-to-date" operator="AND">
+          <oval-def:criteria comment="check that all DBs in question are up-to-date" operator="OR">
+            <oval-def:criterion comment="distro database is up-to-date wrt keyfiles" test_ref="oval:ssg-test_dconf_distro_up_to_date:tst:1" />
+            <oval-def:criterion comment="no keyfiles applicable to the distro database" test_ref="oval:ssg-test_dconf_distro_no_keyfiles:tst:1" />
+          </oval-def:criteria>
+          <oval-def:criteria comment="check that all DBs in question are up-to-date" operator="OR">
+            <oval-def:criterion comment="local database is up-to-date wrt keyfiles" test_ref="oval:ssg-test_dconf_local_up_to_date:tst:1" />
+            <oval-def:criterion comment="no keyfiles applicable to the local database" test_ref="oval:ssg-test_dconf_local_no_keyfiles:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-package_dconf_installed:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>package_dconf_installed</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="package_dconf_installed" source="ssg" />
+        <oval-def:description>The RPM package dconf should be installed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="package dconf is installed" test_ref="oval:ssg-test_package_dconf_installed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_dconf_distro_up_to_date:tst:1" version="1" check="all" comment="Check if the distro dconf DB is up-to-date with keyfiles in the distro tree." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_distro_db_modified_time:obj:1" />
+      <ind:state state_ref="oval:ssg-state_distro_db_is_up_to_date:ste:1" />
+    </ind:variable_test>
+    <unix:file_test id="oval:ssg-test_dconf_distro_no_keyfiles:tst:1" version="1" check="all" comment="no keyfiles applicable to the distro database" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-obj_dconf_distro_config:obj:1" />
+    </unix:file_test>
+    <ind:variable_test id="oval:ssg-test_dconf_local_up_to_date:tst:1" version="1" check="all" comment="Check if the local dconf DB is up-to-date with keyfiles in the local tree." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_local_db_modified_time:obj:1" />
+      <ind:state state_ref="oval:ssg-state_local_db_is_up_to_date:ste:1" />
+    </ind:variable_test>
+    <unix:file_test id="oval:ssg-test_dconf_local_no_keyfiles:tst:1" version="1" check="all" comment="no keyfiles applicable to the local database" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-obj_dconf_local_config:obj:1" />
+    </unix:file_test>
+    <linux:rpminfo_test id="oval:ssg-test_package_dconf_installed:tst:1" version="1" check="all" comment="package dconf is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_test_package_dconf_installed:obj:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-obj_dconf_distro_db:obj:1" version="1" comment="The binary system-wide dconf database with 'distro' settings">
+      <unix:filepath>/etc/dconf/db/distro</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-obj_dconf_distro_config:obj:1" version="1" comment="The dconf keyfile with 'distro' settings">
+      <unix:filepath operation="pattern match">^/etc/dconf/db/distro.d/.*</unix:filepath>
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_distro_db_modified_time:obj:1" version="1" comment="All modified times of all keyfiles">
+      <ind:var_ref>oval:ssg-var_dconf_distro_db_modified_time:var:1</ind:var_ref>
+    </ind:variable_object>
+    <unix:file_object id="oval:ssg-obj_dconf_local_db:obj:1" version="1" comment="The binary system-wide dconf database with 'local' settings">
+      <unix:filepath>/etc/dconf/db/local</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-obj_dconf_local_config:obj:1" version="1" comment="The dconf keyfile with 'local' settings">
+      <unix:filepath operation="pattern match">^/etc/dconf/db/local.d/.*</unix:filepath>
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_local_db_modified_time:obj:1" version="1" comment="All modified times of all keyfiles">
+      <ind:var_ref>oval:ssg-var_dconf_local_db_modified_time:var:1</ind:var_ref>
+    </ind:variable_object>
+    <linux:rpminfo_object id="oval:ssg-obj_test_package_dconf_installed:obj:1" version="1">
+      <linux:name>dconf</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_distro_db_is_up_to_date:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="less than or equal" var_check="all" var_ref="oval:ssg-var_dconf_distro_keyfiles_modified_time:var:1" />
+    </ind:variable_state>
+    <ind:variable_state id="oval:ssg-state_local_db_is_up_to_date:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="less than or equal" var_check="all" var_ref="oval:ssg-var_dconf_local_keyfiles_modified_time:var:1" />
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_dconf_distro_db_modified_time:var:1" version="1" datatype="string" comment="When the 'distro' dconf DB has been modified">
+      <oval-def:time_difference format_2="seconds_since_epoch">
+        <oval-def:object_component object_ref="oval:ssg-obj_dconf_distro_db:obj:1" item_field="m_time" />
+      </oval-def:time_difference>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_dconf_distro_keyfiles_modified_time:var:1" version="1" datatype="int" comment="When dconf keyfiles in the 'distro' tree have been modified">
+      <oval-def:time_difference format_2="seconds_since_epoch">
+        <oval-def:object_component object_ref="oval:ssg-obj_dconf_distro_config:obj:1" item_field="m_time" />
+      </oval-def:time_difference>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_dconf_local_db_modified_time:var:1" version="1" datatype="string" comment="When the 'local' dconf DB has been modified">
+      <oval-def:time_difference format_2="seconds_since_epoch">
+        <oval-def:object_component object_ref="oval:ssg-obj_dconf_local_db:obj:1" item_field="m_time" />
+      </oval-def:time_difference>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_dconf_local_keyfiles_modified_time:var:1" version="1" datatype="int" comment="When dconf keyfiles in the 'local' tree have been modified">
+      <oval-def:time_difference format_2="seconds_since_epoch">
+        <oval-def:object_component object_ref="oval:ssg-obj_dconf_local_config:obj:1" item_field="m_time" />
+      </oval-def:time_difference>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /usr/bin/journalctl
+  ansible.builtin.stat:
+    path: "/usr/bin/journalctl"
+  register: file_exists
+
+- name: Ensure permission u-s,g-xws,o-xwrt on /usr/bin/journalctl
+  ansible.builtin.file:
+    path: "/usr/bin/journalctl"
+    mode: "u-s,g-xws,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

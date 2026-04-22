@@ -1,0 +1,160 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Find /lib/ file(s) recursively
+  ansible.builtin.command: 'find -P /lib/  -perm /g+w,o+w  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /lib/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: g-w,o-w
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /lib64/ file(s) recursively
+  ansible.builtin.command: 'find -P /lib64/  -perm /g+w,o+w  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /lib64/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: g-w,o-w
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /usr/lib/ file(s) recursively
+  ansible.builtin.command: 'find -P /usr/lib/  -perm /g+w,o+w  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /usr/lib/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: g-w,o-w
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /usr/lib64/ file(s) recursively
+  ansible.builtin.command: 'find -P /usr/lib64/  -perm /g+w,o+w  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /usr/lib64/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: g-w,o-w
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - CCE-88693-7
+  - DISA-STIG-RHEL-09-232015
+  - NIST-800-53-CM-5
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_permissions_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

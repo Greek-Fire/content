@@ -1,0 +1,31 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_sle
+# reboot = true
+# strategy = restrict
+# complexity = low
+# disruption = low
+# Remediation is applicable only in certain platforms
+if rpm --quiet -q audit && rpm --quiet -q kernel-core; then
+
+var_auditd_name_format='(bash-populate var_auditd_name_format)'
+
+
+var_auditd_name_format="$(echo $var_auditd_name_format | cut -d \| -f 1)"
+
+if [ -e "/etc/audit/auditd.conf" ] ; then
+    
+    LC_ALL=C sed -i "/^\s*name_format\s*=\s*/Id" "/etc/audit/auditd.conf"
+else
+    touch "/etc/audit/auditd.conf"
+fi
+# make sure file has newline at the end
+sed -i -e '$a\' "/etc/audit/auditd.conf"
+
+cp "/etc/audit/auditd.conf" "/etc/audit/auditd.conf.bak"
+# Insert at the end of the file
+printf '%s\n' "name_format = $var_auditd_name_format" >> "/etc/audit/auditd.conf"
+# Clean up after ourselves.
+rm "/etc/audit/auditd.conf.bak"
+
+else
+    >&2 echo 'Remediation is not applicable, nothing was done'
+fi

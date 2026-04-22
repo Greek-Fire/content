@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall the telnet server: Ensure telnetd is removed"
+  ansible.builtin.package:
+    name: "telnetd"
+    state: absent

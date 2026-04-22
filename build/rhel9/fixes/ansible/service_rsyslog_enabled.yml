@@ -1,0 +1,48 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83989-4
+  - DISA-STIG-RHEL-09-652020
+  - NIST-800-53-AU-4(1)
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_rsyslog_enabled
+
+- name: Enable rsyslog Service - Enable service rsyslog
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable rsyslog Service - Enable Service rsyslog
+    ansible.builtin.systemd:
+      name: rsyslog
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83989-4
+  - DISA-STIG-RHEL-09-652020
+  - NIST-800-53-AU-4(1)
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_rsyslog_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

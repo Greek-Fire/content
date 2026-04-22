@@ -1,0 +1,46 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86395-1
+  - configure_strategy
+  - file_permissions_etc_ipsec_conf
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /etc/ipsec.conf
+  ansible.builtin.stat:
+    path: /etc/ipsec.conf
+  register: file_exists
+  when: '"libreswan" in ansible_facts.packages'
+  tags:
+  - CCE-86395-1
+  - configure_strategy
+  - file_permissions_etc_ipsec_conf
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure permission u-xs,g-xws,o-xwt on /etc/ipsec.conf
+  ansible.builtin.file:
+    path: /etc/ipsec.conf
+    mode: u-xs,g-xws,o-xwt
+  when:
+  - '"libreswan" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86395-1
+  - configure_strategy
+  - file_permissions_etc_ipsec_conf
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-selinux_confinement_of_daemons:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure No Daemons are Unconfined by SELinux</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-84075-1" source="CCE" />
+        <oval-def:reference ref_id="selinux_confinement_of_daemons" source="ssg" />
+        <oval-def:description>All pids in /proc should be assigned an SELinux security context other than 'unconfined_service_t'.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="no unconfined_service_t in /proc" test_ref="oval:ssg-test_selinux_confinement_of_daemons:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <linux:selinuxsecuritycontext_test id="oval:ssg-test_selinux_confinement_of_daemons:tst:1" version="2" check="none satisfy" comment="none satisfy unconfined_service_t in /proc" check_existence="any_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_selinux_confinement_of_daemons:obj:1" />
+      <linux:state state_ref="oval:ssg-state_selinux_confinement_of_daemons:ste:1" />
+    </linux:selinuxsecuritycontext_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <linux:selinuxsecuritycontext_object id="oval:ssg-object_selinux_confinement_of_daemons:obj:1" version="1" comment="find unconfined_service_t in /proc">
+      <linux:behaviors max_depth="1" recurse_direction="down" />
+      <linux:path>/proc</linux:path>
+      <linux:filename operation="pattern match">^.*$</linux:filename>
+      <oval-def:filter action="include">oval:ssg-state_selinux_confinement_of_daemons:ste:1</oval-def:filter>
+    </linux:selinuxsecuritycontext_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <linux:selinuxsecuritycontext_state id="oval:ssg-state_selinux_confinement_of_daemons:ste:1" version="1" operator="AND" comment="state unconfined_service_t">
+      <linux:type datatype="string" operation="equals">unconfined_service_t</linux:type>
+    </linux:selinuxsecuritycontext_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

@@ -1,0 +1,65 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86119-5
+  - configure_strategy
+  - file_ownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_ownership_sshd_private_key_newown variable if represented by
+    uid
+  ansible.builtin.set_fact:
+    file_ownership_sshd_private_key_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86119-5
+  - configure_strategy
+  - file_ownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/ssh/ file(s) matching ^.*_key$
+  ansible.builtin.command: find -P /etc/ssh/ -maxdepth 1 -type f  ! -user 0 -regextype
+    posix-extended -regex "^.*_key$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86119-5
+  - configure_strategy
+  - file_ownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /etc/ssh/ file(s) matching ^.*_key$
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    owner: '{{ file_ownership_sshd_private_key_newown }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86119-5
+  - configure_strategy
+  - file_ownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

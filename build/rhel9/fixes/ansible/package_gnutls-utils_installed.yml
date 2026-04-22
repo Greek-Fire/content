@@ -1,0 +1,32 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83494-5
+  - DISA-STIG-RHEL-09-215080
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_gnutls-utils_installed
+
+- name: Ensure gnutls-utils is installed
+  ansible.builtin.package:
+    name: gnutls-utils
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83494-5
+  - DISA-STIG-RHEL-09-215080
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_gnutls-utils_installed

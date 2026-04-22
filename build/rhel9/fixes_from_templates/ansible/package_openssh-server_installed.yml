@@ -1,0 +1,9 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Ensure openssh-server is installed
+  ansible.builtin.package:
+    name: "openssh-server"
+    state: present

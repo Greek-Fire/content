@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv4_conf_default_shared_media_value)
+
+
+- name: Configure Sending and Accepting Shared Media Redirects by Default - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Configure Sending and Accepting Shared Media Redirects by Default - Find all files that contain net.ipv4.conf.default.shared_media
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.conf.default.shared_media\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Sending and Accepting Shared Media Redirects by Default - Find all files that set net.ipv4.conf.default.shared_media to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.conf.default.shared_media\s*=\s*{{ sysctl_net_ipv4_conf_default_shared_media_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Sending and Accepting Shared Media Redirects by Default - Comment out any occurrences of net.ipv4.conf.default.shared_media from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv4.conf.default.shared_media'
+    replace: '#net.ipv4.conf.default.shared_media'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Configure Sending and Accepting Shared Media Redirects by Default - Comment out any occurrences of net.ipv4.conf.default.shared_media from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv4.conf.default.shared_media'
+    replace: '#net.ipv4.conf.default.shared_media'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Configure Sending and Accepting Shared Media Redirects by Default - Ensure sysctl net.ipv4.conf.default.shared_media is set
+  ansible.posix.sysctl:
+    name: "net.ipv4.conf.default.shared_media"
+    value: "{{ sysctl_net_ipv4_conf_default_shared_media_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv4_conf_default_shared_media.conf"
+
+    state: present
+    reload: yes

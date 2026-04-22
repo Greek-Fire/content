@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_cron_yearly_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_cron_yearly_newown: "0"
+
+- name: Ensure owner on directory /etc/cron.yearly/
+  ansible.builtin.file:
+    path: "/etc/cron.yearly/"
+    follow: false
+    state: directory
+
+    owner: "{{ file_owner_cron_yearly_newown }}"
+
+
+

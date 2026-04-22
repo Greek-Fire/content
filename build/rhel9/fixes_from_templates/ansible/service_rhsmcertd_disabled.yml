@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable Red Hat Subscription Manager Daemon (rhsmcertd) - Disable service rhsmcertd"
+  block:
+  - name: "Disable Red Hat Subscription Manager Daemon (rhsmcertd) - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Red Hat Subscription Manager Daemon (rhsmcertd) - Ensure rhsmcertd.service is Masked"
+    ansible.builtin.systemd:
+      name: "rhsmcertd.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("rhsmcertd.service", multiline=True)'
+
+  - name: "Unit Socket Exists - rhsmcertd.socket"
+    ansible.builtin.command: systemctl -q list-unit-files rhsmcertd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Red Hat Subscription Manager Daemon (rhsmcertd) - Disable Socket rhsmcertd"
+    ansible.builtin.systemd:
+      name: "rhsmcertd.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("rhsmcertd.socket", multiline=True)'
+  tags:
+  - special_service_block

@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-directory_ownership_var_log_audit:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>System Audit Directories Must Be Owned By Root</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-85869-6" source="CCE" />
+        <oval-def:reference ref_id="directory_ownership_var_log_audit" source="ssg" />
+        <oval-def:description>Checks that all /var/log/audit directories are owned by the root user.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="directories are root owned" operator="OR">
+        <oval-def:criteria comment="log_file set" operator="AND">
+          <oval-def:extend_definition negate="true" comment="log_file set in auditd.conf" definition_ref="oval:ssg-auditd_conf_log_file_not_set:def:1" />
+          <oval-def:criterion test_ref="oval:ssg-test_user_ownership_var_log_audit_path:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criteria comment="log_file not set" operator="AND">
+          <oval-def:extend_definition comment="log_file not set in auditd.conf" definition_ref="oval:ssg-auditd_conf_log_file_not_set:def:1" />
+          <oval-def:criterion test_ref="oval:ssg-test_user_ownership_var_log_audit_directories:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-auditd_conf_log_file_not_set:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>'log_file' Not Set In /etc/audit/auditd.conf</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="auditd_conf_log_file_not_set" source="ssg" />
+        <oval-def:description>Verify 'log_file' is not set in /etc/audit/auditd.conf.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Verify 'log_file' not set in /etc/audit/auditd.conf" test_ref="oval:ssg-test_auditd_conf_log_file_not_set:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_user_ownership_var_log_audit_path:tst:1" version="1" check="all" comment="log_file's directory uid root gid root" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_user_ownership_var_log_audit_path:obj:1" />
+    </unix:file_test>
+    <unix:file_test id="oval:ssg-test_user_ownership_var_log_audit_directories:tst:1" version="1" check="all" comment="/var/log/audit directories uid root gid root" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_user_ownership_var_log_audit_directories:obj:1" />
+    </unix:file_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_auditd_conf_log_file_not_set:tst:1" version="1" check="all" comment="log_file not set" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_auditd_conf_log_file:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-object_directory_ownership_var_log_audit_file:obj:1" version="1" comment="audit log files">
+      <unix:filepath operation="pattern match" var_ref="oval:ssg-audit_log_file_path:var:1" />
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-object_user_ownership_var_log_audit_path:obj:1" version="1" comment="log_file's directory">
+      <unix:path operation="equals" var_ref="oval:ssg-var_directory_ownership_var_log_audit_path:var:1" />
+      <unix:filename xsi:nil="true" />
+      <oval-def:filter action="include">oval:ssg-state_owner_not_root_var_log_audit_directories:ste:1</oval-def:filter>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-object_user_ownership_var_log_audit_directories:obj:1" version="1" comment="/var/log/audit directories">
+      <unix:path operation="equals">/var/log/audit</unix:path>
+      <unix:filename xsi:nil="true" />
+      <oval-def:filter action="include">oval:ssg-state_owner_not_root_var_log_audit_directories:ste:1</oval-def:filter>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_auditd_conf_log_file:obj:1" version="1">
+      <ind:filepath operation="equals">/etc/audit/auditd.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^(log_file\s*=\s*.*)$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-state_owner_not_root_var_log_audit_directories:ste:1" version="1" operator="OR">
+      <unix:user_id datatype="int" operation="not equal">0</unix:user_id>
+    </unix:file_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_directory_ownership_var_log_audit_path:var:1" version="1" datatype="string" comment="Path to log_file">
+      <oval-def:object_component item_field="path" object_ref="oval:ssg-object_directory_ownership_var_log_audit_file:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-audit_log_file_path:var:1" version="1" datatype="string" comment="path to audit log files">
+      <oval-def:regex_capture pattern="^log_file\s*=\s*(.*)">
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_auditd_conf_log_file:obj:1" />
+      </oval-def:regex_capture>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

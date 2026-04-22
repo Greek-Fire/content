@@ -1,0 +1,126 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range
+
+- name: Set Kernel Parameter to Increase Local Port Range - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range
+
+- name: Set Kernel Parameter to Increase Local Port Range - Find all files that contain
+    net.ipv4.ip_local_port_range
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv4.ip_local_port_range\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range
+
+- name: Set Kernel Parameter to Increase Local Port Range - Find all files that set
+    net.ipv4.ip_local_port_range to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv4.ip_local_port_range\s*=\s*32768 65535$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range
+
+- name: Set Kernel Parameter to Increase Local Port Range - Comment out any occurrences
+    of net.ipv4.ip_local_port_range from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*net.ipv4.ip_local_port_range
+    replace: '#net.ipv4.ip_local_port_range'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range
+
+- name: Set Kernel Parameter to Increase Local Port Range - Comment out any occurrences
+    of net.ipv4.ip_local_port_range from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*net.ipv4.ip_local_port_range
+    replace: '#net.ipv4.ip_local_port_range'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range
+
+- name: Set Kernel Parameter to Increase Local Port Range - Ensure sysctl net.ipv4.ip_local_port_range
+    is set to 32768 65535
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_local_port_range
+    value: 32768 65535
+    sysctl_file: /etc/sysctl.d/net_ipv4_ip_local_port_range.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90834-3
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_ip_local_port_range

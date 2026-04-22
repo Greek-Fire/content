@@ -1,0 +1,28 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_timesyncd_removed
+
+- name: 'Remove the systemd_timesyncd Service: Ensure systemd-timesyncd is removed'
+  ansible.builtin.package:
+    name: systemd-timesyncd
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_timesyncd_removed

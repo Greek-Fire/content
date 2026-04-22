@@ -1,0 +1,17 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall dnsmasq Package: Ensure dnsmasq is removed'
+  ansible.builtin.package:
+    name: dnsmasq
+    state: absent
+  tags:
+  - CCE-86063-5
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_dnsmasq_removed

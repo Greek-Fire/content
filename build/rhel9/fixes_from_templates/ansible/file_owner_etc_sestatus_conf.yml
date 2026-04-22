@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_etc_sestatus_conf_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_sestatus_conf_newown: "0"
+
+- name: Test for existence /etc/sestatus.conf
+  ansible.builtin.stat:
+    path: "/etc/sestatus.conf"
+  register: file_exists
+
+- name: Ensure owner on /etc/sestatus.conf
+  ansible.builtin.file:
+    path: "/etc/sestatus.conf"
+    follow: false
+    owner: "{{ file_owner_etc_sestatus_conf_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,63 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the dir_ownership_library_dirs_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    dir_ownership_library_dirs_newown: "0"
+
+- name: Ensure owner on directory /lib/ recursively
+  ansible.builtin.file:
+    path: "/lib/"
+    follow: false
+    state: directory
+
+    recurse: yes
+
+    owner: "{{ dir_ownership_library_dirs_newown }}"
+
+
+
+
+
+- name: Ensure owner on directory /lib64/ recursively
+  ansible.builtin.file:
+    path: "/lib64/"
+    follow: false
+    state: directory
+
+    recurse: yes
+
+    owner: "{{ dir_ownership_library_dirs_newown }}"
+
+
+
+
+
+- name: Ensure owner on directory /usr/lib/ recursively
+  ansible.builtin.file:
+    path: "/usr/lib/"
+    follow: false
+    state: directory
+
+    recurse: yes
+
+    owner: "{{ dir_ownership_library_dirs_newown }}"
+
+
+
+
+
+- name: Ensure owner on directory /usr/lib64/ recursively
+  ansible.builtin.file:
+    path: "/usr/lib64/"
+    follow: false
+    state: directory
+
+    recurse: yes
+
+    owner: "{{ dir_ownership_library_dirs_newown }}"
+
+
+

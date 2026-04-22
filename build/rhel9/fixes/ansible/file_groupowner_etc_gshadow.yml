@@ -1,0 +1,53 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_etc_gshadow_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_etc_gshadow_newgroup: '0'
+  tags:
+  - CCE-83948-0
+  - DISA-STIG-RHEL-09-232115
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_etc_gshadow
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /etc/gshadow
+  ansible.builtin.stat:
+    path: /etc/gshadow
+  register: file_exists
+  tags:
+  - CCE-83948-0
+  - DISA-STIG-RHEL-09-232115
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_etc_gshadow
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/gshadow
+  ansible.builtin.file:
+    path: /etc/gshadow
+    follow: false
+    group: '{{ file_groupowner_etc_gshadow_newgroup }}'
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-83948-0
+  - DISA-STIG-RHEL-09-232115
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_etc_gshadow
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

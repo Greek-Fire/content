@@ -1,0 +1,33 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_var_log_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_var_log_newown: '0'
+  tags:
+  - CCE-83914-2
+  - DISA-STIG-RHEL-09-232170
+  - configure_strategy
+  - file_owner_var_log
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /var/log/
+  ansible.builtin.file:
+    path: /var/log/
+    follow: false
+    state: directory
+    owner: '{{ file_owner_var_log_newown }}'
+  tags:
+  - CCE-83914-2
+  - DISA-STIG-RHEL-09-232170
+  - configure_strategy
+  - file_owner_var_log
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Enable the postfix_local_write_mail_spool SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_postfix_local_write_mail_spool)
+- name: "Enable the postfix_local_write_mail_spool SELinux Boolean - Set SELinux Boolean postfix_local_write_mail_spool Accordingly"
+  ansible.posix.seboolean:
+    name: postfix_local_write_mail_spool
+    state: "{{ var_postfix_local_write_mail_spool }}"
+    persistent: yes

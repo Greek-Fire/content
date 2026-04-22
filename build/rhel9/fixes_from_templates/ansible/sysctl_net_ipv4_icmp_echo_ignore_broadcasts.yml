@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv4_icmp_echo_ignore_broadcasts_value)
+
+
+- name: Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces - Find all files that contain net.ipv4.icmp_echo_ignore_broadcasts
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.icmp_echo_ignore_broadcasts\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces - Find all files that set net.ipv4.icmp_echo_ignore_broadcasts to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.icmp_echo_ignore_broadcasts\s*=\s*{{ sysctl_net_ipv4_icmp_echo_ignore_broadcasts_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces - Comment out any occurrences of net.ipv4.icmp_echo_ignore_broadcasts from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv4.icmp_echo_ignore_broadcasts'
+    replace: '#net.ipv4.icmp_echo_ignore_broadcasts'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces - Comment out any occurrences of net.ipv4.icmp_echo_ignore_broadcasts from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv4.icmp_echo_ignore_broadcasts'
+    replace: '#net.ipv4.icmp_echo_ignore_broadcasts'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Enable Kernel Parameter to Ignore ICMP Broadcast Echo Requests on IPv4 Interfaces - Ensure sysctl net.ipv4.icmp_echo_ignore_broadcasts is set
+  ansible.posix.sysctl:
+    name: "net.ipv4.icmp_echo_ignore_broadcasts"
+    value: "{{ sysctl_net_ipv4_icmp_echo_ignore_broadcasts_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv4_icmp_echo_ignore_broadcasts.conf"
+
+    state: present
+    reload: yes

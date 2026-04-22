@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable System Statistics Reset Service (sysstat) - Disable service sysstat"
+  block:
+  - name: "Disable System Statistics Reset Service (sysstat) - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable System Statistics Reset Service (sysstat) - Ensure sysstat.service is Masked"
+    ansible.builtin.systemd:
+      name: "sysstat.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("sysstat.service", multiline=True)'
+
+  - name: "Unit Socket Exists - sysstat.socket"
+    ansible.builtin.command: systemctl -q list-unit-files sysstat.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable System Statistics Reset Service (sysstat) - Disable Socket sysstat"
+    ansible.builtin.systemd:
+      name: "sysstat.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("sysstat.socket", multiline=True)'
+  tags:
+  - special_service_block

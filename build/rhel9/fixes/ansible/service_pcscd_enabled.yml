@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87907-2
+  - DISA-STIG-RHEL-09-611180
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-2(1)
+  - NIST-800-53-IA-2(11)
+  - NIST-800-53-IA-2(2)
+  - NIST-800-53-IA-2(3)
+  - NIST-800-53-IA-2(4)
+  - NIST-800-53-IA-2(6)
+  - NIST-800-53-IA-2(7)
+  - PCI-DSS-Req-8.3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_pcscd_enabled
+
+- name: Enable the pcscd Service - Enable service pcscd
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the pcscd Service - Enable Service pcscd
+    ansible.builtin.systemd:
+      name: pcscd
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"pcsc-lite" in ansible_facts.packages'
+  tags:
+  - CCE-87907-2
+  - DISA-STIG-RHEL-09-611180
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-2(1)
+  - NIST-800-53-IA-2(11)
+  - NIST-800-53-IA-2(2)
+  - NIST-800-53-IA-2(3)
+  - NIST-800-53-IA-2(4)
+  - NIST-800-53-IA-2(6)
+  - NIST-800-53-IA-2(7)
+  - PCI-DSS-Req-8.3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_pcscd_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

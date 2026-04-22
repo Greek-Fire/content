@@ -1,0 +1,23 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall rsh-server Package: Ensure rsh-server is removed'
+  ansible.builtin.package:
+    name: rsh-server
+    state: absent
+  tags:
+  - CCE-84143-7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-IA-5(1)(c)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - package_rsh-server_removed

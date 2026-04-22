@@ -1,0 +1,1 @@
+{"name": "cpe:/o:redhat:enterprise_linux:8.9", "check_id": "installed_OS_is_rhel8_9", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Red Hat Enterprise Linux 8.9", "definition_location": "", "template": null}

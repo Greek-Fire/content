@@ -1,0 +1,46 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the adm group is defined
+  ansible.builtin.getent:
+    database: group
+    key: adm
+  ignore_errors: yes
+  when: file_groupownerships_var_log_apt_newgroup is undefined
+
+- name: Set the file_groupownerships_var_log_apt_newgroup variable if adm found
+  ansible.builtin.set_fact:
+    file_groupownerships_var_log_apt_newgroup: "adm"
+  when: ansible_facts.getent_group["adm"] is defined
+- name: Check that the root group is defined
+  ansible.builtin.getent:
+    database: group
+    key: root
+  ignore_errors: yes
+  when: file_groupownerships_var_log_apt_newgroup is undefined
+
+- name: Set the file_groupownerships_var_log_apt_newgroup variable if root found
+  ansible.builtin.set_fact:
+    file_groupownerships_var_log_apt_newgroup: "root"
+  when: ansible_facts.getent_group["root"] is defined
+
+- name: Find /var/log/apt/ file(s) matching .*
+  ansible.builtin.command: 'find -P /var/log/apt/ -maxdepth 1 -type f  ! -group adm ! -group root -regextype posix-extended -regex ".*"'
+  register: files_found
+  changed_when: False
+  failed_when: False
+  check_mode: no
+
+- name: Ensure group owner on /var/log/apt/ file(s) matching .*
+  ansible.builtin.file:
+    path: "{{ item }}"
+    follow: false
+    group: "{{ file_groupownerships_var_log_apt_newgroup }}"
+    state: file
+  with_items:
+    - "{{ files_found.stdout_lines }}"
+
+
+

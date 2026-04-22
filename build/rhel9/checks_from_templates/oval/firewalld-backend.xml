@@ -1,0 +1,38 @@
+
+
+<def-group>
+  <definition class="compliance" id="firewalld-backend" version="1">
+    <metadata>
+        <title>Configure Firewalld to Use the Nftables Backend</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'FirewallBackend' is configured with value 'nftables' in /etc/firewalld/firewalld.conf</description>
+    </metadata>
+    <criteria comment="The respective application or service is configured correctly"
+    operator="OR"><criterion comment="Check the FirewallBackend in /etc/firewalld/firewalld.conf"
+  test_ref="test_firewalld-backend" />
+    </criteria>
+  </definition>
+
+  
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of FirewallBackend setting in the /etc/firewalld/firewalld.conf file"
+  id="test_firewalld-backend" version="1">
+  <ind:object object_ref="obj_firewalld-backend" />
+  <ind:state state_ref="state_firewalld-backend" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_firewalld-backend" version="1">
+  <ind:filepath>/etc/firewalld/firewalld.conf</ind:filepath>
+  <ind:pattern operation="pattern match">^[ \t]*FirewallBackend=(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+<ind:textfilecontent54_state id="state_firewalld-backend" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^nftables$</ind:subexpression>
+</ind:textfilecontent54_state>
+
+</def-group>

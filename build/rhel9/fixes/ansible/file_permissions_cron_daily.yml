@@ -1,0 +1,65 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84175-9
+  - DISA-STIG-RHEL-09-232040
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_permissions_cron_daily
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/cron.daily/ file(s)
+  ansible.builtin.command: 'find -P /etc/cron.daily/ -maxdepth 0 -perm /u+s,g+xwrs,o+xwrt  -type
+    d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84175-9
+  - DISA-STIG-RHEL-09-232040
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_permissions_cron_daily
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /etc/cron.daily/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-xwrs,o-xwrt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84175-9
+  - DISA-STIG-RHEL-09-232040
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_permissions_cron_daily
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_cron_weekly_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_cron_weekly_newown: "0"
+
+- name: Ensure owner on directory /etc/cron.weekly/
+  ansible.builtin.file:
+    path: "/etc/cron.weekly/"
+    follow: false
+    state: directory
+
+    owner: "{{ file_owner_cron_weekly_newown }}"
+
+
+

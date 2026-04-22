@@ -1,0 +1,41 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84155-1
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_xinetd_removed
+
+- name: 'Uninstall xinetd package if not used by network services: Ensure xinetd is
+    removed'
+  ansible.builtin.package:
+    name: xinetd
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84155-1
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_xinetd_removed

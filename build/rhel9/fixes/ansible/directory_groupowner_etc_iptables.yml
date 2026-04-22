@@ -1,0 +1,64 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86427-2
+  - configure_strategy
+  - directory_groupowner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the root group is defined
+  ansible.builtin.getent:
+    database: group
+    key: root
+  ignore_errors: true
+  when:
+  - '"iptables" in ansible_facts.packages'
+  - directory_groupowner_etc_iptables_newgroup is undefined
+  tags:
+  - CCE-86427-2
+  - configure_strategy
+  - directory_groupowner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the directory_groupowner_etc_iptables_newgroup variable if root found
+  ansible.builtin.set_fact:
+    directory_groupowner_etc_iptables_newgroup: root
+  when:
+  - '"iptables" in ansible_facts.packages'
+  - ansible_facts.getent_group["root"] is defined
+  tags:
+  - CCE-86427-2
+  - configure_strategy
+  - directory_groupowner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/iptables/
+  ansible.builtin.file:
+    path: /etc/iptables/
+    follow: false
+    state: directory
+    group: '{{ directory_groupowner_etc_iptables_newgroup }}'
+  when: '"iptables" in ansible_facts.packages'
+  tags:
+  - CCE-86427-2
+  - configure_strategy
+  - directory_groupowner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

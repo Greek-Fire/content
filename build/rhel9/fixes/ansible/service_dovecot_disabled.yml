@@ -1,0 +1,59 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84242-7
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_dovecot_disabled
+  - unknown_severity
+
+- name: Disable Dovecot Service - Disable service dovecot
+  block:
+
+  - name: Disable Dovecot Service - Collect systemd Services Present in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable Dovecot Service - Ensure dovecot.service is Masked
+    ansible.builtin.systemd:
+      name: dovecot.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("dovecot.service", multiline=True)
+
+  - name: Unit Socket Exists - dovecot.socket
+    ansible.builtin.command: systemctl -q list-unit-files dovecot.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable Dovecot Service - Disable Socket dovecot
+    ansible.builtin.systemd:
+      name: dovecot.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("dovecot.socket", multiline=True)
+  tags:
+  - CCE-84242-7
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_dovecot_disabled
+  - special_service_block
+  - unknown_severity
+  when: '"kernel-core" in ansible_facts.packages'

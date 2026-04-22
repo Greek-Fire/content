@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Disable the domain_kernel_load_modules SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_domain_kernel_load_modules)
+- name: "Disable the domain_kernel_load_modules SELinux Boolean - Set SELinux Boolean domain_kernel_load_modules Accordingly"
+  ansible.posix.seboolean:
+    name: domain_kernel_load_modules
+    state: "{{ var_domain_kernel_load_modules }}"
+    persistent: yes

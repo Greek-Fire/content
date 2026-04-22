@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Prevent applications from mapping low portion of virtual memory - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Prevent applications from mapping low portion of virtual memory - Find all files that contain vm.mmap_min_addr
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*vm.mmap_min_addr\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Prevent applications from mapping low portion of virtual memory - Find all files that set vm.mmap_min_addr to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*vm.mmap_min_addr\s*=\s*65536$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Prevent applications from mapping low portion of virtual memory - Comment out any occurrences of vm.mmap_min_addr from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*vm.mmap_min_addr'
+    replace: '#vm.mmap_min_addr'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Prevent applications from mapping low portion of virtual memory - Comment out any occurrences of vm.mmap_min_addr from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*vm.mmap_min_addr'
+    replace: '#vm.mmap_min_addr'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Prevent applications from mapping low portion of virtual memory - Ensure sysctl vm.mmap_min_addr is set to 65536
+  ansible.posix.sysctl:
+    name: "vm.mmap_min_addr"
+    value: "65536"
+
+    sysctl_file: "/etc/sysctl.d/vm_mmap_min_addr.conf"
+
+    state: present
+    reload: yes

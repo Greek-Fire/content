@@ -1,0 +1,57 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86180-7
+  - DISA-STIG-RHEL-09-255110
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - directory_owner_sshd_config_d
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the directory_owner_sshd_config_d_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    directory_owner_sshd_config_d_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86180-7
+  - DISA-STIG-RHEL-09-255110
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - directory_owner_sshd_config_d
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /etc/ssh/sshd_config.d/
+  ansible.builtin.file:
+    path: /etc/ssh/sshd_config.d/
+    follow: false
+    state: directory
+    owner: '{{ directory_owner_sshd_config_d_newown }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86180-7
+  - DISA-STIG-RHEL-09-255110
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - directory_owner_sshd_config_d
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

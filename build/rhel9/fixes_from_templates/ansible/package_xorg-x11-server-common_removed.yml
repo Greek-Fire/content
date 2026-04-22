@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove the X Windows Package Group: Ensure xorg-x11-server-common is removed"
+  ansible.builtin.package:
+    name: "xorg-x11-server-common"
+    state: absent

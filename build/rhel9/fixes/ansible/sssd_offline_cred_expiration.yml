@@ -1,0 +1,127 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87996-5
+  - DISA-STIG-RHEL-09-631020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(13)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_offline_cred_expiration
+
+- name: Test for domain group
+  ansible.builtin.command: grep '\s*\[domain\/[^]]*]' /etc/sssd/sssd.conf
+  register: test_grep_domain
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87996-5
+  - DISA-STIG-RHEL-09-631020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(13)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_offline_cred_expiration
+
+- name: Add default domain group (if no domain there)
+  community.general.ini_file:
+    path: /etc/sssd/sssd.conf
+    section: '{{ item.section }}'
+    option: '{{ item.option }}'
+    value: '{{ item.value }}'
+    create: true
+    mode: 384
+  with_items:
+  - section: sssd
+    option: domains
+    value: default
+  - section: domain/default
+    option: id_provider
+    value: files
+  when:
+  - '"sssd-common" in ansible_facts.packages'
+  - test_grep_domain.stdout is defined
+  - test_grep_domain.stdout | length < 1
+  tags:
+  - CCE-87996-5
+  - DISA-STIG-RHEL-09-631020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(13)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_offline_cred_expiration
+
+- name: Configure SSD to Expire Offline Credentials
+  community.general.ini_file:
+    dest: /etc/sssd/sssd.conf
+    section: pam
+    option: offline_credentials_expiration
+    value: 1
+    create: true
+    mode: 384
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87996-5
+  - DISA-STIG-RHEL-09-631020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(13)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_offline_cred_expiration
+
+- name: Find all the conf files inside /etc/sssd/conf.d/
+  ansible.builtin.find:
+    paths: /etc/sssd/conf.d/
+    patterns: '*.conf'
+  register: sssd_conf_d_files
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87996-5
+  - DISA-STIG-RHEL-09-631020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(13)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_offline_cred_expiration
+
+- name: Fix offline_credentials_expiration configuration in /etc/sssd/conf.d/
+  ansible.builtin.replace:
+    path: '{{ item.path }}'
+    regexp: '[^#]*offline_credentials_expiration.*'
+    replace: offline_credentials_expiration = 1
+  with_items: '{{ sssd_conf_d_files.files }}'
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-87996-5
+  - DISA-STIG-RHEL-09-631020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-5(13)
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_offline_cred_expiration

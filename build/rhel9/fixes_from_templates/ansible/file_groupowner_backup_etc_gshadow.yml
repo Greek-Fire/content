@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_backup_etc_gshadow_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_backup_etc_gshadow_newgroup: "0"
+
+- name: Test for existence /etc/gshadow-
+  ansible.builtin.stat:
+    path: "/etc/gshadow-"
+  register: file_exists
+
+- name: Ensure group owner on /etc/gshadow-
+  ansible.builtin.file:
+    path: "/etc/gshadow-"
+    follow: false
+    group: "{{ file_groupowner_backup_etc_gshadow_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,1 @@
+{"name": "cpe:/o:canonical:ubuntu_linux:24.04::~~lts~~~", "check_id": "installed_OS_is_ubuntu2404", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Ubuntu release 24.04 (Noble Numbat)", "definition_location": "", "template": null}

@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-accounts_user_interactive_home_directory_exists:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>All Interactive Users Home Directories Must Exist</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83639-5" source="CCE" />
+        <oval-def:reference ref_id="accounts_user_interactive_home_directory_exists" source="ssg" />
+        <oval-def:description>All Interactive Users Home Directories Must Exist</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criterion comment="All Interactive Users Home Directories Must Exist" test_ref="oval:ssg-test_accounts_user_interactive_home_directory_exists:tst:1" />
+        <oval-def:criterion comment="Interactive users don't exist on the system" test_ref="oval:ssg-test_accounts_user_interactive_home_directory_exists_users:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_accounts_user_interactive_home_directory_exists:tst:1" version="1" check="all" comment="Check the existence of interactive users." state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_user_interactive_home_directory_exists_dirs_count_fs:obj:1" />
+      <ind:state state_ref="oval:ssg-state_accounts_user_interactive_home_directory_exists_dirs_count_pw:ste:1" />
+    </ind:variable_test>
+    <ind:variable_test id="oval:ssg-test_accounts_user_interactive_home_directory_exists_users:tst:1" version="1" check="all" comment="Check the existence of interactive users." check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_user_interactive_home_directory_exists_dirs_count_pw:obj:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_accounts_user_interactive_home_directory_exists_objects:obj:1" version="1">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-variable_object_accounts_user_interactive_home_directory_exists_objects_regex:var:1" var_check="at least one" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_accounts_user_interactive_home_directory_exists_objects_local_interactive_users:obj:1" version="1">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match">^([^:]*):[^:]*:\d{4,}:(?:[^:]*:){3}(?!(\/usr)?(\/sbin\/nologin|\/bin\/false))[^:]*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_object_accounts_user_interactive_home_directory_exists_objects_users_ignored:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_accounts_user_interactive_home_directory_exists_dirs_fs:obj:1" version="1">
+      <unix:path var_ref="oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_list:var:1" var_check="at least one" />
+      <unix:filename xsi:nil="true" />
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_accounts_user_interactive_home_directory_exists_dirs_count_fs:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_count_fs:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:variable_object id="oval:ssg-object_accounts_user_interactive_home_directory_exists_dirs_count_pw:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_count:var:1</ind:var_ref>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_object_accounts_user_interactive_home_directory_exists_objects_users_ignored:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">^(nobody|nfsnobody)$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:variable_state id="oval:ssg-state_accounts_user_interactive_home_directory_exists_dirs_count_pw:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="equals" var_check="at least one" var_ref="oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_count:var:1" />
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-variable_object_accounts_user_interactive_home_directory_exists_objects_regex:var:1" version="1" datatype="string" comment="usernames rows retrieved from /etc/passwd">
+      <oval-def:concat>
+        <oval-def:literal_component>^(?:</oval-def:literal_component>
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_accounts_user_interactive_home_directory_exists_objects_local_interactive_users:obj:1" />
+        <oval-def:literal_component>):(?:[^:]*:){4}([^:]+):[^:]*$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_list:var:1" version="1" datatype="string" comment="Variable including all home dirs from interactive users">
+      <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_accounts_user_interactive_home_directory_exists_objects:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_count:var:1" version="1" datatype="int" comment="Variable including expected count of home dirs present on the system">
+      <oval-def:count>
+        <oval-def:variable_component var_ref="oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_list:var:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_accounts_user_interactive_home_directory_exists_dirs_count_fs:var:1" version="1" datatype="int" comment="Variable including number of home dirs present on file system">
+      <oval-def:count>
+        <oval-def:object_component item_field="path" object_ref="oval:ssg-object_accounts_user_interactive_home_directory_exists_dirs_fs:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

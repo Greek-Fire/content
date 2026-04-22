@@ -1,0 +1,10 @@
+# platform = multi_platform_rhel,multi_platform_fedora
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+dnf remove bind
+
+dnf remove bind9.18

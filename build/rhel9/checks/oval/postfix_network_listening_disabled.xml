@@ -1,0 +1,104 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-postfix_network_listening_disabled:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Disable Postfix Network Listening</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-90825-1" source="CCE" />
+        <oval-def:reference ref_id="postfix_network_listening_disabled" source="ssg" />
+        <oval-def:description>Postfix network listening should be disabled</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:extend_definition negate="true" comment="Postfix installed and configured to start" definition_ref="oval:ssg-service_postfix_enabled:def:1" />
+        <oval-def:criterion comment="Check inet_interfaces in /etc/postfix/main.cf" test_ref="oval:ssg-test_postfix_network_listening_disabled:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-service_postfix_enabled:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Enable Postfix Service</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="service_postfix_enabled" source="ssg" />
+        <oval-def:description>The postfix service should be enabled if possible.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="package postfix installed and service postfix is configured to start" operator="AND">
+        <oval-def:criterion comment="postfix installed" test_ref="oval:ssg-test_service_postfix_package_postfix_installed:tst:1" />
+        <oval-def:criteria comment="service postfix is configured to start and is running" operator="AND">
+          <oval-def:criterion comment="postfix is running" test_ref="oval:ssg-test_service_running_postfix:tst:1" />
+          <oval-def:criteria comment="service postfix is configured to start" operator="OR">
+            <oval-def:criterion comment="multi-user.target wants postfix" test_ref="oval:ssg-test_multi_user_wants_postfix:tst:1" />
+            <oval-def:criterion comment="multi-user.target wants postfix socket" test_ref="oval:ssg-test_multi_user_wants_postfix_socket:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_postfix_network_listening_disabled:tst:1" version="1" check="all" comment="inet_interfaces in /etc/postfix/main.cf should be set correctly" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_postfix_network_listening_disabled:obj:1" />
+      <ind:state state_ref="oval:ssg-state_postfix_network_listening_disabled:ste:1" />
+    </ind:textfilecontent54_test>
+    <linux:systemdunitdependency_test id="oval:ssg-test_multi_user_wants_postfix:tst:1" version="1" check="all" comment="systemd test" check_existence="any_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_multi_user_target_for_postfix_enabled:obj:1" />
+      <linux:state state_ref="oval:ssg-state_systemd_postfix_on:ste:1" />
+    </linux:systemdunitdependency_test>
+    <linux:systemdunitdependency_test id="oval:ssg-test_multi_user_wants_postfix_socket:tst:1" version="1" check="all" comment="systemd test" check_existence="any_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_multi_user_target_for_postfix_socket_enabled:obj:1" />
+      <linux:state state_ref="oval:ssg-state_systemd_postfix_socket_on:ste:1" />
+    </linux:systemdunitdependency_test>
+    <linux:systemdunitproperty_test id="oval:ssg-test_service_running_postfix:tst:1" version="1" check="at least one" comment="Test that the postfix service is running" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_service_running_postfix:obj:1" />
+      <linux:state state_ref="oval:ssg-state_service_running_postfix:ste:1" />
+    </linux:systemdunitproperty_test>
+    <linux:rpminfo_test id="oval:ssg-test_service_postfix_package_postfix_installed:tst:1" version="1" check="all" comment="package postfix is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_test_service_postfix_package_postfix_installed:obj:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_postfix_network_listening_disabled:obj:1" version="1" comment="inet_interfaces in /etc/postfix/main.cf should be set correctly">
+      <ind:filepath>/etc/postfix/main.cf</ind:filepath>
+      <ind:pattern operation="pattern match">^[\s]*inet_interfaces[\s]*=[\s]*(.*)[\s]*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:systemdunitdependency_object id="oval:ssg-object_multi_user_target_for_postfix_enabled:obj:1" version="1" comment="list of dependencies of multi-user.target">
+      <linux:unit>multi-user.target</linux:unit>
+    </linux:systemdunitdependency_object>
+    <linux:systemdunitdependency_object id="oval:ssg-object_multi_user_target_for_postfix_socket_enabled:obj:1" version="1" comment="list of dependencies of multi-user.target">
+      <linux:unit>multi-user.target</linux:unit>
+    </linux:systemdunitdependency_object>
+    <linux:systemdunitproperty_object id="oval:ssg-obj_service_running_postfix:obj:1" version="1" comment="Retrieve the ActiveState property of postfix">
+      <linux:unit operation="pattern match">^postfix\.(socket|service)$</linux:unit>
+      <linux:property>ActiveState</linux:property>
+    </linux:systemdunitproperty_object>
+    <linux:rpminfo_object id="oval:ssg-obj_test_service_postfix_package_postfix_installed:obj:1" version="1">
+      <linux:name>postfix</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_postfix_network_listening_disabled:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="equals" var_ref="oval:ssg-var_postfix_inet_interfaces:var:1" />
+    </ind:textfilecontent54_state>
+    <linux:systemdunitdependency_state id="oval:ssg-state_systemd_postfix_on:ste:1" version="1" operator="AND" comment="postfix listed at least once in the dependencies">
+      <linux:dependency entity_check="at least one">postfix.service</linux:dependency>
+    </linux:systemdunitdependency_state>
+    <linux:systemdunitdependency_state id="oval:ssg-state_systemd_postfix_socket_on:ste:1" version="1" operator="AND" comment="postfix listed at least once in the dependencies">
+      <linux:dependency entity_check="at least one">postfix.socket</linux:dependency>
+    </linux:systemdunitdependency_state>
+    <linux:systemdunitproperty_state id="oval:ssg-state_service_running_postfix:ste:1" version="1" operator="AND" comment="postfix is running">
+      <linux:value>active</linux:value>
+    </linux:systemdunitproperty_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:external_variable id="oval:ssg-var_postfix_inet_interfaces:var:1" version="1" datatype="string" comment="external variable for postfix inet_interfaces" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

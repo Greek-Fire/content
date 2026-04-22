@@ -1,0 +1,47 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CJIS-5.10.1.2
+  - NIST-800-171-3.13.11
+  - NIST-800-171-3.13.8
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-7
+  - NIST-800-53-SC-12
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_dracut-fips_installed
+
+- name: Ensure dracut-fips is installed
+  ansible.builtin.package:
+    name: dracut-fips
+    state: present
+  when: ( not ( lookup("env", "container") == "bwrap-osbuild" ) and "kernel-core"
+    in ansible_facts.packages )
+  tags:
+  - CJIS-5.10.1.2
+  - NIST-800-171-3.13.11
+  - NIST-800-171-3.13.8
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-7
+  - NIST-800-53-SC-12
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_dracut-fips_installed

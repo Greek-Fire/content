@@ -1,0 +1,44 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Find /var/log/ file(s)
+  ansible.builtin.command: find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xws,o+xwrt  -type
+    f -regextype posix-extended -regex ".*"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11.1(iii)
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - permissions_local_var_log
+
+- name: Set permissions for /var/log/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-xs,g-xws,o-xwrt
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11.1(iii)
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - permissions_local_var_log

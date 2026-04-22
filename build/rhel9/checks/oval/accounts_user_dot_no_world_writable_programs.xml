@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-accounts_user_dot_no_world_writable_programs:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>User Initialization Files Must Not Run World-Writable Programs</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-87451-1" source="CCE" />
+        <oval-def:reference ref_id="accounts_user_dot_no_world_writable_programs" source="ssg" />
+        <oval-def:description>User Initialization Files Must Not Execute World-Writable Programs</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="User Initialization Files Must Not Execute World-Writable Programs" test_ref="oval:ssg-test_accounts_user_dot_no_world_writable_programs:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_accounts_user_dot_no_world_writable_programs:tst:1" version="1" check="all" comment="Init files do not execute world-writable programs" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_user_dot_no_world_writable_programs_init_files:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:password_object id="oval:ssg-object_accounts_user_dot_no_world_writable_programs_objects:obj:1" version="1">
+      <oval-def:set>
+        <oval-def:object_reference>oval:ssg-object_accounts_user_dot_no_world_writable_programs_objects_others:obj:1</oval-def:object_reference>
+      </oval-def:set>
+    </unix:password_object>
+    <unix:password_object id="oval:ssg-object_accounts_user_dot_no_world_writable_programs_objects_others:obj:1" version="1">
+      <unix:username datatype="string" operation="pattern match">.*</unix:username>
+      <oval-def:filter action="include">oval:ssg-state_accounts_user_dot_no_world_writable_programs_users_uids:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_accounts_user_dot_no_world_writable_programs_users_ignored:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_accounts_user_dot_no_world_writable_programs_users_nologin_shell:ste:1</oval-def:filter>
+    </unix:password_object>
+    <unix:file_object id="oval:ssg-object_world_writable_programs:obj:1" version="2">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="defined" />
+      <unix:path>/</unix:path>
+      <unix:filename operation="pattern match">^.*$</unix:filename>
+      <oval-def:filter action="include">oval:ssg-state_world_writable_programs:ste:1</oval-def:filter>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_accounts_user_dot_no_world_writable_programs_init_files:obj:1" version="3">
+      <ind:path var_ref="oval:ssg-var_accounts_user_dot_no_world_writable_programs_dirs:var:1" var_check="at least one" />
+      <ind:filename operation="pattern match" var_ref="oval:ssg-var_user_initialization_files_regex:var:1" />
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_world_writable_programs_regex:var:1" var_check="at least one" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:password_state id="oval:ssg-state_accounts_user_dot_no_world_writable_programs_users_uids:ste:1" version="1" operator="AND">
+      <unix:user_id datatype="int" operation="greater than or equal">1000</unix:user_id>
+    </unix:password_state>
+    <unix:password_state id="oval:ssg-state_accounts_user_dot_no_world_writable_programs_users_ignored:ste:1" version="1" operator="AND">
+      <unix:username datatype="string" operation="pattern match">^(nobody|nfsnobody)$</unix:username>
+    </unix:password_state>
+    <unix:password_state id="oval:ssg-state_accounts_user_dot_no_world_writable_programs_users_nologin_shell:ste:1" version="1" operator="AND">
+      <unix:login_shell datatype="string" operation="pattern match">^(?:/usr)?/sbin/nologin$</unix:login_shell>
+    </unix:password_state>
+    <unix:file_state id="oval:ssg-state_world_writable_programs:ste:1" version="1" operator="AND">
+      <unix:type>regular</unix:type>
+      <unix:owrite datatype="boolean">true</unix:owrite>
+    </unix:file_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_accounts_user_dot_no_world_writable_programs_dirs:var:1" version="1" datatype="string" comment="Variable including all home dirs from interactive users">
+      <oval-def:object_component item_field="home_dir" object_ref="oval:ssg-object_accounts_user_dot_no_world_writable_programs_objects:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_world_writable_programs:var:1" version="1" datatype="string" comment="Variable including all world writable programs">
+      <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_world_writable_programs:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_world_writable_programs_regex:var:1" version="1" datatype="string" comment="Regex including all world writable programs">
+      <oval-def:concat>
+        <oval-def:literal_component>^[^#]*</oval-def:literal_component>
+        <oval-def:escape_regex>
+          <oval-def:variable_component var_ref="oval:ssg-var_world_writable_programs:var:1" />
+        </oval-def:escape_regex>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_user_initialization_files_regex:var:1" version="1" datatype="string" comment="User initialization files" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

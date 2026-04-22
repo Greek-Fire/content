@@ -1,0 +1,50 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86320-9
+  - configure_strategy
+  - directory_permissions_etc_nftables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/nftables/ file(s)
+  ansible.builtin.command: 'find -P /etc/nftables/ -maxdepth 0 -perm /u+s,g+xwrs,o+xwrt  -type
+    d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"nftables" in ansible_facts.packages'
+  tags:
+  - CCE-86320-9
+  - configure_strategy
+  - directory_permissions_etc_nftables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /etc/nftables/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-xwrs,o-xwrt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"nftables" in ansible_facts.packages'
+  tags:
+  - CCE-86320-9
+  - configure_strategy
+  - directory_permissions_etc_nftables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

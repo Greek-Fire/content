@@ -1,0 +1,179 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Find /bin/ file(s) recursively
+  ansible.builtin.command: 'find -P /bin/  -perm /u+s,g+ws,o+wt  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /bin/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-ws,o-wt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /sbin/ file(s) recursively
+  ansible.builtin.command: 'find -P /sbin/  -perm /u+s,g+ws,o+wt  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /sbin/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-ws,o-wt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /usr/bin/ file(s) recursively
+  ansible.builtin.command: 'find -P /usr/bin/  -perm /u+s,g+ws,o+wt  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /usr/bin/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-ws,o-wt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /usr/sbin/ file(s) recursively
+  ansible.builtin.command: 'find -P /usr/sbin/  -perm /u+s,g+ws,o+wt  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /usr/sbin/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-ws,o-wt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /usr/local/bin/ file(s) recursively
+  ansible.builtin.command: 'find -P /usr/local/bin/  -perm /u+s,g+ws,o+wt  -type d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /usr/local/bin/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-ws,o-wt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /usr/local/sbin/ file(s) recursively
+  ansible.builtin.command: 'find -P /usr/local/sbin/  -perm /u+s,g+ws,o+wt  -type
+    d '
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /usr/local/sbin/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-s,g-ws,o-wt
+    state: directory
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - dir_permissions_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

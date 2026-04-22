@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-banner_etc_motd:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Modify the System Message of the Day Banner</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83559-5" source="CCE" />
+        <oval-def:reference ref_id="banner_etc_motd" source="ssg" />
+        <oval-def:description>The system motd banner text should be set correctly.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criterion negate="true" comment="/etc/motd is absent" test_ref="oval:ssg-test_banner_etc_motd_exists:tst:1" />
+        <oval-def:criterion comment="/etc/motd is set appropriately" test_ref="oval:ssg-test_banner_etc_motd:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_banner_etc_motd_exists:tst:1" version="1" check="all" comment="/etc/motd exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_banner_etc_motd_exists:obj:1" />
+    </unix:file_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_banner_etc_motd:tst:1" version="1" check="at least one" comment="correct banner in /etc/motd" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_banner_etc_motd:obj:1" />
+      <ind:state state_ref="oval:ssg-state_banner_etc_motd:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-object_banner_etc_motd_exists:obj:1" version="1">
+      <unix:filepath>/etc/motd</unix:filepath>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_banner_etc_motd:obj:1" version="1">
+      <ind:behaviors singleline="true" multiline="false" />
+      <ind:filepath>/etc/motd</ind:filepath>
+      <ind:pattern operation="pattern match">^(.*)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_banner_etc_motd:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" var_ref="oval:ssg-motd_banner_text:var:1" operation="pattern match" />
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:external_variable id="oval:ssg-motd_banner_text:var:1" version="1" datatype="string" comment="warning banner text variable" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

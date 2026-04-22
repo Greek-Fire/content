@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Disable Kernel Image Loading - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable Kernel Image Loading - Find all files that contain kernel.kexec_load_disabled
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.kexec_load_disabled\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Image Loading - Find all files that set kernel.kexec_load_disabled to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.kexec_load_disabled\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Image Loading - Comment out any occurrences of kernel.kexec_load_disabled from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*kernel.kexec_load_disabled'
+    replace: '#kernel.kexec_load_disabled'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable Kernel Image Loading - Comment out any occurrences of kernel.kexec_load_disabled from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*kernel.kexec_load_disabled'
+    replace: '#kernel.kexec_load_disabled'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable Kernel Image Loading - Ensure sysctl kernel.kexec_load_disabled is set to 1
+  ansible.posix.sysctl:
+    name: "kernel.kexec_load_disabled"
+    value: "1"
+
+    sysctl_file: "/etc/sysctl.d/kernel_kexec_load_disabled.conf"
+
+    state: present
+    reload: yes

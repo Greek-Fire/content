@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-harden_ssh_client_crypto_policy:def:1" version="3" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Harden SSH client Crypto Policy</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86230-0" source="CCE" />
+        <oval-def:reference ref_id="harden_ssh_client_crypto_policy" source="ssg" />
+        <oval-def:description>Ensure the ssh client ciphers are configured correctly in /etc/ssh/ssh_config.d/02-ospp.conf</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="SSH client is configured correctly" operator="AND">
+        <oval-def:criterion comment="Check the Match in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_Match:tst:1" />
+        <oval-def:criterion comment="Check the RekeyLimit in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_RekeyLimit:tst:1" />
+        <oval-def:criterion comment="Check the GSSAPIAuthentication in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_GSSAPIAuthentication:tst:1" />
+        <oval-def:criterion comment="Check the Ciphers in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_Ciphers:tst:1" />
+        <oval-def:criterion comment="Check the PubkeyAcceptedKeyTypes in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_PubkeyAcceptedKeyTypes:tst:1" />
+        <oval-def:criterion comment="Check the MACs in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_MACs:tst:1" />
+        <oval-def:criterion comment="Check the KexAlgorithms in /etc/ssh/ssh_config.d/02-ospp.conf" test_ref="oval:ssg-test_harden_ssh_client_crypto_policy_KexAlgorithms:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_Match:tst:1" version="1" check="all" comment="tests the absence of Match setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_Match:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_Match:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_RekeyLimit:tst:1" version="1" check="all" comment="tests the absence of RekeyLimit setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_RekeyLimit:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_RekeyLimit:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_GSSAPIAuthentication:tst:1" version="1" check="all" comment="tests the absence of GSSAPIAuthentication setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_GSSAPIAuthentication:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_GSSAPIAuthentication:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_Ciphers:tst:1" version="1" check="all" comment="tests the absence of Ciphers setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_Ciphers:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_Ciphers:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_PubkeyAcceptedKeyTypes:tst:1" version="1" check="all" comment="tests the absence of PubkeyAcceptedKeyTypes setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_PubkeyAcceptedKeyTypes:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_PubkeyAcceptedKeyTypes:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_MACs:tst:1" version="1" check="all" comment="tests the absence of MACs setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_MACs:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_MACs:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_harden_ssh_client_crypto_policy_KexAlgorithms:tst:1" version="1" check="all" comment="tests the absence of KexAlgorithms setting in the /etc/ssh/ssh_config.d/02-ospp.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_harden_ssh_client_crypto_policy_KexAlgorithms:obj:1" />
+      <ind:state state_ref="oval:ssg-state_harden_ssh_client_crypto_policy_KexAlgorithms:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_Match:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^[ \t]*Match[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_RekeyLimit:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^Match final all(?:.*
+)*?\s*RekeyLimit[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_GSSAPIAuthentication:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^Match final all(?:.*
+)*?\s*GSSAPIAuthentication[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_Ciphers:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^Match final all(?:.*
+)*?\s*Ciphers[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_PubkeyAcceptedKeyTypes:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^Match final all(?:.*
+)*?\s*PubkeyAcceptedKeyTypes[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_MACs:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^Match final all(?:.*
+)*?\s*MACs[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_harden_ssh_client_crypto_policy_KexAlgorithms:obj:1" version="1">
+      <ind:filepath>/etc/ssh/ssh_config.d/02-ospp.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^Match final all(?:.*
+)*?\s*KexAlgorithms[\s]+(.+?)[ \t]*(?:$|#)</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_Match:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^final all$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_RekeyLimit:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^512M 1h$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_GSSAPIAuthentication:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^no$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_Ciphers:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^aes256-ctr,aes256-cbc,aes128-ctr,aes128-cbc$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_PubkeyAcceptedKeyTypes:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^ssh-rsa,ecdsa-sha2-nistp384,ecdsa-sha2-nistp256$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_MACs:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^hmac-sha2-512,hmac-sha2-256$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_harden_ssh_client_crypto_policy_KexAlgorithms:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group14-sha1$</ind:subexpression>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

@@ -1,0 +1,111 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /sbin/auditctl
+  ansible.builtin.stat:
+    path: "/sbin/auditctl"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/auditctl
+  ansible.builtin.file:
+    path: "/sbin/auditctl"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+
+
+
+
+- name: Test for existence /sbin/aureport
+  ansible.builtin.stat:
+    path: "/sbin/aureport"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/aureport
+  ansible.builtin.file:
+    path: "/sbin/aureport"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+
+
+
+
+- name: Test for existence /sbin/ausearch
+  ansible.builtin.stat:
+    path: "/sbin/ausearch"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/ausearch
+  ansible.builtin.file:
+    path: "/sbin/ausearch"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+
+
+
+
+- name: Test for existence /sbin/autrace
+  ansible.builtin.stat:
+    path: "/sbin/autrace"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/autrace
+  ansible.builtin.file:
+    path: "/sbin/autrace"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+
+
+
+
+- name: Test for existence /sbin/auditd
+  ansible.builtin.stat:
+    path: "/sbin/auditd"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/auditd
+  ansible.builtin.file:
+    path: "/sbin/auditd"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+
+
+
+
+- name: Test for existence /sbin/augenrules
+  ansible.builtin.stat:
+    path: "/sbin/augenrules"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/augenrules
+  ansible.builtin.file:
+    path: "/sbin/augenrules"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+
+
+
+
+- name: Test for existence /sbin/audisp-syslog
+  ansible.builtin.stat:
+    path: "/sbin/audisp-syslog"
+  register: file_exists
+
+- name: Ensure permission u-s,g-ws,o-wt on /sbin/audisp-syslog
+  ansible.builtin.file:
+    path: "/sbin/audisp-syslog"
+    mode: "u-s,g-ws,o-wt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

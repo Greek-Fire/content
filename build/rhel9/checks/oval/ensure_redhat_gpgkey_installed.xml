@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-ensure_redhat_gpgkey_installed:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure Red Hat GPG Key Installed</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-84180-9" source="CCE" />
+        <oval-def:reference ref_id="ensure_redhat_gpgkey_installed" source="ssg" />
+        <oval-def:description>The Red Hat release and auxiliary key packages are required to be installed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Vendor GPG keys" operator="OR">
+        <oval-def:criteria comment="Red Hat Vendor Keys" operator="AND">
+          <oval-def:criteria comment="Red Hat Installed" operator="OR">
+            <oval-def:extend_definition comment="rhel9 installed" definition_ref="oval:ssg-installed_OS_is_rhel9:def:1" />
+          </oval-def:criteria>
+          <oval-def:criterion comment="package gpg-pubkey-fd431d51-4ae0493b is installed" test_ref="oval:ssg-test_redhat_package_gpgkey-fd431d51-4ae0493b_installed:tst:1" />
+          <oval-def:criterion comment="package gpg-pubkey-5a6340b3-6229229e is installed" test_ref="oval:ssg-test_redhat_package_gpgkey-5a6340b3-6229229e_installed:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criteria comment="CentOS Vendor Keys" operator="AND">
+          <oval-def:extend_definition comment="CentOS9 installed" definition_ref="oval:ssg-installed_OS_is_centos9:def:1" />
+          <oval-def:criterion comment="package gpg-pubkey-8483c65d-5ccc5b19 is installed" test_ref="oval:ssg-test_redhat_package_gpgkey-8483c65d-5ccc5b19_installed:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_centos9:def:1" version="2" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>CentOS Stream 9</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:centos:centos:9" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_centos9" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      CentOS Stream 9</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criterion comment="OS is CentOS Stream" test_ref="oval:ssg-test_centos9_name:tst:1" />
+        <oval-def:criterion comment="OS version is 9" test_ref="oval:ssg-test_centos9_version:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ol9:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Oracle Linux 9</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:oracle:linux:9" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_ol9" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Oracle Linux 9</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="Oracle Linux 9 System is installed" test_ref="oval:ssg-test_ol9_system:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Installed operating system is part of the Unix family</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="installed_OS_is_part_of_Unix_family" source="ssg" />
+        <oval-def:description>The operating system installed on the system is part of the Unix OS family</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_unix_family:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_rhel9:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Red Hat Enterprise Linux 9</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:redhat:enterprise_linux:9" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_rhel9" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Red Hat Enterprise Linux 9</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_rhel9_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criteria comment="RHEL 9 is installed" operator="AND">
+            <oval-def:criterion comment="RHEL 9 is installed" test_ref="oval:ssg-test_rhel9:tst:1" />
+            <oval-def:extend_definition negate="true" comment="Installed OS is not OL9" definition_ref="oval:ssg-installed_OS_is_ol9:def:1" />
+          </oval-def:criteria>
+          <oval-def:criteria comment="Red Hat Enterprise Virtualization Host is installed" operator="AND">
+            <oval-def:criterion comment="Red Hat Virtualization Host (RHVH)" test_ref="oval:ssg-test_rhvh4_version:tst:1" />
+            <oval-def:criterion comment="Red Hat Enterprise Virtualization Host is based on RHEL 9" test_ref="oval:ssg-test_rhevh_rhel9_version:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <linux:rpminfo_test id="oval:ssg-test_redhat_package_gpgkey-fd431d51-4ae0493b_installed:tst:1" version="1" check="only one" comment="Red Hat release key package is installed" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_redhat_package_gpg-pubkey:obj:1" />
+      <linux:state state_ref="oval:ssg-state_redhat_package_gpg-pubkey-fd431d51-4ae0493b:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_redhat_package_gpgkey-5a6340b3-6229229e_installed:tst:1" version="1" check="only one" comment="Red Hat auxiliary key package is installed" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_redhat_package_gpg-pubkey:obj:1" />
+      <linux:state state_ref="oval:ssg-state_redhat_package_gpg-pubkey-5a6340b3-6229229e:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_redhat_package_gpgkey-8483c65d-5ccc5b19_installed:tst:1" version="1" check="only one" comment="CentOS9 key package is installed" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_redhat_package_gpg-pubkey:obj:1" />
+      <linux:state state_ref="oval:ssg-state_redhat_package_gpg-pubkey-8483c65d-5ccc5b19:ste:1" />
+    </linux:rpminfo_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_centos9_name:tst:1" version="1" check="all" comment="Check os-release ID" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_name_centos9:obj:1" />
+      <ind:state state_ref="oval:ssg-state_name_centos9:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_centos9_version:tst:1" version="1" check="all" comment="Check os-release VERSION_ID" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_version_centos9:obj:1" />
+      <ind:state state_ref="oval:ssg-state_version_centos9:ste:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-test_ol9_system:tst:1" version="1" check="all" comment="oraclelinux-release is version 9" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_ol9_system:obj:1" />
+      <linux:state state_ref="oval:ssg-state_ol9_system:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_unix_family:tst:1" version="1" check="all" comment="Test installed OS is part of the unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_unix_family:ste:1" />
+    </ind:family_test>
+    <ind:family_test id="oval:ssg-test_rhel9_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhel9_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhel9_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_rhel9:tst:1" version="1" check="all" comment="redhat-release is version 9" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_rhel9:obj:1" />
+      <linux:state state_ref="oval:ssg-state_rhel9:ste:1" />
+    </linux:rpminfo_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_rhevh_rhel9_version:tst:1" version="1" check="all" comment="RHEVH base RHEL is version 9" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhevh_rhel9_version:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhevh_rhel9_version:ste:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-test_rhvh4_version:tst:1" version="1" check="all" comment="redhat-release-virtualization-host RPM package is installed" check_existence="only_one_exists" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_rhvh4_version:obj:1" />
+      <linux:state state_ref="oval:ssg-state_rhvh4_version:ste:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <linux:rpminfo_object id="oval:ssg-object_redhat_package_gpg-pubkey:obj:1" version="1">
+      <linux:name>gpg-pubkey</linux:name>
+    </linux:rpminfo_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_name_centos9:obj:1" version="1" comment="Check os-release ID">
+      <ind:filepath>/etc/os-release</ind:filepath>
+      <ind:pattern operation="pattern match">^ID="(\w+)"$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_version_centos9:obj:1" version="1" comment="Check os-release VERSION_ID">
+      <ind:filepath>/etc/os-release</ind:filepath>
+      <ind:pattern operation="pattern match">^VERSION_ID="(\d)"$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_ol9_system:obj:1" version="1">
+      <linux:name>oraclelinux-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-object_unix_family:obj:1" version="1" />
+    <ind:family_object id="oval:ssg-obj_rhel9_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_rhel9:obj:1" version="1">
+      <linux:name>redhat-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_rhevh_rhel9_version:obj:1" version="1">
+      <ind:filepath>/etc/redhat-release</ind:filepath>
+      <ind:pattern operation="pattern match">^Red Hat Enterprise Linux release (\d)\.\d+$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_rhvh4_version:obj:1" version="1">
+      <linux:name>redhat-release-virtualization-host</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <linux:rpminfo_state id="oval:ssg-state_redhat_package_gpg-pubkey-fd431d51-4ae0493b:ste:1" version="1" operator="AND">
+      <linux:release>4ae0493b</linux:release>
+      <linux:version>fd431d51</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_redhat_package_gpg-pubkey-5a6340b3-6229229e:ste:1" version="1" operator="AND">
+      <linux:release>6229229e</linux:release>
+      <linux:version>5a6340b3</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_redhat_package_gpg-pubkey-8483c65d-5ccc5b19:ste:1" version="1" operator="AND">
+      <linux:release>5ccc5b19</linux:release>
+      <linux:version>8483c65d</linux:version>
+    </linux:rpminfo_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_name_centos9:ste:1" version="1" operator="AND">
+      <ind:subexpression>centos</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_version_centos9:ste:1" version="1" operator="AND">
+      <ind:subexpression>9</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <linux:rpminfo_state id="oval:ssg-state_ol9_system:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^9.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <ind:family_state id="oval:ssg-state_rhel9_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_rhel9:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^9.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_rhevh_rhel9_version:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">9</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <linux:rpminfo_state id="oval:ssg-state_rhvh4_version:ste:1" version="1" operator="AND">
+      <linux:evr datatype="evr_string" operation="greater than or equal">0:4.4</linux:evr>
+    </linux:rpminfo_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

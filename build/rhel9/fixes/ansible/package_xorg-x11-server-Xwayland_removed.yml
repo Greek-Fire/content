@@ -1,0 +1,29 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_xorg-x11-server-Xwayland_removed
+
+- name: 'Remove the X Windows Xwayland Package: Ensure xorg-x11-server-Xwayland is
+    removed'
+  ansible.builtin.package:
+    name: xorg-x11-server-Xwayland
+    state: absent
+  when: not ( "gdm" in ansible_facts.packages )
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_xorg-x11-server-Xwayland_removed

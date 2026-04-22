@@ -1,0 +1,38 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83596-7
+  - DISA-STIG-RHEL-09-215075
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.3
+  - enable_strategy
+  - install_smartcard_packages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure openssl-pkcs11 is installed
+  ansible.builtin.package:
+    name: openssl-pkcs11
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture != "s390x"
+  tags:
+  - CCE-83596-7
+  - DISA-STIG-RHEL-09-215075
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.3
+  - enable_strategy
+  - install_smartcard_packages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,63 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_rhv,multi_platform_ubuntu,multi_platform_sle,multi_platform_slmicro
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83853-2
+  - DISA-STIG-RHEL-09-231195
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - kernel_module_cramfs_disabled
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+
+- name: Ensure kernel module 'cramfs' is disabled
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/cramfs.conf
+    regexp: install\s+cramfs
+    line: install cramfs /bin/false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83853-2
+  - DISA-STIG-RHEL-09-231195
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - kernel_module_cramfs_disabled
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+
+- name: Ensure kernel module 'cramfs' is blacklisted
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/cramfs.conf
+    regexp: ^blacklist cramfs$
+    line: blacklist cramfs
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83853-2
+  - DISA-STIG-RHEL-09-231195
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - kernel_module_cramfs_disabled
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required

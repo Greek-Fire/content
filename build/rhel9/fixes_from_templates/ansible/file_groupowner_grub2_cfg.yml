@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_grub2_cfg_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_grub2_cfg_newgroup: "0"
+
+- name: Test for existence /boot/grub2/grub.cfg
+  ansible.builtin.stat:
+    path: "/boot/grub2/grub.cfg"
+  register: file_exists
+
+- name: Ensure group owner on /boot/grub2/grub.cfg
+  ansible.builtin.file:
+    path: "/boot/grub2/grub.cfg"
+    follow: false
+    group: "{{ file_groupowner_grub2_cfg_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

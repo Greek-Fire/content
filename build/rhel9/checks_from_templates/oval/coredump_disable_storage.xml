@@ -1,0 +1,57 @@
+
+<def-group>
+  <definition class="compliance" id="coredump_disable_storage" version="1">
+    <metadata>
+        <title>Disable storing core dump</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'Storage' is configured with value 'none' in section 'Coredump' in /etc/systemd/coredump.conf</description>
+    </metadata>
+    <criteria comment="systemd-coredump is configured correctly"
+    operator="OR"><criterion comment="Check the Storage in /etc/systemd/coredump.conf"
+  test_ref="test_coredump_disable_storage" />
+        <criterion comment="Check the Storage in /etc/systemd/coredump.conf.d"
+  test_ref="test_coredump_disable_storage_config_dir" />
+    </criteria>
+  </definition>
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of Storage setting in the /etc/systemd/coredump.conf file"
+  id="test_coredump_disable_storage" version="1">
+  <ind:object object_ref="obj_coredump_disable_storage" />
+  <ind:state state_ref="state_coredump_disable_storage" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_coredump_disable_storage" version="1">
+  <ind:filepath>/etc/systemd/coredump.conf</ind:filepath>
+  <ind:pattern operation="pattern match">^\s*\[Coredump\].*(?:\n\s*[^[\s].*)*\n^[ \t]*Storage\h*=\h*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+  
+<ind:textfilecontent54_state id="state_coredump_disable_storage" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^none$</ind:subexpression>
+</ind:textfilecontent54_state>
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of Storage setting in the /etc/systemd/coredump.conf.d file"
+  id="test_coredump_disable_storage_config_dir" version="1">
+  <ind:object object_ref="obj_coredump_disable_storage_config_dir" />
+  <ind:state state_ref="state_coredump_disable_storage_config_dir" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_coredump_disable_storage_config_dir" version="1">
+  <ind:path>/etc/systemd/coredump.conf.d</ind:path>
+  <ind:filename operation="pattern match">.*\.conf$</ind:filename>
+  <ind:pattern operation="pattern match">^\s*\[Coredump\].*(?:\n\s*[^[\s].*)*\n^[ \t]*Storage\h*=\h*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+  
+<ind:textfilecontent54_state id="state_coredump_disable_storage_config_dir" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^none$</ind:subexpression>
+</ind:textfilecontent54_state>
+
+
+</def-group>

@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable xinetd Service - Disable service xinetd"
+  block:
+  - name: "Disable xinetd Service - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable xinetd Service - Ensure xinetd.service is Masked"
+    ansible.builtin.systemd:
+      name: "xinetd.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("xinetd.service", multiline=True)'
+
+  - name: "Unit Socket Exists - xinetd.socket"
+    ansible.builtin.command: systemctl -q list-unit-files xinetd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable xinetd Service - Disable Socket xinetd"
+    ansible.builtin.systemd:
+      name: "xinetd.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("xinetd.socket", multiline=True)'
+  tags:
+  - special_service_block

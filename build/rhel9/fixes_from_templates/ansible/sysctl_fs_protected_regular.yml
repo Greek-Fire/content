@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Enable Kernel Parameter to Enforce DAC on Regular files - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on Regular files - Find all files that contain fs.protected_regular
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_regular\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on Regular files - Find all files that set fs.protected_regular to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_regular\s*=\s*2$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on Regular files - Comment out any occurrences of fs.protected_regular from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*fs.protected_regular'
+    replace: '#fs.protected_regular'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on Regular files - Comment out any occurrences of fs.protected_regular from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*fs.protected_regular'
+    replace: '#fs.protected_regular'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Enable Kernel Parameter to Enforce DAC on Regular files - Ensure sysctl fs.protected_regular is set to 2
+  ansible.posix.sysctl:
+    name: "fs.protected_regular"
+    value: "2"
+
+    sysctl_file: "/etc/sysctl.d/fs_protected_regular.conf"
+
+    state: present
+    reload: yes

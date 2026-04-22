@@ -1,0 +1,84 @@
+
+   
+
+
+
+
+<def-group>
+  <definition class="compliance" id="use_pam_wheel_group_for_su" version="3">
+    <metadata>
+        <title>Enforce Usage of pam_wheel with Group Parameter for su Authentication</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Configure PAM module</description>
+    </metadata>
+
+    <criteria operator="AND" comment="Make sure arguments are properly configured in /etc/pam.d/su">
+    
+    
+        <criterion test_ref="test_pam_auth_pam_wheel_group" comment="Verify group is set to the desired state" />
+    
+    
+    
+        <criterion test_ref="test_pam_auth_pam_wheel_use_uid" comment="Verify use_uid is set to the desired state" />
+    
+    
+    </criteria>
+
+  </definition>
+
+
+
+
+
+
+
+
+
+
+  <ind:textfilecontent54_test id="test_pam_auth_pam_wheel_group"
+  check="all"
+  comment="Verify group configuation of pam_wheel.so" version="1">
+    <ind:object object_ref="object_pam_auth_pam_wheel_group" />
+    <ind:state state_ref="state_pam_auth_pam_wheel_group" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_pam_auth_pam_wheel_group" comment="Check group configuration of PAM pam_wheel.so module" version="1">
+    <ind:filepath>/etc/pam.d/su</ind:filepath>
+    <ind:pattern operation="pattern match">^\s*auth\s+required\s+pam_wheel.so.*\sgroup=(-?[a-zA-Z0-9]+)(?:\s+.*)?</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_state id="state_pam_auth_pam_wheel_group" version="3">
+    <ind:subexpression datatype="string"
+     operation="equals" var_ref="var_pam_wheel_group_for_su" />
+  </ind:textfilecontent54_state>
+
+  <external_variable comment="PAM external variable var_pam_wheel_group_for_su" datatype="int" id="var_pam_wheel_group_for_su" version="1" />
+
+
+
+
+
+
+
+  <ind:textfilecontent54_test id="test_pam_auth_pam_wheel_use_uid"
+  check="all" check_existence="all_exist"
+  comment="Verify use_uid configuation of pam_wheel.so" version="1">
+    <ind:object object_ref="object_pam_auth_pam_wheel_use_uid" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_pam_auth_pam_wheel_use_uid" comment="Check use_uid configuration of PAM pam_wheel.so module" version="1">
+    <ind:filepath>/etc/pam.d/su</ind:filepath>
+
+    <ind:pattern operation="pattern match">^\s*auth(?:(?!\n)\s)+required(?:(?!\n)\s)+pam_wheel.so((?!\n)\s[^\n]+)?(?!\n)\s+use_uid((\s+\S+)*\s*\\*\s*)$</ind:pattern>
+
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+
+
+
+</def-group>

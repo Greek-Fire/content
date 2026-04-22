@@ -1,0 +1,31 @@
+<def-group>
+  <definition class="inventory" id="package_bind"
+  version="1"><metadata>
+        <title>Package bind is installed</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package bind should be installed.</description>
+    </metadata>
+    <criteria>
+    
+      <criterion comment="Platform package bind is installed"
+      test_ref="inventory_test_package_bind_installed" />
+    
+    </criteria>
+  </definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="all_exist"
+  id="inventory_test_package_bind_installed" version="1"
+  comment="package bind is installed">
+    <linux:object object_ref="obj_inventory_test_package_bind_installed" />
+    
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_inventory_test_package_bind_installed" version="1">
+    <linux:name>bind</linux:name>
+  </linux:rpminfo_object>
+  
+
+
+</def-group>

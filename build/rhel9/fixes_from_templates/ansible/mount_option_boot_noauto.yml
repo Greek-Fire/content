@@ -1,0 +1,69 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = high
+
+
+
+
+   
+
+
+
+
+- name: "Add noauto Option to /boot: Check information associated to mountpoint"
+  ansible.builtin.command: findmnt --fstab '/boot'
+  register: device_name
+  failed_when: device_name.rc > 1
+  changed_when: False
+  check_mode: False
+
+
+- name: "Add noauto Option to /boot: Create mount_info dictionary variable"
+  set_fact:
+    mount_info: "{{ mount_info|default({})|combine({item.0: item.1}) }}"
+  with_together:
+    - "{{ device_name.stdout_lines[0].split() | map('lower') | list }}"
+    - "{{ device_name.stdout_lines[1].split() | list }}"
+  when:
+    - device_name.stdout is defined and device_name.stdout_lines is defined
+    - (device_name.stdout | length > 0)
+
+
+- name: "Add noauto Option to /boot: If /boot not mounted, craft mount_info manually"
+  set_fact:
+    mount_info: '{{ mount_info|default({})|combine({item.0: item.1}) }}'
+  with_together:
+    - ["target", "source", "fstype", "options"]
+    - ["/boot", "", "", "defaults"]
+  when:
+    - ("--fstab" | length == 0)
+    - device_name.stdout is defined and device_name.stdout_lines is defined
+    - (device_name.stdout | length == 0)
+
+
+- name: "Add noauto Option to /boot: Make sure noauto option is part of the to /boot options"
+  set_fact:
+
+    mount_info: "{{ mount_info | combine( {'options':''~(mount_info.options | default(''))~(',' if (mount_info.options | default('')) else '')~'noauto' }) }}"
+
+  when:
+    - mount_info is defined and "noauto" not in (mount_info.options | default(''))
+
+
+- name: "Add noauto Option to /boot: Ensure /boot is mounted with noauto option"
+  ansible.posix.mount:
+    path: "/boot"
+    src: "{{ mount_info.source | default('') }}"
+    opts: "{{ mount_info.options | default('') }}"
+    state: "mounted"
+    fstype: "{{ mount_info.fstype | default('') }}"
+  register: mount_result
+  failed_when:
+    - mount_result is failed
+    - "'target is busy' not in (mount_result.msg | default(''))"
+    - "'already mounted' not in (mount_result.msg | default(''))"
+  when:
+    - mount_info is defined
+    - (device_name.stdout is defined and (device_name.stdout | length > 0)) or ("--fstab" | length == 0)

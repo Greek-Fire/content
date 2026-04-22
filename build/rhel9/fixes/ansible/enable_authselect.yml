@@ -1,0 +1,129 @@
+# platform = Red Hat Enterprise Linux 8,Red Hat Enterprise Linux 9,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89732-2
+  - DISA-STIG-needed_rules
+  - NIST-800-53-AC-3
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.4
+  - configure_strategy
+  - enable_authselect
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+- (xccdf-var var_authselect_profile)
+
+- name: Enable authselect - Check Current authselect Profile
+  ansible.builtin.command:
+    cmd: authselect current
+  register: result_authselect_current
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89732-2
+  - DISA-STIG-needed_rules
+  - NIST-800-53-AC-3
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.4
+  - configure_strategy
+  - enable_authselect
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Enable authselect - Try to Select an authselect Profile
+  ansible.builtin.command:
+    cmd: authselect select "{{ var_authselect_profile }}"
+  register: result_authselect_select
+  changed_when: result_authselect_select.rc == 0
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - result_authselect_current.rc != 0
+  tags:
+  - CCE-89732-2
+  - DISA-STIG-needed_rules
+  - NIST-800-53-AC-3
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.4
+  - configure_strategy
+  - enable_authselect
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Enable authselect - Verify If pam Has Been Altered
+  ansible.builtin.command:
+    cmd: rpm -qV pam
+  register: result_altered_authselect
+  changed_when: false
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - result_authselect_select is not skipped
+  - result_authselect_select.rc != 0
+  tags:
+  - CCE-89732-2
+  - DISA-STIG-needed_rules
+  - NIST-800-53-AC-3
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.4
+  - configure_strategy
+  - enable_authselect
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Enable authselect - Informative Message Based on authselect Integrity Check
+  ansible.builtin.assert:
+    that:
+    - result_authselect_current.rc == 0 or result_altered_authselect is skipped or
+      result_altered_authselect.rc == 0
+    fail_msg:
+    - authselect is not used but files from the 'pam' package have been altered, so
+      the authselect configuration won't be forced.
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89732-2
+  - DISA-STIG-needed_rules
+  - NIST-800-53-AC-3
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.4
+  - configure_strategy
+  - enable_authselect
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Enable authselect - Force authselect Profile Selection
+  ansible.builtin.command:
+    cmd: authselect select --force "{{ var_authselect_profile }}"
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - result_authselect_current.rc != 0
+  - result_authselect_select.rc != 0
+  - result_altered_authselect.rc == 0
+  tags:
+  - CCE-89732-2
+  - DISA-STIG-needed_rules
+  - NIST-800-53-AC-3
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.4
+  - configure_strategy
+  - enable_authselect
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed

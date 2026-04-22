@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-mount_option_nosuid_removable_partitions:def:1" version="5" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Add nosuid Option to Removable Media Partitions</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83874-8" source="CCE" />
+        <oval-def:reference ref_id="mount_option_nosuid_removable_partitions" source="ssg" />
+        <oval-def:description>The nosuid option should be enabled for all removable devices mounts in /etc/fstab.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:extend_definition comment="Check if removable partition really exists on the system" definition_ref="oval:ssg-removable_partition_doesnt_exist:def:1" />
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="Check if removable partition value represents CD/DVD drive" definition_ref="oval:ssg-var_removable_partition_is_cd_dvd_drive:def:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:criterion comment="Check if at least one from CD/DVD drive alternative names is using 'nosuid' mount option in /etc/fstab" test_ref="oval:ssg-test_nosuid_etc_fstab_cd_dvd_drive:tst:1" />
+            <oval-def:extend_definition comment="Check if CD/DVD drive is not configured to automount in /etc/fstab" definition_ref="oval:ssg-no_cd_dvd_drive_in_etc_fstab:def:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+        <oval-def:criterion comment="Check if removable partition is using 'nosuid' mount option in /etc/fstab" test_ref="oval:ssg-test_nosuid_etc_fstab_not_cd_dvd_drive:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-no_cd_dvd_drive_in_etc_fstab:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>No CD/DVD drive is configured to automount in /etc/fstab</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="no_cd_dvd_drive_in_etc_fstab" source="ssg" />
+        <oval-def:description>Check the /etc/fstab and check if a CD/DVD drive
+      is not configured for automount.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check if CD/DVD drive is not configured to automout in /etc/fstab" test_ref="oval:ssg-test_no_cd_dvd_drive_in_etc_fstab:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-removable_partition_doesnt_exist:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Device Files for Removable Media Partitions Does Not Exist on the System</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="removable_partition_doesnt_exist" source="ssg" />
+        <oval-def:description>Verify if device file representing removable partitions
+      exist on the system</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check if removable partition really exists on the system" test_ref="oval:ssg-test_removable_partition_doesnt_exist:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-var_removable_partition_is_cd_dvd_drive:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Value of 'var_removable_partition' variable is set to '/dev/cdrom'</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="var_removable_partition_is_cd_dvd_drive" source="ssg" />
+        <oval-def:description>Verify if value of 'var_removable_partition' variable is set
+      to '/dev/cdrom'</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check if removable partition value represents CD/DVD drive" test_ref="oval:ssg-test_var_removable_partition_is_cd_dvd_drive:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_nosuid_etc_fstab_cd_dvd_drive:tst:1" version="1" check="all" comment="'nosuid' mount option used for at least one CD / DVD drive alternative names in /etc/fstab" check_existence="any_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_nosuid_etc_fstab_cd_dvd_drive:obj:1" />
+      <ind:state state_ref="oval:ssg-state_nosuid_etc_fstab_cd_dvd_drive:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_nosuid_etc_fstab_not_cd_dvd_drive:tst:1" version="1" check="at least one" comment="Check if removable partition is configured with 'nosuid' mount option in /etc/fstab" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_nosuid_etc_fstab_not_cd_dvd_drive:obj:1" />
+      <ind:state state_ref="oval:ssg-state_nosuid_etc_fstab_not_cd_dvd_drive:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_no_cd_dvd_drive_in_etc_fstab:tst:1" version="1" check="all" comment="'CD/DVD drive is not listed in /etc/fstab" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_no_cd_dvd_drive_in_etc_fstab:obj:1" />
+    </ind:textfilecontent54_test>
+    <unix:file_test id="oval:ssg-test_removable_partition_doesnt_exist:tst:1" version="1" check="all" comment="Check if expected removable partitions truly exist on the system" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_removable_partition_doesnt_exist:obj:1" />
+    </unix:file_test>
+    <ind:variable_test id="oval:ssg-test_var_removable_partition_is_cd_dvd_drive:tst:1" version="1" check="all" comment="Check if removable partition variable value represents CD/DVD drive" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_var_removable_partition_is_cd_dvd_drive:obj:1" />
+      <ind:state state_ref="oval:ssg-state_var_removable_partition_is_cd_dvd_drive:ste:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_nosuid_etc_fstab_cd_dvd_drive:obj:1" version="1">
+      <ind:filepath>/etc/fstab</ind:filepath>
+      <ind:pattern operation="pattern match" datatype="string" var_ref="oval:ssg-variable_cd_dvd_drive_regex_pattern_nosuid:var:1" var_check="at least one" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_nosuid_etc_fstab_not_cd_dvd_drive:obj:1" version="1">
+      <ind:filepath>/etc/fstab</ind:filepath>
+      <ind:pattern operation="pattern match" datatype="string" var_ref="oval:ssg-variable_not_cd_dvd_drive_regex_pattern_nosuid:var:1" var_check="at least one" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_no_cd_dvd_drive_in_etc_fstab:obj:1" version="1">
+      <ind:filepath>/etc/fstab</ind:filepath>
+      <ind:pattern operation="pattern match" datatype="string" var_ref="oval:ssg-variable_cd_dvd_drive_alternative_names:var:1" var_check="at least one" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_removable_partition_doesnt_exist:obj:1" version="1">
+      <unix:filepath var_ref="oval:ssg-var_removable_partition:var:1" var_check="at least one" />
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_var_removable_partition_is_cd_dvd_drive:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_removable_partition:var:1</ind:var_ref>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_nosuid_etc_fstab_cd_dvd_drive:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match" datatype="string">^.*,?nosuid,?.*$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_nosuid_etc_fstab_not_cd_dvd_drive:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match" datatype="string">^.*,?nosuid,?.*</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:variable_state id="oval:ssg-state_var_removable_partition_is_cd_dvd_drive:ste:1" version="1" operator="AND">
+      <ind:value operation="equals">/dev/cdrom</ind:value>
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:external_variable id="oval:ssg-var_removable_partition:var:1" version="1" datatype="string" comment="removable partition" />
+    <oval-def:constant_variable id="oval:ssg-variable_cd_dvd_drive_alternative_names_nosuid:var:1" version="1" datatype="string" comment="CD/DVD drive allowed alternative names">
+      <oval-def:value>/dev/cdrom</oval-def:value>
+      <oval-def:value>/dev/dvd</oval-def:value>
+      <oval-def:value>/dev/scd0</oval-def:value>
+      <oval-def:value>/dev/sr0</oval-def:value>
+    </oval-def:constant_variable>
+    <oval-def:local_variable id="oval:ssg-variable_cd_dvd_drive_regex_pattern_nosuid:var:1" version="1" datatype="string" comment="Regular expression pattern for CD / DVD drive alternative names">
+      <oval-def:concat>
+        <oval-def:literal_component>^[\s]*</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-variable_cd_dvd_drive_alternative_names_nosuid:var:1" />
+        <oval-def:literal_component>[\s]+[/\w]+[\s]+[\w]+[\s]+([^\s]+)(?:[\s]+[\d]+){2}$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-variable_not_cd_dvd_drive_regex_pattern_nosuid:var:1" version="1" datatype="string" comment="Regular expression pattern for removable block special device other than CD / DVD drive">
+      <oval-def:concat>
+        <oval-def:literal_component>^[\s]*</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_removable_partition:var:1" />
+        <oval-def:literal_component>[\s]+[/\w]+[\s]+[\w]+[\s]+([^\s]+)(?:[\s]+[\d]+){2}$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:constant_variable id="oval:ssg-variable_cd_dvd_drive_alternative_names:var:1" version="1" datatype="string" comment="CD/DVD drive allowed alternative names">
+      <oval-def:value>/dev/cdrom</oval-def:value>
+      <oval-def:value>/dev/dvd</oval-def:value>
+      <oval-def:value>/dev/scd0</oval-def:value>
+      <oval-def:value>/dev/sr0</oval-def:value>
+    </oval-def:constant_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

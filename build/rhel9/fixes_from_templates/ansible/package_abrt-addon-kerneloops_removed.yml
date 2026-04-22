@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall abrt-addon-kerneloops Package: Ensure abrt-addon-kerneloops is removed"
+  ansible.builtin.package:
+    name: "abrt-addon-kerneloops"
+    state: absent

@@ -1,0 +1,81 @@
+<def-group>
+  <definition class="compliance" id="kernel_config_fortify_source"
+  version="1">
+    <metadata>
+        <title>Harden common str/mem functions against buffer overflows</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The kernel CONFIG_FORTIFY_SOURCE should have value y</description>
+    </metadata>
+    <criteria operator="OR">
+      <criteria operator="AND">
+        <criterion comment="Check presence of build configuration of installed kernels"
+        test_ref="test_kernel_config_fortify_source" />
+        <criterion comment="Ensure all kernels have the config"
+        test_ref="test_all_kernels_config_fortify_source_compliant" />
+      </criteria>
+
+    </criteria>
+  </definition>
+
+  <ind:textfilecontent54_test check="all"
+  comment="Check /boot/config-.* files for CONFIG_FORTIFY_SOURCE=y"
+  id="test_kernel_config_fortify_source" version="1">
+    <ind:object object_ref="object_kernel_config_fortify_source" />
+    <ind:state state_ref="state_kernel_config_fortify_source" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_kernel_config_fortify_source" version="1">
+    <ind:filepath operation="pattern match">^/boot/config-.*$</ind:filepath>
+    <ind:pattern operation="pattern match">^CONFIG_FORTIFY_SOURCE="?(.*?)"?$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+  <ind:textfilecontent54_state id="state_kernel_config_fortify_source" version="1">
+    <ind:subexpression operation="equals" datatype="string">y</ind:subexpression>
+  </ind:textfilecontent54_state>
+
+
+
+
+  <ind:variable_test check="all" check_existence="all_exist"
+  comment="Check if all installed kernels are compliant"
+  id="test_all_kernels_config_fortify_source_compliant" version="1">
+    <ind:object object_ref="object_var_kernel_config_fortify_source_count" />
+    <ind:state state_ref="state_var_kernel_config_fortify_source" />
+  </ind:variable_test>
+
+  <ind:variable_object id="object_var_kernel_config_fortify_source_count" version="1">
+    <ind:var_ref>local_var_config_fortify_source_count_kernels_installed</ind:var_ref>
+  </ind:variable_object>
+
+  <ind:variable_state id="state_var_kernel_config_fortify_source" version="1">
+    <ind:value operation="equals" datatype="int"
+    var_ref="local_var_config_fortify_source_count_compliant_configs" />
+  </ind:variable_state>
+
+  <local_variable comment="Count number of kernels installed" datatype="int"
+  id="local_var_config_fortify_source_count_kernels_installed" version="1">
+    <count>
+      <unique>
+        <object_component object_ref="object_kernel_config_fortify_source_files"
+        item_field="filepath" />
+      </unique>
+    </count>
+  </local_variable>
+
+  <local_variable comment="Count number of configs found" datatype="int"
+  id="local_var_config_fortify_source_count_compliant_configs" version="1">
+    <count>
+      <unique>
+        <object_component object_ref="object_kernel_config_fortify_source"
+        item_field="filepath" />
+      </unique>
+    </count>
+  </local_variable>
+
+  <unix:file_object comment="Collect the kernel config files" id="object_kernel_config_fortify_source_files" version="1">
+      <unix:path>/boot</unix:path>
+      <unix:filename operation="pattern match">^config-.*$</unix:filename>
+  </unix:file_object>
+</def-group>

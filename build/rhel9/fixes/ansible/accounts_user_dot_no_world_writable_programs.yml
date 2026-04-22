@@ -1,0 +1,118 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Not Run World-Writable Programs - Initialize
+    variables
+  ansible.builtin.set_fact:
+    home_user_dirs: []
+    world_writable_files: []
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Not Run World-Writable Programs - Get user's
+    home dir list
+  ansible.builtin.getent:
+    database: passwd
+  register: passwd_database
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Not Run World-Writable Programs - Fill home_user_dirs
+  ansible.builtin.set_fact:
+    home_user_dirs: '{{ home_user_dirs + [item.data[4]] }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.data[4] is defined and item.data[2]|int >= 1000 and item.data[2]|int != 65534
+  with_items: '{{ passwd_database.ansible_facts.getent_passwd | dict2items(key_name=''user'',
+    value_name=''data'')}}'
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Not Run World-Writable Programs - Get world
+    writable files
+  ansible.builtin.shell: |
+    find / -xdev -type f -perm -0002 2> /dev/null
+  register: world_writable_files
+  changed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Not Run World-Writable Programs - Find referenced_files
+    in init files
+  ansible.builtin.find:
+    paths: '{{ home_user_dirs }}'
+    contains: '{{ item }}'
+    hidden: true
+    read_whole_file: true
+    recurse: true
+  with_items: '{{ world_writable_files.stdout_lines }}'
+  register: referenced_files
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Not Run World-Writable Programs - Remove world
+    writable permissions
+  ansible.builtin.file:
+    path: '{{ item.item }}'
+    mode: o-w
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.matched > 0
+  with_items: '{{ referenced_files.results }}'
+  tags:
+  - CCE-87451-1
+  - accounts_user_dot_no_world_writable_programs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

@@ -1,0 +1,102 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-88002-1
+  - DISA-STIG-RHEL-09-653110
+  - NIST-800-53-AU-12 b
+  - configure_strategy
+  - file_permissions_audit_configuration
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/audit/ file(s)
+  ansible.builtin.command: find -P /etc/audit/ -maxdepth 1 -perm /u+xs,g+xws,o+xwrt  -type
+    f -regextype posix-extended -regex "^.*audit(\.rules|d\.conf)$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-88002-1
+  - DISA-STIG-RHEL-09-653110
+  - NIST-800-53-AU-12 b
+  - configure_strategy
+  - file_permissions_audit_configuration
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /etc/audit/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-xs,g-xws,o-xwrt
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-88002-1
+  - DISA-STIG-RHEL-09-653110
+  - NIST-800-53-AU-12 b
+  - configure_strategy
+  - file_permissions_audit_configuration
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/audit/rules.d/ file(s)
+  ansible.builtin.command: find -P /etc/audit/rules.d/ -maxdepth 1 -perm /u+xs,g+xws,o+xwrt  -type
+    f -regextype posix-extended -regex "^.*\.rules$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-88002-1
+  - DISA-STIG-RHEL-09-653110
+  - NIST-800-53-AU-12 b
+  - configure_strategy
+  - file_permissions_audit_configuration
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /etc/audit/rules.d/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-xs,g-xws,o-xwrt
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-88002-1
+  - DISA-STIG-RHEL-09-653110
+  - NIST-800-53-AU-12 b
+  - configure_strategy
+  - file_permissions_audit_configuration
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

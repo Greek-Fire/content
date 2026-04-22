@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-accounts_minimum_age_login_defs:def:1" version="3" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Set Password Minimum Age</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83610-6" source="CCE" />
+        <oval-def:reference ref_id="accounts_minimum_age_login_defs" source="ssg" />
+        <oval-def:description>The minimum password age policy should be set appropriately.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="The value of PASS_MIN_DAYS should be set appropriately in /etc/login.defs" operator="AND">
+        <oval-def:criterion test_ref="oval:ssg-test_pass_min_days:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_pass_min_days:tst:1" version="1" check="all" comment="The value of PASS_MIN_DAYS should be set appropriately in /etc/login.defs" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_last_pass_min_days_instance_value:obj:1" />
+      <ind:state state_ref="oval:ssg-state_last_pass_min_days_instance_value:ste:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_last_pass_min_days_from_etc_login_defs:obj:1" version="1">
+      <ind:behaviors singleline="true" />
+      <ind:filepath>/etc/login.defs</ind:filepath>
+      <ind:pattern operation="pattern match">.*\n[^#]*(PASS_MIN_DAYS\s+\d+)\s*\n</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-object_last_pass_min_days_instance_value:obj:1" version="1">
+      <ind:var_ref>oval:ssg-variable_last_pass_min_days_instance_value:var:1</ind:var_ref>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_last_pass_min_days_instance_value:ste:1" version="1" operator="AND">
+      <ind:value operation="greater than or equal" var_ref="oval:ssg-var_accounts_minimum_age_login_defs:var:1" datatype="int" var_check="at least one" />
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-variable_last_pass_min_days_instance_value:var:1" version="1" datatype="int" comment="The value of last PASS_MIN_DAYS directive in /etc/login.defs">
+      <oval-def:regex_capture pattern="PASS_MIN_DAYS\s+(\d+)">
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_last_pass_min_days_from_etc_login_defs:obj:1" />
+      </oval-def:regex_capture>
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_accounts_minimum_age_login_defs:var:1" version="1" datatype="int" comment="Minimum password age in days" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

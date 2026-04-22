@@ -1,0 +1,80 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83970-4
+  - DISA-STIG-RHEL-09-213110
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-39
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+  - sysctl_kernel_exec_shield
+
+- name: Check if noexec argument is already present in /etc/default/grub
+  ansible.builtin.slurp:
+    src: /etc/default/grub
+  register: etc_default_grub
+  when: ( "kernel-core" in ansible_facts.packages and ansible_architecture == "x86_64"
+    )
+  tags:
+  - CCE-83970-4
+  - DISA-STIG-RHEL-09-213110
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-39
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+  - sysctl_kernel_exec_shield
+
+- name: Check if noexec argument is present
+  ansible.builtin.command: /sbin/grubby --info=ALL
+  register: grubby_info
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: ( "kernel-core" in ansible_facts.packages and ansible_architecture == "x86_64"
+    )
+  tags:
+  - CCE-83970-4
+  - DISA-STIG-RHEL-09-213110
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-39
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+  - sysctl_kernel_exec_shield
+
+- name: Update grub defaults and the bootloader menu
+  ansible.builtin.command: /sbin/grubby --update-kernel=ALL --remove-args="noexec"
+  when:
+  - ( "kernel-core" in ansible_facts.packages and ansible_architecture == "x86_64"
+    )
+  - (grubby_info.stdout is search('noexec')) or ((etc_default_grub['content'] | b64decode)
+    is search('noexec'))
+  tags:
+  - CCE-83970-4
+  - DISA-STIG-RHEL-09-213110
+  - NIST-800-171-3.1.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-39
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+  - sysctl_kernel_exec_shield

@@ -1,0 +1,114 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Time Service to use NTS - Check That /etc/ntp.conf Exist
+  ansible.builtin.stat:
+    path: /etc/ntp.conf
+  register: ntp_conf_exist_result
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Time Service to use NTS - Set the nts Values in /etc/ntp.conf
+  ansible.builtin.replace:
+    path: /etc/ntp.conf
+    regexp: (^server\s+((?!nts).)*)$
+    replace: \1 nts\n
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - ntp_conf_exist_result.stat.exists
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Time Service to use NTS - Check That /etc/chrony.conf Exist
+  ansible.builtin.stat:
+    path: /etc/chrony.conf
+  register: chrony_conf_exist_result
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Time Service to use NTS - Set the nts Values in /etc/chrony.conf
+  ansible.builtin.replace:
+    path: /etc/chrony.conf
+    regexp: (^(?:server|pool|peer)\s+((?!nts).)*)$
+    replace: \1 nts\n
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_exist_result.stat.exists
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Time Service to use NTS - Get Conf Files from /etc/chrony.d/
+  ansible.builtin.find:
+    path: /etc/chrony.d/
+    patterns: '*.conf'
+    file_type: file
+  register: chrony_d_conf_files
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Time Service to use NTS - Set the maxpoll Values in /etc/chrony.d/
+  ansible.builtin.replace:
+    path: '{{ item.path }}'
+    regexp: (^(?:server|pool|peer)\s+((?!maxpoll).)*)$
+    replace: \1 nts\n
+  loop: '{{ chrony_d_conf_files.files }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_d_conf_files.matched
+  tags:
+  - chrony_set_nts
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

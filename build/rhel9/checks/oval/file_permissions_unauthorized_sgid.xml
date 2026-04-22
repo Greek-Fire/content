@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-file_permissions_unauthorized_sgid:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure All SGID Executables Are Authorized</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83901-9" source="CCE" />
+        <oval-def:reference ref_id="file_permissions_unauthorized_sgid" source="ssg" />
+        <oval-def:description>Evaluates to true if all files with SGID set are owned by RPM packages.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check if all sgid files present in the system are authorized" test_ref="oval:ssg-test_file_permissions_unauthorized_sgid:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_file_permissions_unauthorized_sgid:tst:1" version="1" check="all" comment="Check the existence of sgid files not included in rpm packages." check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_file_permissions_unauthorized_sgid_no_rpm_files:obj:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <linux:partition_object id="oval:ssg-object_file_permissions_unauthorized_sgid_local_partitions:obj:1" version="1">
+      <linux:mount_point operation="pattern match">.*</linux:mount_point>
+      <oval-def:filter action="include">oval:ssg-state_file_permissions_unauthorized_sgid_dev_partitons:ste:1</oval-def:filter>
+    </linux:partition_object>
+    <unix:file_object id="oval:ssg-object_file_permissions_unauthorized_sgid_all_sgid_files:obj:1" version="1" comment="all files with sgid set">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="defined" />
+      <unix:path operation="equals" var_check="at least one" var_ref="oval:ssg-var_file_permissions_unauthorized_sgid_local_mountpoints:var:1" />
+      <unix:filename operation="pattern match">^.*$</unix:filename>
+      <oval-def:filter action="include">oval:ssg-state_file_permissions_unauthorized_sgid_set:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_file_permissions_unauthorized_sgid_sysroot:ste:1</oval-def:filter>
+    </unix:file_object>
+    <linux:rpmverifyfile_object id="oval:ssg-object_file_permissions_unauthorized_sgid_rpms:obj:1" version="1" comment="all files with sgid set that come from a RPM package">
+      <linux:behaviors nolinkto="true" nomd5="true" nosize="true" nouser="true" nogroup="true" nomtime="true" nomode="true" nordev="true" />
+      <linux:name operation="pattern match">.*</linux:name>
+      <linux:epoch operation="pattern match">.*</linux:epoch>
+      <linux:version operation="pattern match">.*</linux:version>
+      <linux:release operation="pattern match">.*</linux:release>
+      <linux:arch operation="pattern match">.*</linux:arch>
+      <linux:filepath operation="equals" var_check="all" var_ref="oval:ssg-var_file_permissions_unauthorized_sgid_all_sgid_files:var:1" />
+    </linux:rpmverifyfile_object>
+    <ind:variable_object id="oval:ssg-object_file_permissions_unauthorized_sgid_no_rpm_files:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_file_permissions_unauthorized_sgid_all_sgid_files:var:1</ind:var_ref>
+      <oval-def:filter action="exclude">oval:ssg-state_file_permissions_unauthorized_sgid_rpm_filepaths:ste:1</oval-def:filter>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-state_file_permissions_unauthorized_sgid_set:ste:1" version="1" operator="AND">
+      <unix:sgid datatype="boolean">true</unix:sgid>
+    </unix:file_state>
+    <unix:file_state id="oval:ssg-state_file_permissions_unauthorized_sgid_sysroot:ste:1" version="1" operator="AND" comment="Used to filter out all files in the /sysroot directory">
+      <unix:filepath operation="pattern match">^/sysroot/.*$</unix:filepath>
+    </unix:file_state>
+    <linux:partition_state id="oval:ssg-state_file_permissions_unauthorized_sgid_dev_partitons:ste:1" version="1" operator="AND">
+      <linux:device operation="pattern match">^/dev/.*$</linux:device>
+    </linux:partition_state>
+    <ind:variable_state id="oval:ssg-state_file_permissions_unauthorized_sgid_rpm_filepaths:ste:1" version="1" operator="AND">
+      <ind:value datatype="string" operation="equals" var_check="at least one" var_ref="oval:ssg-var_file_permissions_unauthorized_sgid_rpms:var:1" />
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_file_permissions_unauthorized_sgid_local_mountpoints:var:1" version="1" datatype="string" comment="Mount points for local devices">
+      <oval-def:object_component item_field="mount_point" object_ref="oval:ssg-object_file_permissions_unauthorized_sgid_local_partitions:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_file_permissions_unauthorized_sgid_all_sgid_files:var:1" version="1" datatype="string" comment="all files with sgid set">
+      <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_file_permissions_unauthorized_sgid_all_sgid_files:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_file_permissions_unauthorized_sgid_rpms:var:1" version="1" datatype="string" comment="all files with sgid set that are managed by a RPM package">
+      <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_file_permissions_unauthorized_sgid_rpms:obj:1" />
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

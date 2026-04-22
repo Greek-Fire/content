@@ -1,0 +1,1 @@
+{"description": "Specify the host all outbound email should be routed into.", "type": "string", "operator": "equals", "interactive": false, "options": {"default": "smtp.$mydomain"}, "warnings": [], "title": "Postfix relayhost", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/services/mail/postfix_client/var_postfix_relayhost.var"}

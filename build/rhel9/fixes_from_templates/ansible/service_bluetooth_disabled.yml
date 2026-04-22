@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable Bluetooth Service - Disable service bluetooth"
+  block:
+  - name: "Disable Bluetooth Service - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Bluetooth Service - Ensure bluetooth.service is Masked"
+    ansible.builtin.systemd:
+      name: "bluetooth.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("bluetooth.service", multiline=True)'
+
+  - name: "Unit Socket Exists - bluetooth.socket"
+    ansible.builtin.command: systemctl -q list-unit-files bluetooth.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Bluetooth Service - Disable Socket bluetooth"
+    ansible.builtin.systemd:
+      name: "bluetooth.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("bluetooth.socket", multiline=True)'
+  tags:
+  - special_service_block

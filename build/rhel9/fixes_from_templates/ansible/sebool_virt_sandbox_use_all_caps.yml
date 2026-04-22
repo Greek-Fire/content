@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Disable the virt_sandbox_use_all_caps SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_virt_sandbox_use_all_caps)
+- name: "Disable the virt_sandbox_use_all_caps SELinux Boolean - Set SELinux Boolean virt_sandbox_use_all_caps Accordingly"
+  ansible.posix.seboolean:
+    name: virt_sandbox_use_all_caps
+    state: "{{ var_virt_sandbox_use_all_caps }}"
+    persistent: yes

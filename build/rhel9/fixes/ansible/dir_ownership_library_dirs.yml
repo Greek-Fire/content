@@ -1,0 +1,95 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the dir_ownership_library_dirs_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    dir_ownership_library_dirs_newown: '0'
+  tags:
+  - CCE-89022-8
+  - DISA-STIG-RHEL-09-232210
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /lib/ recursively
+  ansible.builtin.file:
+    path: /lib/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_library_dirs_newown }}'
+  tags:
+  - CCE-89022-8
+  - DISA-STIG-RHEL-09-232210
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /lib64/ recursively
+  ansible.builtin.file:
+    path: /lib64/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_library_dirs_newown }}'
+  tags:
+  - CCE-89022-8
+  - DISA-STIG-RHEL-09-232210
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /usr/lib/ recursively
+  ansible.builtin.file:
+    path: /usr/lib/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_library_dirs_newown }}'
+  tags:
+  - CCE-89022-8
+  - DISA-STIG-RHEL-09-232210
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /usr/lib64/ recursively
+  ansible.builtin.file:
+    path: /usr/lib64/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_library_dirs_newown }}'
+  tags:
+  - CCE-89022-8
+  - DISA-STIG-RHEL-09-232210
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

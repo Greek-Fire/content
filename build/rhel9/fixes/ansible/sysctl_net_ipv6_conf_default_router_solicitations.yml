@@ -1,0 +1,132 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity
+- (xccdf-var sysctl_net_ipv6_conf_default_router_solicitations_value)
+
+- name: Configure Denying Router Solicitations on All IPv6 Interfaces By Default -
+    Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity
+
+- name: Configure Denying Router Solicitations on All IPv6 Interfaces By Default -
+    Find all files that contain net.ipv6.conf.default.router_solicitations
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv6.conf.default.router_solicitations\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity
+
+- name: Configure Denying Router Solicitations on All IPv6 Interfaces By Default -
+    Find all files that set net.ipv6.conf.default.router_solicitations to correct
+    value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv6.conf.default.router_solicitations\s*=\s*{{ sysctl_net_ipv6_conf_default_router_solicitations_value
+      }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity
+
+- name: Configure Denying Router Solicitations on All IPv6 Interfaces By Default -
+    Comment out any occurrences of net.ipv6.conf.default.router_solicitations from
+    config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*net.ipv6.conf.default.router_solicitations
+    replace: '#net.ipv6.conf.default.router_solicitations'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity
+
+- name: Configure Denying Router Solicitations on All IPv6 Interfaces By Default -
+    Comment out any occurrences of net.ipv6.conf.default.router_solicitations from
+    /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*net.ipv6.conf.default.router_solicitations
+    replace: '#net.ipv6.conf.default.router_solicitations'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity
+
+- name: Configure Denying Router Solicitations on All IPv6 Interfaces By Default -
+    Ensure sysctl net.ipv6.conf.default.router_solicitations is set
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.default.router_solicitations
+    value: '{{ sysctl_net_ipv6_conf_default_router_solicitations_value }}'
+    sysctl_file: /etc/sysctl.d/net_ipv6_conf_default_router_solicitations.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84026-4
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - reboot_required
+  - sysctl_net_ipv6_conf_default_router_solicitations
+  - unknown_severity

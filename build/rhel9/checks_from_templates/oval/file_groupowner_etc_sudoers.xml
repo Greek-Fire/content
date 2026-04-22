@@ -1,0 +1,67 @@
+<def-group>
+  <definition class="compliance" id="file_groupowner_etc_sudoers" version="1">
+   
+      <metadata>
+        <title>Verify Group Who Owns /etc/sudoers File</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /etc/sudoers is group owned by root.</description>
+    </metadata>
+      <criteria>
+    
+      <criterion comment="Check file group ownership of /etc/sudoers" test_ref="test_file_groupowner_etc_sudoers_0" />
+    
+   
+    </criteria>
+  </definition>
+    
+
+      <ind:textfilecontent54_object id="object_file_groupowner_etc_sudoers_root_gid_etc" version="1" comment="gid of the root group (from /etc/group)">
+        <ind:filepath>/etc/group</ind:filepath>
+        <ind:pattern operation="pattern match">^root:\w+:(\w+):.*</ind:pattern>
+        <ind:instance datatype="int" operation="equals">1</ind:instance>
+      </ind:textfilecontent54_object>
+
+      <ind:textfilecontent54_object id="object_file_groupowner_etc_sudoers_root_gid_usr" version="1" comment="gid of the root group (from /usr/lib/group)">
+        <ind:filepath>/usr/lib/group</ind:filepath>
+        <ind:pattern operation="pattern match">^root:\w+:(\w+):.*</ind:pattern>
+        <ind:instance datatype="int" operation="equals">1</ind:instance>
+      </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_file_groupowner_etc_sudoers_root_gid" version="1" comment="gid of the root group (from /etc/group or /usr/lib/group)">
+    <set>
+      <object_reference>object_file_groupowner_etc_sudoers_root_gid_etc</object_reference>
+      <object_reference>object_file_groupowner_etc_sudoers_root_gid_usr</object_reference>
+    </set>
+  </ind:textfilecontent54_object>
+
+      <local_variable id="var_file_groupowner_etc_sudoers_root_gid" datatype="int" version="1" comment="Retrieve the gid of root from either /etc/group or /usr/lib/group">
+        <object_component item_field="subexpression" object_ref="object_file_groupowner_etc_sudoers_root_gid"/>
+      </local_variable>
+    
+
+  
+    <unix:file_test check="all" check_existence="none_exist" comment="Testing group ownership of /etc/sudoers" id="test_file_groupowner_etc_sudoers_0" version="1">
+      <unix:object object_ref="object_file_groupowner_etc_sudoers_0" />
+    </unix:file_test>
+
+    <unix:file_object comment="/etc/sudoers" id="object_file_groupowner_etc_sudoers_0" version="1">
+        <unix:filepath>/etc/sudoers</unix:filepath>
+      <filter action="exclude">symlink_file_groupowner</filter>
+      
+      <filter action="exclude">state_file_groupowner_etc_sudoers_0_root</filter>
+      
+    </unix:file_object>
+
+    
+      <unix:file_state id="state_file_groupowner_etc_sudoers_0_root" version="1">
+        <unix:group_id datatype="int" operation="equals" var_ref="var_file_groupowner_etc_sudoers_root_gid"></unix:group_id>
+      </unix:file_state>
+    
+  
+    <unix:file_state id="symlink_file_groupowner" version="1">
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+</def-group>

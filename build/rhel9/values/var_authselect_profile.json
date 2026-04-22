@@ -1,0 +1,1 @@
+{"description": "Specify the authselect profile to select", "type": "string", "operator": "equals", "interactive": false, "options": {"local": "local", "default": "minimal", "minimal": "minimal", "sssd": "sssd"}, "warnings": [], "title": "Authselect profile", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/system/accounts/var_authselect_profile.var"}

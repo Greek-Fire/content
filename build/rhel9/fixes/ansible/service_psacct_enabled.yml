@@ -1,0 +1,44 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-AU-12(a)
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_psacct_enabled
+
+- name: Enable Process Accounting (psacct) - Enable service psacct
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable Process Accounting (psacct) - Enable Service psacct
+    ansible.builtin.systemd:
+      name: psacct
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"psacct" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-AU-12(a)
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_psacct_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

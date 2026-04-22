@@ -1,0 +1,72 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83850-8
+  - DISA-STIG-RHEL-09-231040
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_autofs_disabled
+
+- name: Disable the Automounter - Disable service autofs
+  block:
+
+  - name: Disable the Automounter - Collect systemd Services Present in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable the Automounter - Ensure autofs.service is Masked
+    ansible.builtin.systemd:
+      name: autofs.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("autofs.service", multiline=True)
+
+  - name: Unit Socket Exists - autofs.socket
+    ansible.builtin.command: systemctl -q list-unit-files autofs.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable the Automounter - Disable Socket autofs
+    ansible.builtin.systemd:
+      name: autofs.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("autofs.socket", multiline=True)
+  tags:
+  - CCE-83850-8
+  - DISA-STIG-RHEL-09-231040
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_autofs_disabled
+  - special_service_block
+  when: ( "autofs" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )

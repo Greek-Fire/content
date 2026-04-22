@@ -1,0 +1,159 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83720-3
+  - CJIS-5.4.1.1
+  - DISA-STIG-RHEL-09-653090
+  - NIST-800-171-3.3.1
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-AU-9(4)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.5
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - file_permissions_var_log_audit
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: System Audit Logs Must Have Mode 0640 or Less Permissive - Get audit log file
+    from /etc/audit/auditd.conf
+  ansible.builtin.command: grep -iw ^log_file /etc/audit/auditd.conf
+  check_mode: false
+  failed_when: false
+  changed_when: false
+  register: log_file_exists
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83720-3
+  - CJIS-5.4.1.1
+  - DISA-STIG-RHEL-09-653090
+  - NIST-800-171-3.3.1
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-AU-9(4)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.5
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - file_permissions_var_log_audit
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: System Audit Logs Must Have Mode 0640 or Less Permissive - Set audit log file
+    path
+  ansible.builtin.set_fact:
+    log_file_path: '{{ (log_file_exists.stdout | default('''') | split('' '') | last)
+      | default(''/var/log/audit/audit.log'', true) }}'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83720-3
+  - CJIS-5.4.1.1
+  - DISA-STIG-RHEL-09-653090
+  - NIST-800-171-3.3.1
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-AU-9(4)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.5
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - file_permissions_var_log_audit
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: System Audit Logs Must Have Mode 0640 or Less Permissive - Get audit log group
+    from /etc/audit/auditd.conf
+  ansible.builtin.command: grep -iw ^log_group /etc/audit/auditd.conf
+  check_mode: false
+  failed_when: false
+  changed_when: false
+  register: log_group_exists
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83720-3
+  - CJIS-5.4.1.1
+  - DISA-STIG-RHEL-09-653090
+  - NIST-800-171-3.3.1
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-AU-9(4)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.5
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - file_permissions_var_log_audit
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: System Audit Logs Must Have Mode 0640 or Less Permissive - Set audit log group
+  ansible.builtin.set_fact:
+    log_group: '{{ (log_group_exists.stdout | default('''') | split('' '') | last)
+      | default(''root'', true) }}'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83720-3
+  - CJIS-5.4.1.1
+  - DISA-STIG-RHEL-09-653090
+  - NIST-800-171-3.3.1
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-AU-9(4)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.5
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - file_permissions_var_log_audit
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: System Audit Logs Must Have Mode 0640 or Less Permissive - Set audit log file
+    permissions
+  ansible.builtin.file:
+    path: '{{ log_file_path }}'
+    state: file
+    mode: '{{ ''0600'' if log_group == ''root'' else ''0640'' }}'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83720-3
+  - CJIS-5.4.1.1
+  - DISA-STIG-RHEL-09-653090
+  - NIST-800-171-3.3.1
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-AU-9(4)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.5
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.1
+  - file_permissions_var_log_audit
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

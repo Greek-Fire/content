@@ -1,0 +1,310 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-configure_crypto_policy:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure System Cryptography Policy</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83450-7" source="CCE" />
+        <oval-def:reference ref_id="configure_crypto_policy" source="ssg" />
+        <oval-def:description>Ensure crypto policy is correctly configured in /etc/crypto-policies/config, and the policy is current.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="check for crypto policy correctly configured in /etc/crypto-policy/config" test_ref="oval:ssg-test_configure_crypto_policy:tst:1" />
+        <oval-def:criterion comment="check for crypto policy correctly configured in /etc/crypto-policy/state/current" test_ref="oval:ssg-test_configure_crypto_policy_current:tst:1" />
+        <oval-def:criterion comment="Check if update-crypto-policies has been run after config update" test_ref="oval:ssg-test_crypto_policies_updated:tst:1" />
+        <oval-def:criterion comment="Check if /etc/crypto-policies/back-ends/nss.config exists" test_ref="oval:ssg-test_crypto_policy_nss_config:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-enable_fips_mode:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Enable FIPS Mode</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-88742-2" source="CCE" />
+        <oval-def:reference ref_id="enable_fips_mode" source="ssg" />
+        <oval-def:description>Check if FIPS mode is enabled on the system</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+          <oval-def:extend_definition comment="The system is container" definition_ref="oval:ssg-installed_env_is_a_container:def:1" />
+          <oval-def:extend_definition comment="system cryptography policy is configured" definition_ref="oval:ssg-configure_crypto_policy:def:1" />
+          <oval-def:criterion comment="check if var_system_crypto_policy variable selection is set to FIPS" test_ref="oval:ssg-test_system_crypto_policy_value:tst:1" />
+          <oval-def:criterion comment="check if fips=1 present in the /usr/lib/bootc/kargs.d/*.toml" test_ref="oval:ssg-test_fips_1_argument_in_usr_lib_bootc_kargs_d:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criteria operator="AND">
+          <oval-def:criteria operator="OR">
+            <oval-def:extend_definition negate="true" comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+            <oval-def:criteria operator="AND">
+              <oval-def:extend_definition comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+              <oval-def:extend_definition negate="true" comment="The system is container" definition_ref="oval:ssg-installed_env_is_a_container:def:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+          <oval-def:criterion comment="check contents of /proc/sys/crypto/fips_enabled" test_ref="oval:ssg-test_proc_sys_crypto_fips_enabled:tst:1" />
+          <oval-def:extend_definition comment="check option crypto.fips_enabled = 1 in sysctl" definition_ref="oval:ssg-sysctl_crypto_fips_enabled:def:1" />
+          <oval-def:extend_definition comment="system cryptography policy is configured" definition_ref="oval:ssg-configure_crypto_policy:def:1" />
+          <oval-def:criterion comment="check if var_system_crypto_policy variable selection is set to FIPS" test_ref="oval:ssg-test_system_crypto_policy_value:tst:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:criteria operator="AND">
+              <oval-def:extend_definition comment="generic test for s390x architecture" definition_ref="oval:ssg-system_info_architecture_s390_64:def:1" />
+              <oval-def:criterion comment="check if kernel option fips=1 is present in /boot/loader/entries/.*.conf" test_ref="oval:ssg-test_fips_1_argument_in_boot_loader_entries_conf:tst:1" />
+            </oval-def:criteria>
+            <oval-def:criteria operator="AND">
+              <oval-def:criteria negate="true" operator="AND">
+                <oval-def:extend_definition comment="generic test for non-s390x architecture" definition_ref="oval:ssg-system_info_architecture_s390_64:def:1" />
+              </oval-def:criteria>
+              <oval-def:criterion comment="check if kernel option fips=1 is present in /boot/loader/entries/.*.conf" test_ref="oval:ssg-test_fips_1_argument_in_boot_loader_entries_conf:tst:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-sysctl_crypto_fips_enabled:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Set kernel parameter 'crypto.fips_enabled' to 1</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83441-6" source="CCE" />
+        <oval-def:reference ref_id="sysctl_crypto_fips_enabled" source="ssg" />
+        <oval-def:description>The kernel 'crypto.fips_enabled' parameter should be set to '1' in system runtime.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="kernel runtime parameter crypto.fips_enabled set to 1" test_ref="oval:ssg-test_sysctl_crypto_fips_enabled:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-bootc:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title />
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="bootc" source="ssg" />
+        <oval-def:description>Bootable container or bootc system</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="kernel is installed" test_ref="oval:ssg-bootc_platform_test_kernel_installed:tst:1" />
+        <oval-def:criterion comment="rpm-ostree is installed" test_ref="oval:ssg-bootc_platform_test_rpm_ostree_installed:tst:1" />
+        <oval-def:criterion comment="bootc is installed" test_ref="oval:ssg-bootc_platform_test_bootc_installed:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="/run/ostree-booted exists, suggesting that we are in a running bootc environment" test_ref="oval:ssg-bootc_platform_test_run_ostree_booted_exists:tst:1" />
+          <oval-def:criterion comment="/ostree symlink exists, suggesting that we are in a bootc environment being built and hardened" test_ref="oval:ssg-bootc_platform_test_ostree_symlink_exists:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criterion comment="openshift-kubelet is not installed" test_ref="oval:ssg-bootc_platform_test_openshift_kubelet_removed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_env_is_a_container:def:1" version="2" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Check if the scan target is a container</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/a:container" source="CPE" />
+        <oval-def:reference ref_id="installed_env_is_a_container" source="ssg" />
+        <oval-def:description>Check for presence of files characterizing container filesystems.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criterion comment="Check if /.dockerenv exists" test_ref="oval:ssg-test_installed_env_is_a_docker_container:tst:1" />
+        <oval-def:criterion comment="Check if /run/.containerenv exists" test_ref="oval:ssg-test_installed_env_is_a_podman_container:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-system_info_architecture_s390_64:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test for s390_64 Architecture</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="system_info_architecture_s390_64" source="ssg" />
+        <oval-def:description>Generic test for s390_64 architecture to be used by other tests</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Generic test for s390_64 architecture" test_ref="oval:ssg-test_system_info_architecture_s390_64:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_crypto_policies_updated:tst:1" version="1" check="all" comment="Check if update-crypto-policies has been run" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_crypto_policies_config_file_modified_time:obj:1" />
+      <ind:state state_ref="oval:ssg-state_crypto_current_file_newer_than_config_file:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_crypto_policy:tst:1" version="1" check="all" comment="check for crypto policy correctly configured in /etc/crypto-policies/config" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_configure_crypto_policy:obj:1" />
+      <ind:state state_ref="oval:ssg-state_configure_crypto_policy:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_crypto_policy_current:tst:1" version="1" check="all" comment="check for crypto policy correctly configured in /etc/crypto-policies/state/current" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_configure_crypto_policy_current:obj:1" />
+      <ind:state state_ref="oval:ssg-state_configure_crypto_policy_current:ste:1" />
+    </ind:textfilecontent54_test>
+    <unix:file_test id="oval:ssg-test_crypto_policy_nss_config:tst:1" version="1" check="all" comment="Check if /etc/crypto-policies/back-ends/nss.config exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_crypto_policy_nss_config:obj:1" />
+    </unix:file_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_fips_1_argument_in_usr_lib_bootc_kargs_d:tst:1" version="1" check="at least one" comment="check if fips=1 present in the /usr/lib/bootc/kargs.d/*.toml" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_fips_1_argument_in_usr_lib_bootc_kargs_d:obj:1" />
+      <ind:state state_ref="oval:ssg-state_fips_1_argument_in_usr_lib_bootc_kargs_d:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_fips_1_argument_in_boot_loader_entries_conf:tst:1" version="1" check="all" comment="check if kernel option fips=1 is present in options in /boot/loader/entries/.*.conf" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_fips_1_argument_in_boot_loader_entries_conf:obj:1" />
+      <ind:state state_ref="oval:ssg-state_fips_1_argument_in_captured_group:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_system_crypto_policy_value:tst:1" version="1" check="at least one" comment="test if var_system_crypto_policy selection is set to FIPS" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_system_crypto_policy_value:obj:1" />
+      <ind:state state_ref="oval:ssg-ste_system_crypto_policy_value:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_proc_sys_crypto_fips_enabled:tst:1" version="1" check="all" comment="kernel runtime parameter crypto.fips_enabled set to 1" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_proc_sys_crypto_fips_enabled:obj:1" />
+    </ind:textfilecontent54_test>
+    <unix:sysctl_test id="oval:ssg-test_sysctl_crypto_fips_enabled:tst:1" version="1" check="all" comment="kernel runtime parameter crypto.fips_enabled set to 1" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_sysctl_crypto_fips_enabled:obj:1" />
+      <unix:state state_ref="oval:ssg-state_sysctl_crypto_fips_enabled:ste:1" />
+    </unix:sysctl_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_kernel_installed:tst:1" version="1" check="all" comment="package kernel-core is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_kernel_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_rpm_ostree_installed:tst:1" version="1" check="all" comment="package rpm-ostree is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_rpm_ostree_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_bootc_installed:tst:1" version="1" check="all" comment="package bootc is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_bootc_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_openshift_kubelet_removed:tst:1" version="1" check="all" comment="package openshift-kubelet is removed" check_existence="none_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_openshift_kubelet_removed:obj:1" />
+    </linux:rpminfo_test>
+    <unix:file_test id="oval:ssg-bootc_platform_test_run_ostree_booted_exists:tst:1" version="1" check="all" comment="The file /run/ostree-booted exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-bootc_platform_obj_run_ostree_booted_exists:obj:1" />
+    </unix:file_test>
+    <unix:file_test id="oval:ssg-bootc_platform_test_ostree_symlink_exists:tst:1" version="1" check="all" comment="The file /ostree is a symlink" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-bootc_platform_obj_ostree_symlink_exists:obj:1" />
+      <unix:state state_ref="oval:ssg-bootc_platform_ste_ostree_symlink_exists:ste:1" />
+    </unix:file_test>
+    <unix:file_test id="oval:ssg-test_installed_env_is_a_docker_container:tst:1" version="1" check="all" comment="Check if /.dockerenv exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_installed_env_is_a_docker_container:obj:1" />
+    </unix:file_test>
+    <unix:file_test id="oval:ssg-test_installed_env_is_a_podman_container:tst:1" version="1" check="all" comment="Check if /run/.containerenv exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_installed_env_is_a_podman_container:obj:1" />
+    </unix:file_test>
+    <unix:uname_test id="oval:ssg-test_system_info_architecture_s390_64:tst:1" version="1" check="all" comment="64 bit architecture" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_system_info_architecture_s390_64:obj:1" />
+      <unix:state state_ref="oval:ssg-state_system_info_architecture_s390_64:ste:1" />
+    </unix:uname_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-crypto_policies_current_file:obj:1" version="1" comment="crypto-policies current state">
+      <unix:filepath>/etc/crypto-policies/state/current</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-crypto_policies_config_file:obj:1" version="1" comment="crypto-policies config state">
+      <unix:filepath datatype="string">/etc/crypto-policies/config</unix:filepath>
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_crypto_policies_config_file_modified_time:obj:1" version="1" comment="Crypto policy current file timestamp">
+      <ind:var_ref>oval:ssg-variable_crypto_policies_config_file_timestamp:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_configure_crypto_policy:obj:1" version="1">
+      <ind:filepath>/etc/crypto-policies/config</ind:filepath>
+      <ind:pattern operation="pattern match">^(?!#)(\S+)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_configure_crypto_policy_current:obj:1" version="1">
+      <ind:filepath>/etc/crypto-policies/state/current</ind:filepath>
+      <ind:pattern operation="pattern match">^(?!#)(\S+)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_crypto_policy_nss_config:obj:1" version="1">
+      <unix:filepath>/etc/crypto-policies/back-ends/nss.config</unix:filepath>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_fips_1_argument_in_usr_lib_bootc_kargs_d:obj:1" version="1">
+      <ind:path>/usr/lib/bootc/kargs.d/</ind:path>
+      <ind:filename operation="pattern match">^.*\.toml$</ind:filename>
+      <ind:pattern operation="pattern match">^kargs[\s]*=[\s]*\[([^\]]+)\]$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_fips_1_argument_in_boot_loader_entries_conf:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/boot/loader/entries/.*.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^options (.*)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-obj_system_crypto_policy_value:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_system_crypto_policy:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_proc_sys_crypto_fips_enabled:obj:1" version="1">
+      <ind:filepath>/proc/sys/crypto/fips_enabled</ind:filepath>
+      <ind:pattern operation="pattern match">^1$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:sysctl_object id="oval:ssg-object_sysctl_crypto_fips_enabled:obj:1" version="1">
+      <unix:name>crypto.fips_enabled</unix:name>
+    </unix:sysctl_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_kernel_installed:obj:1" version="1">
+      <linux:name>kernel-core</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_rpm_ostree_installed:obj:1" version="1">
+      <linux:name>rpm-ostree</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_bootc_installed:obj:1" version="1">
+      <linux:name>bootc</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_openshift_kubelet_removed:obj:1" version="1">
+      <linux:name>openshift-kubelet</linux:name>
+    </linux:rpminfo_object>
+    <unix:file_object id="oval:ssg-bootc_platform_obj_run_ostree_booted_exists:obj:1" version="1" comment="The file /run/ostree-booted exists">
+      <unix:filepath operation="equals">/run/ostree-booted</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-bootc_platform_obj_ostree_symlink_exists:obj:1" version="1" comment="The file /ostree exists">
+      <unix:filepath operation="equals">/ostree</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-object_installed_env_is_a_docker_container:obj:1" version="1" comment="Check file /.dockerenv">
+      <unix:filepath datatype="string">/.dockerenv</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-object_installed_env_is_a_podman_container:obj:1" version="1" comment="Check file /run/.containerenv">
+      <unix:filepath datatype="string">/run/.containerenv</unix:filepath>
+    </unix:file_object>
+    <unix:uname_object id="oval:ssg-object_system_info_architecture_s390_64:obj:1" version="1" comment="64 bit architecture" />
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_crypto_current_file_newer_than_config_file:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="less than or equal" var_check="all" var_ref="oval:ssg-variable_crypto_policies_current_file_timestamp:var:1" />
+    </ind:variable_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_configure_crypto_policy:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals" var_check="all" var_ref="oval:ssg-var_system_crypto_policy:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_configure_crypto_policy_current:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals" var_check="all" var_ref="oval:ssg-var_system_crypto_policy:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_fips_1_argument_in_usr_lib_bootc_kargs_d:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">^.*"[\s]*fips[\s]*=[\s]*1[\s]*".*$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_fips_1_argument_in_captured_group:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match">^(?:.*\s)?fips=1(?:\s.*)?$</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:variable_state id="oval:ssg-ste_system_crypto_policy_value:ste:1" version="2" operator="AND" comment="variable value is set to 'FIPS' or 'FIPS:modifier', where the modifier corresponds to a crypto policy module that further restricts the modified crypto policy.">
+      <ind:value operation="pattern match" datatype="string">^FIPS(:(OSPP|STIG))?$</ind:value>
+    </ind:variable_state>
+    <unix:sysctl_state id="oval:ssg-state_sysctl_crypto_fips_enabled:ste:1" version="1" operator="AND">
+      <unix:value datatype="int" operation="equals">1</unix:value>
+    </unix:sysctl_state>
+    <unix:file_state id="oval:ssg-bootc_platform_ste_ostree_symlink_exists:ste:1" version="1" operator="AND" comment="The file /ostree is a symlink">
+      <unix:filepath operation="equals">/ostree</unix:filepath>
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+    <unix:uname_state id="oval:ssg-state_system_info_architecture_s390_64:ste:1" version="1" operator="AND" comment="64 bit architecture">
+      <unix:processor_type operation="equals">s390x</unix:processor_type>
+    </unix:uname_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-variable_crypto_policies_current_file_timestamp:var:1" version="1" datatype="int" comment="Age of /etc/crypto-policies/state/current">
+      <oval-def:object_component object_ref="oval:ssg-crypto_policies_current_file:obj:1" item_field="m_time" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-variable_crypto_policies_config_file_timestamp:var:1" version="1" datatype="int" comment="Age of /etc/crypto-policies/config">
+      <oval-def:object_component object_ref="oval:ssg-crypto_policies_config_file:obj:1" item_field="m_time" />
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_system_crypto_policy:var:1" version="1" datatype="string" comment="defined crypto policy" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

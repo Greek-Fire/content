@@ -1,0 +1,51 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_etc_issue_net_newgroup variable if represented by
+    gid
+  ansible.builtin.set_fact:
+    file_groupowner_etc_issue_net_newgroup: '0'
+  tags:
+  - CCE-86052-8
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.8
+  - configure_strategy
+  - file_groupowner_etc_issue_net
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /etc/issue.net
+  ansible.builtin.stat:
+    path: /etc/issue.net
+  register: file_exists
+  tags:
+  - CCE-86052-8
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.8
+  - configure_strategy
+  - file_groupowner_etc_issue_net
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/issue.net
+  ansible.builtin.file:
+    path: /etc/issue.net
+    follow: false
+    group: '{{ file_groupowner_etc_issue_net_newgroup }}'
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86052-8
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.8
+  - configure_strategy
+  - file_groupowner_etc_issue_net
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

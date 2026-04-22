@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_efi_user_cfg_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_efi_user_cfg_newown: "0"
+
+- name: Test for existence /boot/grub2/user.cfg
+  ansible.builtin.stat:
+    path: "/boot/grub2/user.cfg"
+  register: file_exists
+
+- name: Ensure owner on /boot/grub2/user.cfg
+  ansible.builtin.file:
+    path: "/boot/grub2/user.cfg"
+    follow: false
+    owner: "{{ file_owner_efi_user_cfg_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv6_conf_default_accept_ra_defrtr_value)
+
+
+- name: Configure Accepting Default Router in Router Advertisements on All IPv6 Interfaces By Default - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Configure Accepting Default Router in Router Advertisements on All IPv6 Interfaces By Default - Find all files that contain net.ipv6.conf.default.accept_ra_defrtr
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.default.accept_ra_defrtr\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Accepting Default Router in Router Advertisements on All IPv6 Interfaces By Default - Find all files that set net.ipv6.conf.default.accept_ra_defrtr to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.default.accept_ra_defrtr\s*=\s*{{ sysctl_net_ipv6_conf_default_accept_ra_defrtr_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Accepting Default Router in Router Advertisements on All IPv6 Interfaces By Default - Comment out any occurrences of net.ipv6.conf.default.accept_ra_defrtr from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv6.conf.default.accept_ra_defrtr'
+    replace: '#net.ipv6.conf.default.accept_ra_defrtr'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Configure Accepting Default Router in Router Advertisements on All IPv6 Interfaces By Default - Comment out any occurrences of net.ipv6.conf.default.accept_ra_defrtr from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv6.conf.default.accept_ra_defrtr'
+    replace: '#net.ipv6.conf.default.accept_ra_defrtr'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Configure Accepting Default Router in Router Advertisements on All IPv6 Interfaces By Default - Ensure sysctl net.ipv6.conf.default.accept_ra_defrtr is set
+  ansible.posix.sysctl:
+    name: "net.ipv6.conf.default.accept_ra_defrtr"
+    value: "{{ sysctl_net_ipv6_conf_default_accept_ra_defrtr_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv6_conf_default_accept_ra_defrtr.conf"
+
+    state: present
+    reload: yes

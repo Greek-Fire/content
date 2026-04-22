@@ -1,0 +1,30 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudo_add_ignore_dot
+
+- name: Ensure ignore_dot is enabled in /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    regexp: ^[\s]*Defaults.*\bignore_dot\b.*$
+    line: Defaults ignore_dot
+    validate: /usr/sbin/visudo -cf %s
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - sudo_add_ignore_dot

@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Ensure LDAP client is not installed: Ensure openldap-clients is removed"
+  ansible.builtin.package:
+    name: "openldap-clients"
+    state: absent

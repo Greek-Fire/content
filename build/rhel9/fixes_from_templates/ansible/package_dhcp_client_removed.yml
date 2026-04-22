@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall DHCP Client Package: Ensure dhcp-client is removed"
+  ansible.builtin.package:
+    name: "dhcp-client"
+    state: absent

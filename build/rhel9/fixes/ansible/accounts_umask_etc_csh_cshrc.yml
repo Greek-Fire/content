@@ -1,0 +1,81 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87721-7
+  - DISA-STIG-RHEL-09-412060
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_csh_cshrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+- (xccdf-var var_accounts_user_umask)
+
+- name: Check if umask in /etc/csh.cshrc is already set
+  ansible.builtin.lineinfile:
+    path: /etc/csh.cshrc
+    regexp: ^(\s*)umask\s+.*
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: umask_replace
+  when: '"tcsh" in ansible_facts.packages'
+  tags:
+  - CCE-87721-7
+  - DISA-STIG-RHEL-09-412060
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_csh_cshrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Replace user umask in /etc/csh.cshrc
+  ansible.builtin.replace:
+    path: /etc/csh.cshrc
+    regexp: ^(\s*)umask(\s+).*
+    replace: \g<1>umask\g<2>{{ var_accounts_user_umask }}
+  when:
+  - '"tcsh" in ansible_facts.packages'
+  - umask_replace.found > 0
+  tags:
+  - CCE-87721-7
+  - DISA-STIG-RHEL-09-412060
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_csh_cshrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure the Default umask is Appended Correctly
+  ansible.builtin.lineinfile:
+    create: true
+    path: /etc/csh.cshrc
+    line: umask {{ var_accounts_user_umask }}
+  when:
+  - '"tcsh" in ansible_facts.packages'
+  - umask_replace.found == 0
+  tags:
+  - CCE-87721-7
+  - DISA-STIG-RHEL-09-412060
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_csh_cshrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

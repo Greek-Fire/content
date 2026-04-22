@@ -1,0 +1,54 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - auditd_audispd_remote_daemon_activated
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Configure auditd to use audispd's remote logging daemon
+  block:
+
+  - name: Check for duplicate values
+    ansible.builtin.lineinfile:
+      path: /etc/audit/plugins.d/au-remote.conf
+      create: true
+      regexp: (?i)^\s*active\s*=\s*
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: dupes
+
+  - name: Deduplicate values from /etc/audit/plugins.d/au-remote.conf
+    ansible.builtin.lineinfile:
+      path: /etc/audit/plugins.d/au-remote.conf
+      create: true
+      regexp: (?i)^\s*active\s*=\s*
+      state: absent
+    when: dupes.found is defined and dupes.found > 1
+
+  - name: Insert correct line to /etc/audit/plugins.d/au-remote.conf
+    ansible.builtin.lineinfile:
+      path: /etc/audit/plugins.d/au-remote.conf
+      create: true
+      regexp: (?i)^\s*active\s*=\s*
+      line: active = yes
+      state: present
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - auditd_audispd_remote_daemon_activated
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

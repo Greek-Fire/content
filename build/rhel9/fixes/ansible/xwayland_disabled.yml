@@ -1,0 +1,32 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - xwayland_disabled
+
+- name: 'Disable XWayland: Disable XWayland'
+  community.general.ini_file:
+    path: /etc/gdm/custom.conf
+    section: daemon
+    option: WaylandEnable
+    value: 'false'
+    create: true
+    state: present
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - xwayland_disabled

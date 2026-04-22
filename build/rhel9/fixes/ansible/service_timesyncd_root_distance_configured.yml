@@ -1,0 +1,36 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - PCI-DSS-Req-10.4.3
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_timesyncd_root_distance_configured
+
+- name: Configure Systemd Timesyncd Root Distance Servers - Add missing / update wrong
+    records for root distance
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/timesyncd.d/oscap-remedy.conf
+    regexp: ^\s*RootDistanceMax\s*=
+    state: present
+    line: RootDistanceMax=1
+    create: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"systemd" in ansible_facts.packages'
+  tags:
+  - PCI-DSS-Req-10.4.3
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_timesyncd_root_distance_configured

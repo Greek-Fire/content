@@ -1,0 +1,125 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent
+
+- name: Limit CPU consumption of the Perf system - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent
+
+- name: Limit CPU consumption of the Perf system - Find all files that contain kernel.perf_cpu_time_max_percent
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*kernel.perf_cpu_time_max_percent\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent
+
+- name: Limit CPU consumption of the Perf system - Find all files that set kernel.perf_cpu_time_max_percent
+    to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*kernel.perf_cpu_time_max_percent\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent
+
+- name: Limit CPU consumption of the Perf system - Comment out any occurrences of
+    kernel.perf_cpu_time_max_percent from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*kernel.perf_cpu_time_max_percent
+    replace: '#kernel.perf_cpu_time_max_percent'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent
+
+- name: Limit CPU consumption of the Perf system - Comment out any occurrences of
+    kernel.perf_cpu_time_max_percent from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*kernel.perf_cpu_time_max_percent
+    replace: '#kernel.perf_cpu_time_max_percent'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent
+
+- name: Limit CPU consumption of the Perf system - Ensure sysctl kernel.perf_cpu_time_max_percent
+    is set to 1
+  ansible.posix.sysctl:
+    name: kernel.perf_cpu_time_max_percent
+    value: '1'
+    sysctl_file: /etc/sysctl.d/kernel_perf_cpu_time_max_percent.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83969-6
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_kernel_perf_cpu_time_max_percent

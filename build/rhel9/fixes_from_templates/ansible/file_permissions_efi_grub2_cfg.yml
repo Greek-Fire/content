@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /boot/grub2/grub.cfg
+  ansible.builtin.stat:
+    path: "/boot/grub2/grub.cfg"
+  register: file_exists
+
+- name: Ensure permission u-s,g-xwrs,o-xwrt on /boot/grub2/grub.cfg
+  ansible.builtin.file:
+    path: "/boot/grub2/grub.cfg"
+    mode: "u-s,g-xwrs,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,1 @@
+{"description": "Specify the SNMP community string used for read-only access.", "type": "string", "operator": "equals", "interactive": true, "options": {"default": "changemero"}, "warnings": [], "title": "SNMP read-only community string", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/services/snmp/snmp_configure_server/var_snmpd_ro_string.var"}

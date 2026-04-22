@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove the Kerberos Server Package: Ensure krb5-server is removed"
+  ansible.builtin.package:
+    name: "krb5-server"
+    state: absent

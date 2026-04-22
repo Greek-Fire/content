@@ -1,0 +1,65 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-88429-6
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.1
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_nftables_disabled
+
+- name: Verify nftables Service is Disabled - Disable service nftables
+  block:
+
+  - name: Verify nftables Service is Disabled - Collect systemd Services Present in
+      the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Verify nftables Service is Disabled - Ensure nftables.service is Masked
+    ansible.builtin.systemd:
+      name: nftables.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("nftables.service", multiline=True)
+
+  - name: Unit Socket Exists - nftables.socket
+    ansible.builtin.command: systemctl -q list-unit-files nftables.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Verify nftables Service is Disabled - Disable Socket nftables
+    ansible.builtin.systemd:
+      name: nftables.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("nftables.socket", multiline=True)
+  tags:
+  - CCE-88429-6
+  - PCI-DSSv4-1.2
+  - PCI-DSSv4-1.2.1
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_nftables_disabled
+  - special_service_block
+  when: ( "firewalld" in ansible_facts.packages and "nftables" in ansible_facts.packages
+    and "kernel-core" in ansible_facts.packages )

@@ -1,0 +1,31 @@
+<def-group>
+  <definition class="inventory" id="package_libpwquality"
+  version="1"><metadata>
+        <title>Package libpwquality is installed</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package libpwquality should be installed.</description>
+    </metadata>
+    <criteria>
+    
+      <criterion comment="Platform package libpwquality is installed"
+      test_ref="inventory_test_package_libpwquality_installed" />
+    
+    </criteria>
+  </definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="all_exist"
+  id="inventory_test_package_libpwquality_installed" version="1"
+  comment="package libpwquality is installed">
+    <linux:object object_ref="obj_inventory_test_package_libpwquality_installed" />
+    
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_inventory_test_package_libpwquality_installed" version="1">
+    <linux:name>libpwquality</linux:name>
+  </linux:rpminfo_object>
+  
+
+
+</def-group>

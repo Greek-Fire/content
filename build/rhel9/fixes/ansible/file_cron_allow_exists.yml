@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86185-6
+  - disable_strategy
+  - file_cron_allow_exists
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure that /etc/cron.allow exists - Add empty /etc/cron.allow
+  ansible.builtin.file:
+    path: /etc/cron.allow
+    state: touch
+    owner: '0'
+    mode: '0640'
+    modification_time: preserve
+    access_time: preserve
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86185-6
+  - disable_strategy
+  - file_cron_allow_exists
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

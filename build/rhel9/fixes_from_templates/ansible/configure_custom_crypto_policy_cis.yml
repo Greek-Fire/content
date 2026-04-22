@@ -1,0 +1,121 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = configure
+# complexity = low
+# disruption = low
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Set the base crypto policy"
+    ansible.builtin.set_fact:
+        expected_crypto_policy: "DEFAULT:NO-SHA1"
+
+
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Create custom crypto policy module NO-SSHCBC"
+    ansible.builtin.lineinfile:
+        path: /etc/crypto-policies/policies/modules/NO-SSHCBC.pmod
+        owner: root
+        group: root
+        mode: '0644'
+        line: cipher@SSH = -*-CBC
+        create: true
+        regexp: "cipher@SSH"
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Update the expected policy"
+    ansible.builtin.set_fact:
+        expected_crypto_policy: "{{ expected_crypto_policy + ':NO-SSHCBC' }}"
+
+
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Create custom crypto policy module NO-SSHWEAKCIPHERS"
+    ansible.builtin.lineinfile:
+        path: /etc/crypto-policies/policies/modules/NO-SSHWEAKCIPHERS.pmod
+        owner: root
+        group: root
+        mode: '0644'
+        line: cipher@SSH = -3DES-CBC -AES-128-CBC -AES-192-CBC -AES-256-CBC -CHACHA20-POLY1305
+        create: true
+        regexp: "cipher@SSH"
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Update the expected policy"
+    ansible.builtin.set_fact:
+        expected_crypto_policy: "{{ expected_crypto_policy + ':NO-SSHWEAKCIPHERS' }}"
+
+
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Create custom crypto policy module NO-SSHWEAKMACS"
+    ansible.builtin.lineinfile:
+        path: /etc/crypto-policies/policies/modules/NO-SSHWEAKMACS.pmod
+        owner: root
+        group: root
+        mode: '0644'
+        line: mac@SSH = -HMAC-MD5* -UMAC-64* -UMAC-128*
+        create: true
+        regexp: "mac@SSH"
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Update the expected policy"
+    ansible.builtin.set_fact:
+        expected_crypto_policy: "{{ expected_crypto_policy + ':NO-SSHWEAKMACS' }}"
+
+
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Create custom crypto policy module NO-WEAKMAC"
+    ansible.builtin.lineinfile:
+        path: /etc/crypto-policies/policies/modules/NO-WEAKMAC.pmod
+        owner: root
+        group: root
+        mode: '0644'
+        line: mac = -*-128*
+        create: true
+        regexp: "mac"
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Update the expected policy"
+    ansible.builtin.set_fact:
+        expected_crypto_policy: "{{ expected_crypto_policy + ':NO-WEAKMAC' }}"
+
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Check That /etc/crypto-policies/back-ends/rpm-sequoia.config Exists"
+    ansible.builtin.stat:
+        path: /etc/crypto-policies/back-ends/rpm-sequoia.config
+    register: crypto_rpm_sequoia_scope
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Create custom crypto policy module NO-RPMSHA1"
+    ansible.builtin.lineinfile:
+        path: /etc/crypto-policies/policies/modules/NO-RPMSHA1.pmod
+        owner: root
+        group: root
+        mode: '0644'
+        line: hash@rpm = -SHA1
+        create: true
+        regexp: "hash@rpm"
+
+    when: crypto_rpm_sequoia_scope.stat.exists
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Update the expected policy"
+    ansible.builtin.set_fact:
+        expected_crypto_policy: "{{ expected_crypto_policy + ':NO-RPMSHA1' }}"
+
+    when: crypto_rpm_sequoia_scope.stat.exists
+
+
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Check current crypto policy"
+    ansible.builtin.command: update-crypto-policies --show
+    register: current_crypto_policy
+    changed_when: false
+    failed_when: false
+    check_mode: false
+
+-   name: "Implement Custom Crypto Policy Modules for CIS Benchmark - Update crypto-policies"
+    ansible.builtin.command: update-crypto-policies --set {{ expected_crypto_policy }}
+    when: current_crypto_policy.stdout.strip() != expected_crypto_policy

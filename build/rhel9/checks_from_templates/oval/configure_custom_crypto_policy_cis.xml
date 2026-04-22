@@ -1,0 +1,124 @@
+<def-group>
+    <definition class="compliance" id="configure_custom_crypto_policy_cis" version="1">
+        <metadata>
+        <title>Implement Custom Crypto Policy Modules for CIS Benchmark</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure that the custom crypto policy module is configured</description>
+    </metadata>
+        <criteria operator="AND" comment="Ensure that all of the correct lines are in the file.">
+        
+            
+                <criterion comment="Check that cipher@SSH is configured in NO-SSHCBC.pmod"
+                       test_ref="test_configure_custom_crypto_policy_cis_NO-SSHCBC"/>
+            
+        
+            
+                <criterion comment="Check that cipher@SSH is configured in NO-SSHWEAKCIPHERS.pmod"
+                       test_ref="test_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS"/>
+            
+        
+            
+                <criterion comment="Check that mac@SSH is configured in NO-SSHWEAKMACS.pmod"
+                       test_ref="test_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS"/>
+            
+        
+            
+                <criterion comment="Check that mac is configured in NO-WEAKMAC.pmod"
+                       test_ref="test_configure_custom_crypto_policy_cis_NO-WEAKMAC"/>
+            
+        
+            
+                <criteria operator="OR" comment="If rpm-sequoia scope is available then hash@rpm must be configured in NO-RPMSHA1.pmod">
+                    <criterion comment="Check that rpm-sequoia scope is not available" negate="true" test_ref="test_configure_custom_crypto_policy_cis_rpm-sequoia" />
+                    <criteria operator="AND" comment="Check that rpm-sequoia scope is available AND hash@rpm is configured in NO-RPMSHA1.pmod">
+                        <criterion comment="Check that rpm-sequoia scope is available" test_ref="test_configure_custom_crypto_policy_cis_rpm-sequoia" />
+                        <criterion comment="Check that hash@rpm is configured in NO-RPMSHA1.pmod" test_ref="test_configure_custom_crypto_policy_cis_NO-RPMSHA1"/>
+                    </criteria>
+                </criteria>
+            
+        
+        </criteria>
+    </definition>
+        
+        <ind:textfilecontent54_test check="all"
+                                    comment="Tests that cipher@SSH is configured correctly."
+                                    id="test_configure_custom_crypto_policy_cis_NO-SSHCBC" version="1">
+
+            <ind:object object_ref="obj_configure_custom_crypto_policy_cis_NO-SSHCBC"/>
+        </ind:textfilecontent54_test>
+        <ind:textfilecontent54_object id="obj_configure_custom_crypto_policy_cis_NO-SSHCBC" version="1">
+            <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+            <ind:filename>NO-SSHCBC.pmod</ind:filename>
+            <ind:pattern operation="pattern match">^cipher@SSH = \-\*\-CBC$</ind:pattern>
+            <ind:instance datatype="int">1</ind:instance>
+        </ind:textfilecontent54_object>
+        
+        
+        <ind:textfilecontent54_test check="all"
+                                    comment="Tests that cipher@SSH is configured correctly."
+                                    id="test_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS" version="1">
+
+            <ind:object object_ref="obj_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS"/>
+        </ind:textfilecontent54_test>
+        <ind:textfilecontent54_object id="obj_configure_custom_crypto_policy_cis_NO-SSHWEAKCIPHERS" version="1">
+            <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+            <ind:filename>NO-SSHWEAKCIPHERS.pmod</ind:filename>
+            <ind:pattern operation="pattern match">^cipher@SSH = \-3DES\-CBC \-AES\-128\-CBC \-AES\-192\-CBC \-AES\-256\-CBC \-CHACHA20\-POLY1305$</ind:pattern>
+            <ind:instance datatype="int">1</ind:instance>
+        </ind:textfilecontent54_object>
+        
+        
+        <ind:textfilecontent54_test check="all"
+                                    comment="Tests that mac@SSH is configured correctly."
+                                    id="test_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS" version="1">
+
+            <ind:object object_ref="obj_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS"/>
+        </ind:textfilecontent54_test>
+        <ind:textfilecontent54_object id="obj_configure_custom_crypto_policy_cis_NO-SSHWEAKMACS" version="1">
+            <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+            <ind:filename>NO-SSHWEAKMACS.pmod</ind:filename>
+            <ind:pattern operation="pattern match">^mac@SSH = \-HMAC\-MD5\* \-UMAC\-64\* \-UMAC\-128\*$</ind:pattern>
+            <ind:instance datatype="int">1</ind:instance>
+        </ind:textfilecontent54_object>
+        
+        
+        <ind:textfilecontent54_test check="all"
+                                    comment="Tests that mac is configured correctly."
+                                    id="test_configure_custom_crypto_policy_cis_NO-WEAKMAC" version="1">
+
+            <ind:object object_ref="obj_configure_custom_crypto_policy_cis_NO-WEAKMAC"/>
+        </ind:textfilecontent54_test>
+        <ind:textfilecontent54_object id="obj_configure_custom_crypto_policy_cis_NO-WEAKMAC" version="1">
+            <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+            <ind:filename>NO-WEAKMAC.pmod</ind:filename>
+            <ind:pattern operation="pattern match">^mac = \-\*\-128\*$</ind:pattern>
+            <ind:instance datatype="int">1</ind:instance>
+        </ind:textfilecontent54_object>
+        
+        
+        <ind:textfilecontent54_test check="all"
+                                    comment="Tests that hash@rpm is configured correctly."
+                                    id="test_configure_custom_crypto_policy_cis_NO-RPMSHA1" version="1">
+
+            <ind:object object_ref="obj_configure_custom_crypto_policy_cis_NO-RPMSHA1"/>
+        </ind:textfilecontent54_test>
+        <ind:textfilecontent54_object id="obj_configure_custom_crypto_policy_cis_NO-RPMSHA1" version="1">
+            <ind:path>/etc/crypto-policies/policies/modules/</ind:path>
+            <ind:filename>NO-RPMSHA1.pmod</ind:filename>
+            <ind:pattern operation="pattern match">^hash@rpm = \-SHA1$</ind:pattern>
+            <ind:instance datatype="int">1</ind:instance>
+        </ind:textfilecontent54_object>
+        
+            <unix:file_test comment="Check that rpm-sequoia scope is available" id="test_configure_custom_crypto_policy_cis_rpm-sequoia" check="all" check_existence="all_exist" version="1">
+                <unix:object object_ref="object_configure_custom_crypto_policy_cis_rpm-sequoia" />
+            </unix:file_test>
+
+            <unix:file_object comment="/etc/crypto-policies/back-ends/rpm-sequoia.config" id="object_configure_custom_crypto_policy_cis_rpm-sequoia" version="1">
+                <unix:filepath>/etc/crypto-policies/back-ends/rpm-sequoia.config</unix:filepath>
+            </unix:file_object>
+        
+        
+</def-group>

@@ -1,0 +1,1 @@
+{"name": "cpe:/o:alinux:alibaba_cloud_linux:3", "check_id": "installed_OS_is_alinux3", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Alibaba Cloud Linux 3", "definition_location": "", "template": null}

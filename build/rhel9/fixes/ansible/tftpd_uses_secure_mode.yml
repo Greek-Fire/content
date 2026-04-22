@@ -1,0 +1,82 @@
+# platform = multi_platform_all
+# reboot = false
+# complexity = low
+# strategy = configure
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90736-0
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-7(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - tftpd_uses_secure_mode
+- (xccdf-var var_tftpd_secure_directory)
+
+- name: Find out if the file exists and contains the line configuring server arguments
+  ansible.builtin.find:
+    path: /etc/xinetd.d
+    patterns: tftp
+    contains: ^[\s]+server_args.*$
+  register: tftpd_secure_config_line
+  when: '"tftp-server" in ansible_facts.packages'
+  tags:
+  - CCE-90736-0
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-7(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - tftpd_uses_secure_mode
+
+- name: Ensure that TFTP server is configured to start with secure directory
+  ansible.builtin.lineinfile:
+    path: /etc/xinetd.d/tftp
+    regexp: ^[\s]*(server_args[\s]+=[\s]+.*?)(-s[\s]+[/\.\w]+)*(.*)$
+    line: \1 -s {{ var_tftpd_secure_directory }} \3
+    state: present
+    backrefs: true
+  when:
+  - '"tftp-server" in ansible_facts.packages'
+  - tftpd_secure_config_line is defined and tftpd_secure_config_line.matched > 0
+  tags:
+  - CCE-90736-0
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-7(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - tftpd_uses_secure_mode
+
+- name: Insert correct config line to start TFTP server with secure directory
+  ansible.builtin.lineinfile:
+    path: /etc/xinetd.d/tftp
+    line: server_args = -s {{ var_tftpd_secure_directory }}
+    state: present
+    create: true
+  when:
+  - '"tftp-server" in ansible_facts.packages'
+  - tftpd_secure_config_line is defined and tftpd_secure_config_line.matched == 0
+  tags:
+  - CCE-90736-0
+  - NIST-800-53-AC-6
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-7(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - tftpd_uses_secure_mode

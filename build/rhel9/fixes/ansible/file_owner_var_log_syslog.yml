@@ -1,0 +1,72 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - file_owner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the syslog user is defined
+  ansible.builtin.getent:
+    database: passwd
+    key: syslog
+  ignore_errors: true
+  when: '"rsyslog" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_owner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_owner_var_log_syslog_newown variable if syslog found
+  ansible.builtin.set_fact:
+    file_owner_var_log_syslog_newown: syslog
+  when:
+  - '"rsyslog" in ansible_facts.packages'
+  - ansible_facts.getent_passwd["syslog"] is defined
+  tags:
+  - configure_strategy
+  - file_owner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /var/log/syslog
+  ansible.builtin.stat:
+    path: /var/log/syslog
+  register: file_exists
+  when: '"rsyslog" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_owner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /var/log/syslog
+  ansible.builtin.file:
+    path: /var/log/syslog
+    follow: false
+    owner: '{{ file_owner_var_log_syslog_newown }}'
+  when:
+  - '"rsyslog" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_owner_var_log_syslog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

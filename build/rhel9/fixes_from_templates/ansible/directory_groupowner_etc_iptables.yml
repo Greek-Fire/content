@@ -1,0 +1,27 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the root group is defined
+  ansible.builtin.getent:
+    database: group
+    key: root
+  ignore_errors: yes
+  when: directory_groupowner_etc_iptables_newgroup is undefined
+
+- name: Set the directory_groupowner_etc_iptables_newgroup variable if root found
+  ansible.builtin.set_fact:
+    directory_groupowner_etc_iptables_newgroup: "root"
+  when: ansible_facts.getent_group["root"] is defined
+
+- name: Ensure group owner on /etc/iptables/
+  ansible.builtin.file:
+    path: "/etc/iptables/"
+    follow: false
+    state: directory
+
+    group: "{{ directory_groupowner_etc_iptables_newgroup }}"
+
+
+

@@ -1,0 +1,41 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = medium
+# disruption = low
+- name: Check If Prelinked Is Installed
+  ansible.builtin.stat:
+    path: /usr/sbin/prelink
+    get_checksum: false
+  register: prelink
+  tags:
+  - disable_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - package_prelink_removed
+
+- name: Restore Prelinked Binaries
+  ansible.builtin.command:
+    cmd: prelink -ua
+  when: prelink.stat.exists
+  tags:
+  - disable_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - package_prelink_removed
+
+- name: Ensure prelink is Removed
+  ansible.builtin.package:
+    name: prelink
+    state: absent
+  tags:
+  - disable_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - package_prelink_removed

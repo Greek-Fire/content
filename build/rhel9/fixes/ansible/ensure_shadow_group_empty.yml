@@ -1,0 +1,37 @@
+# platform = multi_platform_all
+# reboot = false
+# complexity = low
+# strategy = restrict
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - PCI-DSS-Req-8.2.1
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.2
+  - ensure_shadow_group_empty
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure interactive local users are the owners of their respective initialization
+    files
+  ansible.builtin.lineinfile:
+    dest: /etc/group
+    backrefs: true
+    regexp: (^shadow:[^:]*:[^:]*:)([^:]+$)
+    line: \1
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - PCI-DSS-Req-8.2.1
+  - PCI-DSSv4-8.3
+  - PCI-DSSv4-8.3.2
+  - ensure_shadow_group_empty
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

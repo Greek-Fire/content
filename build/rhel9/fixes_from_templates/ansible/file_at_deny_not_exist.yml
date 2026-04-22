@@ -1,0 +1,12 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+
+- name: Ensure that /etc/at.deny does not exist - Remove /etc/at.deny
+  ansible.builtin.file:
+      path: /etc/at.deny
+      state: absent

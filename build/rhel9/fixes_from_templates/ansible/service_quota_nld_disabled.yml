@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable Quota Netlink (quota_nld) - Disable service quota_nld"
+  block:
+  - name: "Disable Quota Netlink (quota_nld) - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Quota Netlink (quota_nld) - Ensure quota_nld.service is Masked"
+    ansible.builtin.systemd:
+      name: "quota_nld.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("quota_nld.service", multiline=True)'
+
+  - name: "Unit Socket Exists - quota_nld.socket"
+    ansible.builtin.command: systemctl -q list-unit-files quota_nld.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Quota Netlink (quota_nld) - Disable Socket quota_nld"
+    ansible.builtin.systemd:
+      name: "quota_nld.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("quota_nld.socket", multiline=True)'
+  tags:
+  - special_service_block

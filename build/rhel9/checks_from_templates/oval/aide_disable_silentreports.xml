@@ -1,0 +1,45 @@
+<def-group>
+  <definition class="compliance" id="aide_disable_silentreports" version="1">
+    <metadata>
+        <title>Configure AIDE To Notify Personnel if Baseline Configurations Are Altered</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'SILENTREPORTS' is configured with value 'no' in </description>
+    </metadata>
+    <criteria comment="The respective application or service is configured correctly and configuration file exists"
+    operator="AND">
+    <criteria comment="The respective application or service is configured correctly"
+    operator="OR"><criterion comment="Check the SILENTREPORTS in "
+  test_ref="test_aide_disable_silentreports" />
+    </criteria><criterion comment="test if configuration file  exists for aide_disable_silentreports" test_ref="test_aide_disable_silentreports_config_file_exists" />
+    </criteria>
+  </definition>
+
+  
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of SILENTREPORTS setting in the  file"
+  id="test_aide_disable_silentreports" version="1">
+  <ind:object object_ref="obj_aide_disable_silentreports" />
+  <ind:state state_ref="state_aide_disable_silentreports" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_aide_disable_silentreports" version="1">
+  <ind:filepath></ind:filepath>
+  <ind:pattern operation="pattern match">^\s*SILENTREPORTS=(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+<ind:textfilecontent54_state id="state_aide_disable_silentreports" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^no$</ind:subexpression>
+</ind:textfilecontent54_state>
+  <unix:file_test id="test_aide_disable_silentreports_config_file_exists" check="all" check_existence="all_exist" comment="The configuration file  exists for aide_disable_silentreports" version="1">
+    <unix:object object_ref="obj_aide_disable_silentreports_config_file" />
+  </unix:file_test>
+  <unix:file_object id="obj_aide_disable_silentreports_config_file" comment="The configuration file  for aide_disable_silentreports" version="1">
+    <unix:filepath operation="pattern match">^</unix:filepath>
+  </unix:file_object>
+
+</def-group>

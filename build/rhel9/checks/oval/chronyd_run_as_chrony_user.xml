@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-chronyd_run_as_chrony_user:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure that chronyd is running under chrony user account</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-84108-0" source="CCE" />
+        <oval-def:reference ref_id="chronyd_run_as_chrony_user" source="ssg" />
+        <oval-def:description>Ensure that no other user than chrony is configured to run the chrony service</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="chronyd enabled and multiple remote servers specified" operator="AND">
+        <oval-def:criterion comment="The default chrony user hasn't been overridden" test_ref="oval:ssg-test_no_user_override:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_no_user_override:tst:1" version="1" check="all" comment="The default chrony user hasn't been overridden" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_user_override:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_user_override:obj:1" version="1">
+      <ind:behaviors singleline="true" />
+      <ind:filepath>/etc/sysconfig/chronyd</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*OPTIONS=.*[\s'"]-u(?!\s*chrony\b).*</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">0</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

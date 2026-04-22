@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-file_groupowner_etc_sestatus_conf:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Verify Group Who Owns /etc/sestatus.conf File</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86289-6" source="CCE" />
+        <oval-def:reference ref_id="file_groupowner_etc_sestatus_conf" source="ssg" />
+        <oval-def:description>This test makes sure that /etc/sestatus.conf is group owned by root.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check file group ownership of /etc/sestatus.conf" test_ref="oval:ssg-test_file_groupowner_etc_sestatus_conf_0:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_file_groupowner_etc_sestatus_conf_0:tst:1" version="1" check="all" comment="Testing group ownership of /etc/sestatus.conf" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_file_groupowner_etc_sestatus_conf_0:obj:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_file_groupowner_etc_sestatus_conf_root_gid_etc:obj:1" version="1" comment="gid of the root group (from /etc/group)">
+      <ind:filepath>/etc/group</ind:filepath>
+      <ind:pattern operation="pattern match">^root:\w+:(\w+):.*</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_file_groupowner_etc_sestatus_conf_root_gid_usr:obj:1" version="1" comment="gid of the root group (from /usr/lib/group)">
+      <ind:filepath>/usr/lib/group</ind:filepath>
+      <ind:pattern operation="pattern match">^root:\w+:(\w+):.*</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_file_groupowner_etc_sestatus_conf_root_gid:obj:1" version="1" comment="gid of the root group (from /etc/group or /usr/lib/group)">
+      <oval-def:set>
+        <oval-def:object_reference>oval:ssg-object_file_groupowner_etc_sestatus_conf_root_gid_etc:obj:1</oval-def:object_reference>
+        <oval-def:object_reference>oval:ssg-object_file_groupowner_etc_sestatus_conf_root_gid_usr:obj:1</oval-def:object_reference>
+      </oval-def:set>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_file_groupowner_etc_sestatus_conf_0:obj:1" version="1" comment="/etc/sestatus.conf">
+      <unix:filepath>/etc/sestatus.conf</unix:filepath>
+      <oval-def:filter action="exclude">oval:ssg-symlink_file_groupowner:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_file_groupowner_etc_sestatus_conf_0_root:ste:1</oval-def:filter>
+    </unix:file_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-symlink_file_groupowner:ste:1" version="1" operator="AND">
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+    <unix:file_state id="oval:ssg-state_file_groupowner_etc_sestatus_conf_0_root:ste:1" version="1" operator="AND">
+      <unix:group_id datatype="int" operation="equals" var_ref="oval:ssg-var_file_groupowner_etc_sestatus_conf_root_gid:var:1" />
+    </unix:file_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_file_groupowner_etc_sestatus_conf_root_gid:var:1" version="1" datatype="int" comment="Retrieve the gid of root from either /etc/group or /usr/lib/group">
+      <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_file_groupowner_etc_sestatus_conf_root_gid:obj:1" />
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

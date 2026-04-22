@@ -1,0 +1,64 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83668-4
+  - NIST-800-53-AU-2(a)
+  - audit_create_success
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Put contents into /etc/audit/rules.d/30-ospp-v42-1-create-success.rules according
+    to policy
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/30-ospp-v42-1-create-success.rules
+    content: |
+      ## Successful file creation (open with O_CREAT)
+      -a always,exit -F arch=b32 -S openat,open_by_handle_at -F a2&0100 -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-create
+      -a always,exit -F arch=b64 -S openat,open_by_handle_at -F a2&0100 -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-create
+      -a always,exit -F arch=b32 -S open -F a1&0100 -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-create
+      -a always,exit -F arch=b64 -S open -F a1&0100 -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-create
+      -a always,exit -F arch=b32 -S creat -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-create
+      -a always,exit -F arch=b64 -S creat -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-create
+    force: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( not ( ansible_architecture == "aarch64" ) and not ( ansible_architecture ==
+    "ppc64le" ) )
+  tags:
+  - CCE-83668-4
+  - NIST-800-53-AU-2(a)
+  - audit_create_success
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure auditing of successful file creations - Remove any permissions from
+    group and other
+  ansible.builtin.file:
+    path: /etc/audit/rules.d/30-ospp-v42-1-create-success.rules
+    mode: g-rwx,o-rwx
+    state: touch
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( not ( ansible_architecture == "aarch64" ) and not ( ansible_architecture ==
+    "ppc64le" ) )
+  tags:
+  - CCE-83668-4
+  - NIST-800-53-AU-2(a)
+  - audit_create_success
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

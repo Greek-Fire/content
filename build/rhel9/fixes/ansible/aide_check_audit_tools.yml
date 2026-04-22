@@ -1,0 +1,139 @@
+# platform = multi_platform_ol,multi_platform_rhel,multi_platform_sle,multi_platform_slmicro,multi_platform_ubuntu,multi_platform_almalinux,multi_platform_fedora
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure AIDE to Verify the Audit Tools - Gather List of Packages
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  ansible.builtin.package_facts:
+    manager: auto
+  when: '"kernel-core" in ansible_facts.packages'
+
+- name: Configure AIDE to Verify the Audit Tools - Ensure AIDE is Installed
+  ansible.builtin.package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+  - aide
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure AIDE to Verify the Audit Tools - Gather the Package Facts
+  ansible.builtin.package_facts:
+    manager: auto
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Set "Configure AIDE to Verify the Audit Tools - audit_tools fact"
+  ansible.builtin.set_fact:
+    audit_tools:
+    - /usr/sbin/auditctl
+    - /usr/sbin/auditd
+    - /usr/sbin/augenrules
+    - /usr/sbin/aureport
+    - /usr/sbin/ausearch
+    - /usr/sbin/autrace
+    - /usr/sbin/rsyslogd
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure AIDE to Verify the Audit Tools - Ensure Existing AIDE Configuration
+    for Audit Tools are Correct
+  ansible.builtin.lineinfile:
+    path: /etc/aide.conf
+    regexp: ^{{ item }}\s
+    line: '{{ item }} p+i+n+u+g+s+b+acl+xattrs+sha512'
+    create: true
+  with_items: '{{ audit_tools }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"aide" in ansible_facts.packages'
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure AIDE to Verify the Audit Tools - Configure AIDE to Properly Protect
+    Audit Tools
+  ansible.builtin.lineinfile:
+    path: /etc/aide.conf
+    line: '{{ item }} p+i+n+u+g+s+b+acl+xattrs+sha512'
+    create: true
+  with_items: '{{ audit_tools }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"aide" in ansible_facts.packages'
+  tags:
+  - CCE-87757-1
+  - DISA-STIG-RHEL-09-651025
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-AU-9(3).1
+  - aide_check_audit_tools
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

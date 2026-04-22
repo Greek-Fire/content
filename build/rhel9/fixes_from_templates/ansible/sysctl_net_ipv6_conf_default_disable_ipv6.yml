@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Disable IPv6 Addressing on IPv6 Interfaces by Default - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable IPv6 Addressing on IPv6 Interfaces by Default - Find all files that contain net.ipv6.conf.default.disable_ipv6
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.default.disable_ipv6\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable IPv6 Addressing on IPv6 Interfaces by Default - Find all files that set net.ipv6.conf.default.disable_ipv6 to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.default.disable_ipv6\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable IPv6 Addressing on IPv6 Interfaces by Default - Comment out any occurrences of net.ipv6.conf.default.disable_ipv6 from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv6.conf.default.disable_ipv6'
+    replace: '#net.ipv6.conf.default.disable_ipv6'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable IPv6 Addressing on IPv6 Interfaces by Default - Comment out any occurrences of net.ipv6.conf.default.disable_ipv6 from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv6.conf.default.disable_ipv6'
+    replace: '#net.ipv6.conf.default.disable_ipv6'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable IPv6 Addressing on IPv6 Interfaces by Default - Ensure sysctl net.ipv6.conf.default.disable_ipv6 is set to 1
+  ansible.posix.sysctl:
+    name: "net.ipv6.conf.default.disable_ipv6"
+    value: "1"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv6_conf_default_disable_ipv6.conf"
+
+    state: present
+    reload: yes

@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove the X Windows Xwayland Package: Ensure xorg-x11-server-Xwayland is removed"
+  ansible.builtin.package:
+    name: "xorg-x11-server-Xwayland"
+    state: absent

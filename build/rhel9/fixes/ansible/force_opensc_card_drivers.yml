@@ -1,0 +1,83 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_rhv,multi_platform_ol,multi_platform_sle,multi_platform_almalinux
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89151-5
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-2(1)
+  - NIST-800-53-IA-2(11)
+  - NIST-800-53-IA-2(2)
+  - NIST-800-53-IA-2(3)
+  - NIST-800-53-IA-2(4)
+  - NIST-800-53-IA-2(6)
+  - NIST-800-53-IA-2(7)
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - force_opensc_card_drivers
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+- (xccdf-var var_smartcard_drivers)
+
+- name: Check existence of opensc conf
+  ansible.builtin.stat:
+    path: /etc/opensc-{{ ansible_architecture }}.conf
+  register: opensc_conf_fcd
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89151-5
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-2(1)
+  - NIST-800-53-IA-2(11)
+  - NIST-800-53-IA-2(2)
+  - NIST-800-53-IA-2(3)
+  - NIST-800-53-IA-2(4)
+  - NIST-800-53-IA-2(6)
+  - NIST-800-53-IA-2(7)
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - force_opensc_card_drivers
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Force smartcard driver block
+  block:
+
+  - name: Check if force_card_driver is defined
+    ansible.builtin.command: /usr/bin/opensc-tool -G app:default:force_card_driver
+    changed_when: false
+    register: force_card_driver
+
+  - name: Force opensc To Use Defined Smart Card Driver
+    ansible.builtin.command: |
+      /usr/bin/opensc-tool -S app:default:force_card_driver:{{ var_smartcard_drivers }}
+    when:
+    - force_card_driver.stdout != var_smartcard_drivers
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - opensc_conf_fcd.stat.exists
+  tags:
+  - CCE-89151-5
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-2(1)
+  - NIST-800-53-IA-2(11)
+  - NIST-800-53-IA-2(2)
+  - NIST-800-53-IA-2(3)
+  - NIST-800-53-IA-2(4)
+  - NIST-800-53-IA-2(6)
+  - NIST-800-53-IA-2(7)
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - force_opensc_card_drivers
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Enable Randomized Layout of Virtual Address Space - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Enable Randomized Layout of Virtual Address Space - Find all files that contain kernel.randomize_va_space
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.randomize_va_space\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Randomized Layout of Virtual Address Space - Find all files that set kernel.randomize_va_space to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.randomize_va_space\s*=\s*2$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Randomized Layout of Virtual Address Space - Comment out any occurrences of kernel.randomize_va_space from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*kernel.randomize_va_space'
+    replace: '#kernel.randomize_va_space'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Enable Randomized Layout of Virtual Address Space - Comment out any occurrences of kernel.randomize_va_space from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*kernel.randomize_va_space'
+    replace: '#kernel.randomize_va_space'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Enable Randomized Layout of Virtual Address Space - Ensure sysctl kernel.randomize_va_space is set to 2
+  ansible.posix.sysctl:
+    name: "kernel.randomize_va_space"
+    value: "2"
+
+    sysctl_file: "/etc/sysctl.d/kernel_randomize_va_space.conf"
+
+    state: present
+    reload: yes

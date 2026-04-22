@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-accounts_tmout:def:1" version="4" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Set Interactive Session Timeout</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83633-8" source="CCE" />
+        <oval-def:reference ref_id="accounts_tmout" source="ssg" />
+        <oval-def:description>Checks interactive shell timeout</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="TMOUT value in /etc/profile &lt;= var_accounts_tmout" test_ref="oval:ssg-test_etc_profile_tmout:tst:1" />
+        <oval-def:criterion comment="TMOUT value in /etc/profile.d/*.sh &lt;= var_accounts_tmout" test_ref="oval:ssg-test_etc_profiled_tmout:tst:1" />
+        <oval-def:criterion comment="At least one config file has TMOUT defined" test_ref="oval:ssg-test_accounts_tmout_defined:tst:1" />
+        <oval-def:criterion comment="All configured TMOUT values must be &gt;= 1" test_ref="oval:ssg-test_accounts_tmout_lower_bound:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_etc_profile_tmout:tst:1" version="2" check="all" comment="TMOUT in /etc/profile" check_existence="any_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_etc_profile_tmout:obj:1" />
+      <ind:state state_ref="oval:ssg-state_etc_profile_tmout:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_etc_profiled_tmout:tst:1" version="2" check="all" comment="TMOUT in /etc/profile.d/*.sh" check_existence="any_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_etc_profiled_tmout:obj:1" />
+      <ind:state state_ref="oval:ssg-state_etc_profile_tmout:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_accounts_tmout_defined:tst:1" version="1" check="all" comment="Check that at least one TMOUT is defined" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_tmout_defined:obj:1" />
+      <ind:state state_ref="oval:ssg-state_accounts_tmout_defined:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_accounts_tmout_lower_bound:tst:1" version="1" check="all" comment="All TMOUT values must be greater than or equal to 1" check_existence="any_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_tmout_all_tmout_instances:obj:1" />
+      <ind:state state_ref="oval:ssg-state_etc_profile_tmout_lower_bound:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_etc_profile_tmout:obj:1" version="3">
+      <ind:filepath>/etc/profile</ind:filepath>
+      <ind:pattern operation="pattern match">^[\s]*(?:typeset|declare)[\s]+-xr[\s]+TMOUT=([\w$]+).*$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_etc_profiled_tmout:obj:1" version="3">
+      <ind:path>/etc/profile.d</ind:path>
+      <ind:filename operation="pattern match">^.*\.sh$</ind:filename>
+      <ind:pattern operation="pattern match">^[\s]*(?:typeset|declare)[\s]+-xr[\s]+TMOUT=([\w$]+).*$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_accounts_tmout_all_tmout_instances:obj:1" version="1">
+      <oval-def:set>
+        <oval-def:object_reference>oval:ssg-object_etc_profile_tmout:obj:1</oval-def:object_reference>
+        <oval-def:object_reference>oval:ssg-object_etc_profiled_tmout:obj:1</oval-def:object_reference>
+      </oval-def:set>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-object_accounts_tmout_defined:obj:1" version="1">
+      <ind:var_ref>oval:ssg-variable_count_of_tmout_instances:var:1</ind:var_ref>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_accounts_tmout_defined:ste:1" version="1" operator="AND">
+      <ind:value operation="greater than or equal" datatype="int">1</ind:value>
+    </ind:variable_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_etc_profile_tmout:ste:1" version="2" operator="AND">
+      <ind:subexpression datatype="int" operation="less than or equal" var_check="all" var_ref="oval:ssg-var_accounts_tmout:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_etc_profile_tmout_lower_bound:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="int" operation="greater than or equal">1</ind:subexpression>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-variable_count_of_tmout_instances:var:1" version="1" datatype="int" comment="Count of TMOUT instances">
+      <oval-def:count>
+        <oval-def:object_component object_ref="oval:ssg-object_accounts_tmout_all_tmout_instances:obj:1" item_field="text" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_accounts_tmout:var:1" version="1" datatype="int" comment="external variable for TMOUT" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

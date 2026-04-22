@@ -1,0 +1,70 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_base_chain
+- (xccdf-var var_nftables_table)
+- (xccdf-var var_nftables_family)
+- (xccdf-var var_nftables_base_chain_names)
+- (xccdf-var var_nftables_base_chain_types)
+- (xccdf-var var_nftables_base_chain_hooks)
+- (xccdf-var var_nftables_base_chain_priorities)
+- (xccdf-var var_nftables_base_chain_policies)
+
+- name: Ensure Base Chains Exist for Nftables - Check Existence of Nftables Table
+  ansible.builtin.shell: nft list tables | grep '{{ var_nftables_family }} {{ var_nftables_table
+    }}'
+  register: existing_nftables
+  changed_when: false
+  failed_when: false
+  when: '"nftables" in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_base_chain
+
+- name: Ensure Base Chains Exist for Nftables - Set NFTables Table
+  ansible.builtin.command: nft create table {{ var_nftables_family }} {{ var_nftables_table
+    }}
+  when:
+  - '"nftables" in ansible_facts.packages'
+  - existing_nftables is not skipped and existing_nftables.rc > 0
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_base_chain
+
+- name: Ensure Base Chains Exist for Nftables - Add Base Chains
+  ansible.builtin.command: nft 'add chain {{ var_nftables_family }} {{ var_nftables_table
+    }} {{ item.0 }} { type {{ item.1 }} hook {{ item.2 }} priority {{ item.3 }} ;
+    policy {{ item.4 }} ; }'
+  with_together:
+  - '{{ var_nftables_base_chain_names.split(",") }}'
+  - '{{ var_nftables_base_chain_types.split(",") }}'
+  - '{{ var_nftables_base_chain_hooks.split(",") }}'
+  - '{{ var_nftables_base_chain_priorities.split(",") }}'
+  - '{{ var_nftables_base_chain_policies.split(",") }}'
+  when: '"nftables" in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_base_chain

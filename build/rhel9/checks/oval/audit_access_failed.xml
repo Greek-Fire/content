@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-audit_access_failed:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure auditing of unsuccessful file accesses</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83672-6" source="CCE" />
+        <oval-def:reference ref_id="audit_access_failed" source="ssg" />
+        <oval-def:description>Inspect the contents of /etc/audit/rules.d/30-ospp-v42-3-access-failed.rules</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check contents of file" test_ref="oval:ssg-audit_access_failed_test_whole_file_contents_tc_audit_rules_d_30_ospp_v42_3_access_failed_rules:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-audit_access_failed_test_whole_file_contents_tc_audit_rules_d_30_ospp_v42_3_access_failed_rules:tst:1" version="1" check="all" comment="Tests if contents of /etc/audit/rules.d/30-ospp-v42-3-access-failed.rules is exactly what is defined in rule description" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-audit_access_failed_object_whole_file_contents_tc_audit_rules_d_30_ospp_v42_3_access_failed_rules:obj:1" />
+      <ind:state state_ref="oval:ssg-audit_access_failed_state_whole_file_contents_tc_audit_rules_d_30_ospp_v42_3_access_failed_rules:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-audit_access_failed_object_whole_file_contents_tc_audit_rules_d_30_ospp_v42_3_access_failed_rules:obj:1" version="1">
+      <ind:behaviors singleline="true" multiline="false" />
+      <ind:filepath>/etc/audit/rules.d/30-ospp-v42-3-access-failed.rules</ind:filepath>
+      <ind:pattern operation="pattern match">^.*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-audit_access_failed_state_whole_file_contents_tc_audit_rules_d_30_ospp_v42_3_access_failed_rules:ste:1" version="1" operator="AND">
+      <ind:text operation="equals">## Unsuccessful file access (any other opens) This has to go last.
+-a always,exit -F arch=b32 -S open,openat,openat2,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+-a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F exit=-EACCES -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+-a always,exit -F arch=b32 -S open,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+-a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid&gt;=1000 -F auid!=unset -F key=unsuccessful-access
+</ind:text>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

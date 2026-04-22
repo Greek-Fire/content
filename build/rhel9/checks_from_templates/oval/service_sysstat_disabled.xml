@@ -1,0 +1,92 @@
+<def-group><definition class="compliance" id="service_sysstat_disabled" version="1">
+    <metadata>
+        <title>Disable System Statistics Reset Service (sysstat)</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The sysstat service should be disabled.</description>
+    </metadata>
+    <criteria comment="package sysstat removed or service sysstat is not configured to start" operator="OR">
+      <criterion comment="sysstat removed" test_ref="service_sysstat_disabled_test_service_sysstat_package_sysstat_removed" />
+      
+  
+      <criteria operator="OR" comment="service is not present or not configured">
+        <criteria operator="AND" comment="service sysstat is not configured to start">
+          <criterion test_ref="test_service_not_running_service_sysstat_disabled_sysstat"
+            comment="sysstat is not running"/>
+          <criterion test_ref="test_service_loadstate_is_masked_service_sysstat_disabled_sysstat"
+            comment="Property LoadState of service sysstat is masked"/>
+        </criteria>
+        <criterion test_ref="test_service_not_found_service_sysstat_disabled_sysstat"
+          comment="sysstat is not found"/>
+      </criteria>
+
+    </criteria>
+  </definition>
+  
+  
+      <linux:systemdunitproperty_test id="test_service_not_running_service_sysstat_disabled_sysstat"
+        check="all" check_existence="any_exist"
+        comment="Test that the sysstat service is not running" version="1">
+        <linux:object object_ref="obj_service_not_running_service_sysstat_disabled_sysstat"/>
+        <linux:state state_ref="state_service_not_running_service_sysstat_disabled_sysstat"/>
+      </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_object id="obj_service_not_running_service_sysstat_disabled_sysstat"
+      comment="Retrieve the ActiveState property of sysstat" version="1">
+      <linux:unit operation="pattern match">^sysstat\.(service|socket)$</linux:unit>
+      <linux:property>ActiveState</linux:property>
+    </linux:systemdunitproperty_object>
+
+    <linux:systemdunitproperty_state id="state_service_not_running_service_sysstat_disabled_sysstat"
+      version="1" comment="sysstat is not running">
+      <linux:value operation="pattern match">inactive|failed</linux:value>
+    </linux:systemdunitproperty_state>
+
+    <linux:systemdunitproperty_test check="all" check_existence="any_exist"
+      id="test_service_loadstate_is_masked_service_sysstat_disabled_sysstat"
+      comment="Test that the property LoadState from the service sysstat is masked"
+      version="1">
+      <linux:object object_ref="obj_service_loadstate_is_masked_service_sysstat_disabled_sysstat"/>
+      <linux:state state_ref="state_service_loadstate_is_masked_service_sysstat_disabled_sysstat"/>
+    </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_object  comment="Retrieve the LoadState property of sysstat"
+      version="1" id="obj_service_loadstate_is_masked_service_sysstat_disabled_sysstat">
+      <linux:unit operation="pattern match">^sysstat\.(service|socket)$</linux:unit>
+      <linux:property>LoadState</linux:property>
+    </linux:systemdunitproperty_object>
+
+    <linux:systemdunitproperty_state comment="LoadState is set to masked"
+      id="state_service_loadstate_is_masked_service_sysstat_disabled_sysstat"
+      version="1">
+      <linux:value>masked</linux:value>
+    </linux:systemdunitproperty_state>
+
+
+    <linux:systemdunitproperty_test check="all" check_existence="any_exist"
+      id="test_service_not_found_service_sysstat_disabled_sysstat"
+      comment="Test that the service sysstat is not found"
+      version="1">
+      <linux:object object_ref="obj_service_loadstate_is_masked_service_sysstat_disabled_sysstat"/>
+      <linux:state state_ref="state_service_is_not_found_service_sysstat_disabled_sysstat"/>
+    </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_state comment="Service is not found"
+      id="state_service_is_not_found_service_sysstat_disabled_sysstat"
+      version="1">
+      <linux:value>not-found</linux:value>
+    </linux:systemdunitproperty_state>
+
+  
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="service_sysstat_disabled_test_service_sysstat_package_sysstat_removed" version="1"
+  comment="package sysstat is removed">
+    <linux:object object_ref="obj_service_sysstat_disabled_test_service_sysstat_package_sysstat_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_service_sysstat_disabled_test_service_sysstat_package_sysstat_removed" version="1">
+    <linux:name>sysstat</linux:name>
+  </linux:rpminfo_object>
+
+
+</def-group>

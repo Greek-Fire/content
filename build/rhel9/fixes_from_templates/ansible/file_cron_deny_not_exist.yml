@@ -1,0 +1,12 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+
+- name: Ensure that /etc/cron.deny does not exist - Remove /etc/cron.deny
+  ansible.builtin.file:
+      path: /etc/cron.deny
+      state: absent

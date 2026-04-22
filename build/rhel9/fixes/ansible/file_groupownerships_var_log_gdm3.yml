@@ -1,0 +1,113 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the gdm group is defined
+  ansible.builtin.getent:
+    database: group
+    key: gdm
+  ignore_errors: true
+  when: file_groupownerships_var_log_gdm3_newgroup is undefined
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupownerships_var_log_gdm3_newgroup variable if gdm found
+  ansible.builtin.set_fact:
+    file_groupownerships_var_log_gdm3_newgroup: gdm
+  when: ansible_facts.getent_group["gdm"] is defined
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the gdm3 group is defined
+  ansible.builtin.getent:
+    database: group
+    key: gdm3
+  ignore_errors: true
+  when: file_groupownerships_var_log_gdm3_newgroup is undefined
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupownerships_var_log_gdm3_newgroup variable if gdm3 found
+  ansible.builtin.set_fact:
+    file_groupownerships_var_log_gdm3_newgroup: gdm3
+  when: ansible_facts.getent_group["gdm3"] is defined
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the root group is defined
+  ansible.builtin.getent:
+    database: group
+    key: root
+  ignore_errors: true
+  when: file_groupownerships_var_log_gdm3_newgroup is undefined
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupownerships_var_log_gdm3_newgroup variable if root found
+  ansible.builtin.set_fact:
+    file_groupownerships_var_log_gdm3_newgroup: root
+  when: ansible_facts.getent_group["root"] is defined
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /var/log/gdm3/ file(s) matching .* recursively
+  ansible.builtin.command: find -P /var/log/gdm3/  -type f  ! -group gdm ! -group
+    gdm3 ! -group root -regextype posix-extended -regex ".*"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /var/log/gdm3/ file(s) matching .*
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    group: '{{ file_groupownerships_var_log_gdm3_newgroup }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - file_groupownerships_var_log_gdm3
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

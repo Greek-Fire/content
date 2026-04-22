@@ -1,0 +1,57 @@
+
+<def-group>
+  <definition class="compliance" id="journald_forward_to_syslog" version="1">
+    <metadata>
+        <title>Ensure journald is configured to send logs to rsyslog</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'ForwardToSyslog' is configured with value 'yes' in section 'Journal' in /etc/systemd/journald.conf</description>
+    </metadata>
+    <criteria comment=" is configured correctly"
+    operator="OR"><criterion comment="Check the ForwardToSyslog in /etc/systemd/journald.conf"
+  test_ref="test_journald_forward_to_syslog" />
+        <criterion comment="Check the ForwardToSyslog in /etc/systemd/journald.conf.d"
+  test_ref="test_journald_forward_to_syslog_config_dir" />
+    </criteria>
+  </definition>
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of ForwardToSyslog setting in the /etc/systemd/journald.conf file"
+  id="test_journald_forward_to_syslog" version="1">
+  <ind:object object_ref="obj_journald_forward_to_syslog" />
+  <ind:state state_ref="state_journald_forward_to_syslog" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_journald_forward_to_syslog" version="1">
+  <ind:filepath>/etc/systemd/journald.conf</ind:filepath>
+  <ind:pattern operation="pattern match">^\s*\[Journal\].*(?:\n\s*[^[\s].*)*\n^[ \t]*ForwardToSyslog\h*=\h*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+  
+<ind:textfilecontent54_state id="state_journald_forward_to_syslog" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^yes$</ind:subexpression>
+</ind:textfilecontent54_state>
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of ForwardToSyslog setting in the /etc/systemd/journald.conf.d file"
+  id="test_journald_forward_to_syslog_config_dir" version="1">
+  <ind:object object_ref="obj_journald_forward_to_syslog_config_dir" />
+  <ind:state state_ref="state_journald_forward_to_syslog_config_dir" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_journald_forward_to_syslog_config_dir" version="1">
+  <ind:path>/etc/systemd/journald.conf.d</ind:path>
+  <ind:filename operation="pattern match">.*\.conf$</ind:filename>
+  <ind:pattern operation="pattern match">^\s*\[Journal\].*(?:\n\s*[^[\s].*)*\n^[ \t]*ForwardToSyslog\h*=\h*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+  
+<ind:textfilecontent54_state id="state_journald_forward_to_syslog_config_dir" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^yes$</ind:subexpression>
+</ind:textfilecontent54_state>
+
+
+</def-group>

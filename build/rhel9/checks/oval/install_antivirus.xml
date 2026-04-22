@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-install_antivirus:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Install Virus Scanning Software</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86556-8" source="CCE" />
+        <oval-def:reference ref_id="install_antivirus" source="ssg" />
+        <oval-def:description>Antivirus software should be installed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Antivirus is not being used or conditions are met" operator="AND">
+        <oval-def:extend_definition comment="McAfee A/V Installed" definition_ref="oval:ssg-install_mcafee_antivirus:def:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-install_mcafee_antivirus:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Install McAfee Virus Scanning Software</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="install_mcafee_antivirus" source="ssg" />
+        <oval-def:description>McAfee Antivirus software should be installed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Antivirus is not being used or conditions are met" operator="AND">
+        <oval-def:extend_definition comment="McAfee Runtime Libraries and Agent" definition_ref="oval:ssg-install_mcafee_cma_rt:def:1" />
+        <oval-def:criterion comment="Linuxshield AntiVirus package is installed" test_ref="oval:ssg-test_linuxshield_install_antivirus:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-install_mcafee_cma_rt:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Install the McAfee Runtime Libraries and Linux Agent</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="install_mcafee_cma_rt" source="ssg" />
+        <oval-def:description>Install the McAfee Runtime Libraries (MFErt) and Linux Agent (MFEcma).</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="McAfee runtime library package installed" test_ref="oval:ssg-test_mcafee_runtime_installed:tst:1" />
+        <oval-def:criterion comment="McAfee management agent package installed" test_ref="oval:ssg-test_mcafee_management_agent:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <linux:rpminfo_test id="oval:ssg-test_linuxshield_install_antivirus:tst:1" version="1" check="all" comment="AntiVirus package is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_linuxshield_install_antivirus:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_mcafee_runtime_installed:tst:1" version="1" check="all" comment="Runtime Libraries package is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_mcafee_runtime_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_mcafee_management_agent:tst:1" version="1" check="all" comment="Agent package is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_mcafee_management_agent:obj:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <linux:rpminfo_object id="oval:ssg-obj_linuxshield_install_antivirus:obj:1" version="1">
+      <linux:name>McAfeeVSEForLinux</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_mcafee_runtime_installed:obj:1" version="1">
+      <linux:name>MFErt</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_mcafee_management_agent:obj:1" version="1">
+      <linux:name>MFEcma</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

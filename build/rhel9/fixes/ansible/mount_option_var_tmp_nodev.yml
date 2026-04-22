@@ -1,0 +1,148 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = high
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83864-9
+  - DISA-STIG-RHEL-09-231175
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_var_tmp_nodev
+  - no_reboot_needed
+
+- name: 'Add nodev Option to /var/tmp: Check information associated to mountpoint'
+  ansible.builtin.command: findmnt --fstab '/var/tmp'
+  register: device_name
+  failed_when: device_name.rc > 1
+  changed_when: false
+  check_mode: false
+  when:
+  - ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  - '"/var/tmp" in ansible_mounts | map(attribute="mount") | list'
+  tags:
+  - CCE-83864-9
+  - DISA-STIG-RHEL-09-231175
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_var_tmp_nodev
+  - no_reboot_needed
+
+- name: 'Add nodev Option to /var/tmp: Create mount_info dictionary variable'
+  set_fact:
+    mount_info: '{{ mount_info|default({})|combine({item.0: item.1}) }}'
+  with_together:
+  - '{{ device_name.stdout_lines[0].split() | map(''lower'') | list }}'
+  - '{{ device_name.stdout_lines[1].split() | list }}'
+  when:
+  - ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  - '"/var/tmp" in ansible_mounts | map(attribute="mount") | list'
+  - device_name.stdout is defined and device_name.stdout_lines is defined
+  - (device_name.stdout | length > 0)
+  tags:
+  - CCE-83864-9
+  - DISA-STIG-RHEL-09-231175
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_var_tmp_nodev
+  - no_reboot_needed
+
+- name: 'Add nodev Option to /var/tmp: If /var/tmp not mounted, craft mount_info manually'
+  set_fact:
+    mount_info: '{{ mount_info|default({})|combine({item.0: item.1}) }}'
+  with_together:
+  - - target
+    - source
+    - fstype
+    - options
+  - - /var/tmp
+    - ''
+    - ''
+    - defaults
+  when:
+  - ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  - '"/var/tmp" in ansible_mounts | map(attribute="mount") | list'
+  - ("--fstab" | length == 0)
+  - device_name.stdout is defined and device_name.stdout_lines is defined
+  - (device_name.stdout | length == 0)
+  tags:
+  - CCE-83864-9
+  - DISA-STIG-RHEL-09-231175
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_var_tmp_nodev
+  - no_reboot_needed
+
+- name: 'Add nodev Option to /var/tmp: Make sure nodev option is part of the to /var/tmp
+    options'
+  set_fact:
+    mount_info: '{{ mount_info | combine( {''options'':''''~(mount_info.options |
+      default(''''))~('','' if (mount_info.options | default('''')) else '''')~''nodev''
+      }) }}'
+  when:
+  - ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  - '"/var/tmp" in ansible_mounts | map(attribute="mount") | list'
+  - mount_info is defined and "nodev" not in (mount_info.options | default(''))
+  tags:
+  - CCE-83864-9
+  - DISA-STIG-RHEL-09-231175
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_var_tmp_nodev
+  - no_reboot_needed
+
+- name: 'Add nodev Option to /var/tmp: Ensure /var/tmp is mounted with nodev option'
+  ansible.posix.mount:
+    path: /var/tmp
+    src: '{{ mount_info.source | default('''') }}'
+    opts: '{{ mount_info.options | default('''') }}'
+    state: mounted
+    fstype: '{{ mount_info.fstype | default('''') }}'
+  register: mount_result
+  failed_when:
+  - mount_result is failed
+  - '''target is busy'' not in (mount_result.msg | default(''''))'
+  - '''already mounted'' not in (mount_result.msg | default(''''))'
+  when:
+  - ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  - '"/var/tmp" in ansible_mounts | map(attribute="mount") | list'
+  - mount_info is defined
+  - (device_name.stdout is defined and (device_name.stdout | length > 0)) or ("--fstab"
+    | length == 0)
+  tags:
+  - CCE-83864-9
+  - DISA-STIG-RHEL-09-231175
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_var_tmp_nodev
+  - no_reboot_needed

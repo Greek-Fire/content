@@ -1,0 +1,43 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudo_restrict_others_executable_permission
+
+- name: Test for existence /usr/bin/sudo
+  ansible.builtin.stat:
+    path: /usr/bin/sudo
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudo_restrict_others_executable_permission
+
+- name: Ensure permission u-wr,g-wrs,o-xwrt on /usr/bin/sudo
+  ansible.builtin.file:
+    path: /usr/bin/sudo
+    mode: u-wr,g-wrs,o-xwrt
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudo_restrict_others_executable_permission

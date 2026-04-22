@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Remove tftp Daemon: Ensure tftp is removed'
+  ansible.builtin.package:
+    name: tftp
+    state: absent
+  tags:
+  - CCE-84153-6
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_tftp_removed

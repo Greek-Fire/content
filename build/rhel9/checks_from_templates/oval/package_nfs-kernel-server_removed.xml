@@ -1,0 +1,29 @@
+<def-group>
+<definition class="compliance" id="package_nfs-kernel-server_removed" version="1">
+  <metadata>
+        <title>Uninstall nfs-kernel-server Package</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package nfs-kernel-server should be removed.</description>
+    </metadata>
+  <criteria>
+  
+    <criterion comment="package nfs-kernel-server is removed" test_ref="test_package_nfs-kernel-server_removed" />
+  
+  </criteria>
+</definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="test_package_nfs-kernel-server_removed" version="1"
+  comment="package nfs-kernel-server is removed">
+    <linux:object object_ref="obj_test_package_nfs-kernel-server_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_test_package_nfs-kernel-server_removed" version="1">
+    <linux:name>nfs-kernel-server</linux:name>
+  </linux:rpminfo_object>
+
+
+
+</def-group>

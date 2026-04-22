@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-auditd_audispd_disk_full_action:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure audispd's Plugin disk_full_action When Disk Is Full</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-88477-5" source="CCE" />
+        <oval-def:reference ref_id="auditd_audispd_disk_full_action" source="ssg" />
+        <oval-def:description>remote_server setting in /etc/audit/audisp-remote.conf is set to a certain IP address or hostname</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="remote_server setting in audisp-remote.conf" test_ref="oval:ssg-test_auditd_audispd_disk_full_action:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_auditd_audispd_disk_full_action:tst:1" version="1" check="all" comment="the action the operating system takes if there is an error sending audit records to a remote system" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_auditd_audispd_disk_full_action:obj:1" />
+      <ind:state state_ref="oval:ssg-state_auditd_audispd_disk_full_action:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_auditd_audispd_disk_full_action:obj:1" version="1">
+      <ind:filepath>/etc/audit/audisp-remote.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^[ ]*disk_full_action[ ]+=[ ]+(\S+)[ ]*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_auditd_audispd_disk_full_action:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals" var_ref="oval:ssg-var_audispd_disk_full_action:var:1" />
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:external_variable id="oval:ssg-var_audispd_disk_full_action:var:1" version="1" datatype="string" comment="audispd network failure action" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

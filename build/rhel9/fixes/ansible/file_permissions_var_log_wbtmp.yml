@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Find /var/log/ file(s)
+  ansible.builtin.command: find -P /var/log/ -maxdepth 1 -perm /u+xs,g+xs,o+xwt  -type
+    f -regextype posix-extended -regex ".*(b|w)tmp((\.|-)[^\/]+)?$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - file_permissions_var_log_wbtmp
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /var/log/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-xs,g-xs,o-xwt
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - file_permissions_var_log_wbtmp
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

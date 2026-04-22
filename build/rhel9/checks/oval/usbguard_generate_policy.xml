@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-usbguard_generate_policy:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Generate USBGuard Policy</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-88882-6" source="CCE" />
+        <oval-def:reference ref_id="usbguard_generate_policy" source="ssg" />
+        <oval-def:description>Check that /etc/usbguard/rules.conf contains at least one non whitespace character and exists.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Check that /etc/usbguard/rules.conf contains at least one non whitespace character." operator="AND">
+        <oval-def:extend_definition comment="Check that /etc/usbguard/rules.conf contains at least one non whitespace character." definition_ref="oval:ssg-usbguard_rules_not_empty_not_missing:def:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-usbguard_rules_not_empty_not_missing:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Check that file storing USBGuard rules exists and is not empty</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="usbguard_rules_not_empty_not_missing" source="ssg" />
+        <oval-def:description>Check that file storing USBGuard rules at /etc/usbguard/rules.conf exists and is not empty</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Check that file storing USBGuard rules exists and is not empty" operator="AND">
+        <oval-def:criterion comment="Check that the usbguard rules in either /etc/usbguard/rules.conf or /etc/usbguard/rules.d/ contain at least one non white space character." test_ref="oval:ssg-test_usbguard_rules_nonempty:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_usbguard_rules_nonempty:tst:1" version="1" check="all" comment="Check the usbguard rules in either /etc/usbguard/rules.conf or /etc/usbguard/rules.d/ contain at least one non whitespace character and exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_usbguard_rules_nonempty:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_usbguard_rules_nonempty:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/usbguard/(rules|rules\.d/.*)\.conf$</ind:filepath>
+      <ind:pattern operation="pattern match">^.*\S+.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

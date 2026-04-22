@@ -1,0 +1,246 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_ownership_audit_binaries_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_ownership_audit_binaries_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/auditctl
+  ansible.builtin.stat:
+    path: /sbin/auditctl
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/auditctl
+  ansible.builtin.file:
+    path: /sbin/auditctl
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/aureport
+  ansible.builtin.stat:
+    path: /sbin/aureport
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/aureport
+  ansible.builtin.file:
+    path: /sbin/aureport
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/ausearch
+  ansible.builtin.stat:
+    path: /sbin/ausearch
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/ausearch
+  ansible.builtin.file:
+    path: /sbin/ausearch
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/autrace
+  ansible.builtin.stat:
+    path: /sbin/autrace
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/autrace
+  ansible.builtin.file:
+    path: /sbin/autrace
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/auditd
+  ansible.builtin.stat:
+    path: /sbin/auditd
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/auditd
+  ansible.builtin.file:
+    path: /sbin/auditd
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/augenrules
+  ansible.builtin.stat:
+    path: /sbin/augenrules
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/augenrules
+  ansible.builtin.file:
+    path: /sbin/augenrules
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/audisp-syslog
+  ansible.builtin.stat:
+    path: /sbin/audisp-syslog
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /sbin/audisp-syslog
+  ansible.builtin.file:
+    path: /sbin/audisp-syslog
+    follow: false
+    owner: '{{ file_ownership_audit_binaries_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86454-6
+  - configure_strategy
+  - file_ownership_audit_binaries
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

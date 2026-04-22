@@ -1,0 +1,50 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupownership_lastlog_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupownership_lastlog_newgroup: '0'
+  tags:
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11(c)
+  - NIST-800-53-SI-11.1(iv)
+  - configure_strategy
+  - file_groupownership_lastlog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /usr/bin/lastlog
+  ansible.builtin.stat:
+    path: /usr/bin/lastlog
+  register: file_exists
+  tags:
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11(c)
+  - NIST-800-53-SI-11.1(iv)
+  - configure_strategy
+  - file_groupownership_lastlog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/bin/lastlog
+  ansible.builtin.file:
+    path: /usr/bin/lastlog
+    follow: false
+    group: '{{ file_groupownership_lastlog_newgroup }}'
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11(c)
+  - NIST-800-53-SI-11.1(iv)
+  - configure_strategy
+  - file_groupownership_lastlog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

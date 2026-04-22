@@ -1,0 +1,33 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83454-9
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_dnf-automatic_installed
+
+- name: Ensure dnf-automatic is installed
+  ansible.builtin.package:
+    name: dnf-automatic
+    state: present
+  when: ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  tags:
+  - CCE-83454-9
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_dnf-automatic_installed

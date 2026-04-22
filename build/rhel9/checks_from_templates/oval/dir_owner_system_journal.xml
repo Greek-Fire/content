@@ -1,0 +1,67 @@
+<def-group>
+  <definition class="compliance" id="dir_owner_system_journal" version="1">
+  
+    <metadata>
+        <title>Verify owner of system journal directories</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /run/log/journal/, /var/log/journal/ is owned by 0.</description>
+    </metadata>
+     <criteria>
+   
+     <criterion comment="Check file ownership of /run/log/journal/" test_ref="test_file_ownerdir_owner_system_journal_0" />
+   
+     <criterion comment="Check file ownership of /var/log/journal/" test_ref="test_file_ownerdir_owner_system_journal_1" />
+   
+  
+    </criteria>
+  </definition>
+  <local_variable id="var_file_ownerdir_owner_system_journal_0_uid" comment="Set the uid to 0" datatype="int" version="1">
+    <literal_component datatype="int">0</literal_component>
+  </local_variable>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /run/log/journal/" id="test_file_ownerdir_owner_system_journal_0" version="1">
+    <unix:object object_ref="object_file_ownerdir_owner_system_journal_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/run/log/journal/" id="object_file_ownerdir_owner_system_journal_0" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/run/log/journal</unix:path>
+      <unix:filename xsi:nil="true" />
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_ownerdir_owner_system_journal_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_ownerdir_owner_system_journal_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_ownerdir_owner_system_journal_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing user ownership of /var/log/journal/" id="test_file_ownerdir_owner_system_journal_1" version="1">
+    <unix:object object_ref="object_file_ownerdir_owner_system_journal_1" />
+  </unix:file_test>
+
+  <unix:file_object comment="/var/log/journal/" id="object_file_ownerdir_owner_system_journal_1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/var/log/journal</unix:path>
+      <unix:filename xsi:nil="true" />
+    <filter action="exclude">symlink_file_owner</filter>
+    
+      <filter action="exclude">state_file_ownerdir_owner_system_journal_0_0</filter>
+    
+  </unix:file_object>
+  
+    <unix:file_state id="state_file_ownerdir_owner_system_journal_0_0" version="1">
+      <unix:user_id datatype="int" operation="equals" var_ref="var_file_ownerdir_owner_system_journal_0_uid"></unix:user_id>
+    </unix:file_state>
+  
+  
+  <unix:file_state id="symlink_file_owner" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

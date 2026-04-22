@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-configure_tmux_lock_command:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure the tmux Lock Command</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-90171-0" source="CCE" />
+        <oval-def:reference ref_id="configure_tmux_lock_command" source="ssg" />
+        <oval-def:description>Check if the vlock command is configured to be used as a locking mechanism in tmux.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Configure the tmux Lock Command" operator="AND">
+        <oval-def:criterion comment="check lock-command is set to vlock in /etc/tmux.conf" test_ref="oval:ssg-test_configure_tmux_lock_command:tst:1" />
+        <oval-def:extend_definition comment="Check /etc/tmux.conf is readable by others" definition_ref="oval:ssg-tmux_conf_readable_by_others:def:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-tmux_conf_readable_by_others:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title />
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="tmux_conf_readable_by_others" source="ssg" />
+        <oval-def:description>Check /etc/tmux.conf is readable by others</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check /etc/tmux.conf is readable by others" test_ref="oval:ssg-test_tmux_conf_readable_by_others:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_tmux_lock_command:tst:1" version="1" check="all" comment="check lock-command is set to vlock in /etc/tmux.conf" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_configure_tmux_lock_command:obj:1" />
+    </ind:textfilecontent54_test>
+    <unix:file_test id="oval:ssg-test_tmux_conf_readable_by_others:tst:1" version="1" check="all" comment="Check /etc/tmux.conf is readable by others" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_tmux_conf_readable_by_others:obj:1" />
+      <unix:state state_ref="oval:ssg-state_tmux_conf_readable_by_others:ste:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_configure_tmux_lock_command:obj:1" version="1">
+      <ind:filepath>/etc/tmux.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*set\s+-g\s+lock-command\s+vlock\s*(?:#.*)?$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_tmux_conf_readable_by_others:obj:1" version="1" comment="/etc/tmux.conf">
+      <unix:filepath operation="equals">/etc/tmux.conf</unix:filepath>
+    </unix:file_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-state_tmux_conf_readable_by_others:ste:1" version="1" operator="AND">
+      <unix:oread datatype="boolean">true</unix:oread>
+    </unix:file_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

@@ -1,0 +1,58 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_netfs_disabled
+  - unknown_severity
+
+- name: Disable Network File Systems (netfs) - Disable service netfs
+  block:
+
+  - name: Disable Network File Systems (netfs) - Collect systemd Services Present
+      in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable Network File Systems (netfs) - Ensure netfs.service is Masked
+    ansible.builtin.systemd:
+      name: netfs.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("netfs.service", multiline=True)
+
+  - name: Unit Socket Exists - netfs.socket
+    ansible.builtin.command: systemctl -q list-unit-files netfs.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable Network File Systems (netfs) - Disable Socket netfs
+    ansible.builtin.systemd:
+      name: netfs.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("netfs.socket", multiline=True)
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_netfs_disabled
+  - special_service_block
+  - unknown_severity
+  when: '"kernel-core" in ansible_facts.packages'

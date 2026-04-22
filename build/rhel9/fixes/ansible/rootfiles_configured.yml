@@ -1,0 +1,277 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Find configuration files
+  ansible.builtin.find:
+    paths: /etc/tmpfiles.d/
+    file_type: file
+    patterns: '*.conf'
+  register: rootfiles_configured_bash_logout_found_files
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Remove existing configuration
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^C\s+/root/\.bash_logout.+$
+    state: absent
+  loop: '{{ rootfiles_configured_bash_logout_found_files.files }}'
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly
+  ansible.builtin.lineinfile:
+    path: /etc/tmpfiles.d/rootfiles.conf
+    create: true
+    regexp: (?i)/usr/share/rootfiles/.bash_logout
+    line: C /root/.bash_logout 600 root root - /usr/share/rootfiles/.bash_logout
+    state: present
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Find configuration files
+  ansible.builtin.find:
+    paths: /etc/tmpfiles.d/
+    file_type: file
+    patterns: '*.conf'
+  register: rootfiles_configured_bash_profile_found_files
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Remove existing configuration
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^C\s+/root/\.bash_profile.+$
+    state: absent
+  loop: '{{ rootfiles_configured_bash_profile_found_files.files }}'
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly
+  ansible.builtin.lineinfile:
+    path: /etc/tmpfiles.d/rootfiles.conf
+    create: true
+    regexp: (?i)/usr/share/rootfiles/.bash_profile
+    line: C /root/.bash_profile 600 root root - /usr/share/rootfiles/.bash_profile
+    state: present
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Find configuration files
+  ansible.builtin.find:
+    paths: /etc/tmpfiles.d/
+    file_type: file
+    patterns: '*.conf'
+  register: rootfiles_configured_bashrc_found_files
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Remove existing configuration
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^C\s+/root/\.bashrc.+$
+    state: absent
+  loop: '{{ rootfiles_configured_bashrc_found_files.files }}'
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly
+  ansible.builtin.lineinfile:
+    path: /etc/tmpfiles.d/rootfiles.conf
+    create: true
+    regexp: (?i)/usr/share/rootfiles/.bashrc
+    line: C /root/.bashrc 600 root root - /usr/share/rootfiles/.bashrc
+    state: present
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Find configuration files
+  ansible.builtin.find:
+    paths: /etc/tmpfiles.d/
+    file_type: file
+    patterns: '*.conf'
+  register: rootfiles_configured_cshrc_found_files
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Remove existing configuration
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^C\s+/root/\.cshrc.+$
+    state: absent
+  loop: '{{ rootfiles_configured_cshrc_found_files.files }}'
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly
+  ansible.builtin.lineinfile:
+    path: /etc/tmpfiles.d/rootfiles.conf
+    create: true
+    regexp: (?i)/usr/share/rootfiles/.cshrc
+    line: C /root/.cshrc 600 root root - /usr/share/rootfiles/.cshrc
+    state: present
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Find configuration files
+  ansible.builtin.find:
+    paths: /etc/tmpfiles.d/
+    file_type: file
+    patterns: '*.conf'
+  register: rootfiles_configured_tcshrc_found_files
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly - Remove existing configuration
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^C\s+/root/\.tcshrc.+$
+    state: absent
+  loop: '{{ rootfiles_configured_tcshrc_found_files.files }}'
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured
+
+- name: Ensure rootfiles tmpfile.d is Configured Correctly
+  ansible.builtin.lineinfile:
+    path: /etc/tmpfiles.d/rootfiles.conf
+    create: true
+    regexp: (?i)/usr/share/rootfiles/.tcshrc
+    line: C /root/.tcshrc 600 root root - /usr/share/rootfiles/.tcshrc
+    state: present
+  when: '"rootfiles" in ansible_facts.packages'
+  tags:
+  - CCE-86474-4
+  - DISA-STIG-RHEL-09-232045
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rootfiles_configured

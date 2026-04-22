@@ -1,0 +1,63 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84245-0
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_rpcbind_disabled
+
+- name: Disable rpcbind Service - Disable service rpcbind
+  block:
+
+  - name: Disable rpcbind Service - Collect systemd Services Present in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable rpcbind Service - Ensure rpcbind.service is Masked
+    ansible.builtin.systemd:
+      name: rpcbind.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("rpcbind.service", multiline=True)
+
+  - name: Unit Socket Exists - rpcbind.socket
+    ansible.builtin.command: systemctl -q list-unit-files rpcbind.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable rpcbind Service - Disable Socket rpcbind
+    ansible.builtin.systemd:
+      name: rpcbind.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("rpcbind.socket", multiline=True)
+  tags:
+  - CCE-84245-0
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_rpcbind_disabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

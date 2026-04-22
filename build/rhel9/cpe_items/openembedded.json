@@ -1,0 +1,1 @@
+{"name": "cpe:/o:openembedded:nodistro:", "check_id": "installed_OS_is_openembedded", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "OpenEmbedded nodistro", "definition_location": "", "template": null}

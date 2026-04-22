@@ -1,0 +1,35 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Test for existence /usr/bin/lastlog
+  ansible.builtin.stat:
+    path: /usr/bin/lastlog
+  register: file_exists
+  tags:
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11(c)
+  - NIST-800-53-SI-11.1(iv)
+  - configure_strategy
+  - file_permissions_lastlog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure permission u-s,g-ws,o-xwrt on /usr/bin/lastlog
+  ansible.builtin.file:
+    path: /usr/bin/lastlog
+    mode: u-s,g-ws,o-xwrt
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - NIST-800-53-SI-11(b)
+  - NIST-800-53-SI-11(c)
+  - NIST-800-53-SI-11.1(iv)
+  - configure_strategy
+  - file_permissions_lastlog
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

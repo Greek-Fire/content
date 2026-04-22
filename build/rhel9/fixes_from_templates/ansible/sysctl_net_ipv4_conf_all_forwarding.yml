@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv4_conf_all_forwarding_value)
+
+
+- name: Disable Kernel Parameter for IPv4 Forwarding on all IPv4 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable Kernel Parameter for IPv4 Forwarding on all IPv4 Interfaces - Find all files that contain net.ipv4.conf.all.forwarding
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.conf.all.forwarding\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Parameter for IPv4 Forwarding on all IPv4 Interfaces - Find all files that set net.ipv4.conf.all.forwarding to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.conf.all.forwarding\s*=\s*{{ sysctl_net_ipv4_conf_all_forwarding_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Parameter for IPv4 Forwarding on all IPv4 Interfaces - Comment out any occurrences of net.ipv4.conf.all.forwarding from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv4.conf.all.forwarding'
+    replace: '#net.ipv4.conf.all.forwarding'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable Kernel Parameter for IPv4 Forwarding on all IPv4 Interfaces - Comment out any occurrences of net.ipv4.conf.all.forwarding from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv4.conf.all.forwarding'
+    replace: '#net.ipv4.conf.all.forwarding'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable Kernel Parameter for IPv4 Forwarding on all IPv4 Interfaces - Ensure sysctl net.ipv4.conf.all.forwarding is set
+  ansible.posix.sysctl:
+    name: "net.ipv4.conf.all.forwarding"
+    value: "{{ sysctl_net_ipv4_conf_all_forwarding_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv4_conf_all_forwarding.conf"
+
+    state: present
+    reload: yes

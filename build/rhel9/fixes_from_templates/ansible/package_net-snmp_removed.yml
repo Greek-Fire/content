@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall net-snmp Package: Ensure net-snmp is removed"
+  ansible.builtin.package:
+    name: "net-snmp"
+    state: absent

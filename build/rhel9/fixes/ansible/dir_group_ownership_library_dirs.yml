@@ -1,0 +1,96 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the dir_group_ownership_library_dirs_newgroup variable if represented
+    by gid
+  ansible.builtin.set_fact:
+    dir_group_ownership_library_dirs_newgroup: '0'
+  tags:
+  - CCE-89858-5
+  - DISA-STIG-RHEL-09-232215
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_group_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /lib/ recursively
+  ansible.builtin.file:
+    path: /lib/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_group_ownership_library_dirs_newgroup }}'
+  tags:
+  - CCE-89858-5
+  - DISA-STIG-RHEL-09-232215
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_group_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /lib64/ recursively
+  ansible.builtin.file:
+    path: /lib64/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_group_ownership_library_dirs_newgroup }}'
+  tags:
+  - CCE-89858-5
+  - DISA-STIG-RHEL-09-232215
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_group_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/lib/ recursively
+  ansible.builtin.file:
+    path: /usr/lib/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_group_ownership_library_dirs_newgroup }}'
+  tags:
+  - CCE-89858-5
+  - DISA-STIG-RHEL-09-232215
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_group_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/lib64/ recursively
+  ansible.builtin.file:
+    path: /usr/lib64/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_group_ownership_library_dirs_newgroup }}'
+  tags:
+  - CCE-89858-5
+  - DISA-STIG-RHEL-09-232215
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - configure_strategy
+  - dir_group_ownership_library_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

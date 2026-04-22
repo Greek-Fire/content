@@ -1,0 +1,77 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90819-4
+  - DISA-STIG-RHEL-09-255125
+  - NIST-800-171-3.1.13
+  - NIST-800-171-3.13.10
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-2.2.4
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_permissions_sshd_pub_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/ssh/ file(s)
+  ansible.builtin.command: find -P /etc/ssh/ -maxdepth 1 -perm /u+xs,g+xws,o+xwt  -type
+    f -regextype posix-extended -regex "^.*\.pub$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90819-4
+  - DISA-STIG-RHEL-09-255125
+  - NIST-800-171-3.1.13
+  - NIST-800-171-3.13.10
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-2.2.4
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_permissions_sshd_pub_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set permissions for /etc/ssh/ file(s)
+  ansible.builtin.file:
+    path: '{{ item }}'
+    mode: u-xs,g-xws,o-xwt
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90819-4
+  - DISA-STIG-RHEL-09-255125
+  - NIST-800-171-3.1.13
+  - NIST-800-171-3.13.10
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-2.2.4
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_permissions_sshd_pub_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

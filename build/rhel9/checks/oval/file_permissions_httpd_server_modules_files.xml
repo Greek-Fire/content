@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-file_permissions_httpd_server_modules_files:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Set Permissions on All Configuration Files Inside /etc/httpd/conf.modules.d/</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="file_permissions_httpd_server_modules_files" source="ssg" />
+        <oval-def:description>The /etc/httpd/conf.modules.d/* files should have the appropriate permissions (0640 or stronger).</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:extend_definition comment="httpd not present or in use" definition_ref="oval:ssg-package_httpd_removed:def:1" />
+        <oval-def:criterion test_ref="oval:ssg-test_file_permissions_httpd_server_modules_files:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-package_httpd_removed:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Uninstall httpd Package</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-85974-4" source="CCE" />
+        <oval-def:reference ref_id="package_httpd_removed" source="ssg" />
+        <oval-def:description>The RPM package httpd should be removed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="package httpd is removed" test_ref="oval:ssg-test_package_httpd_removed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_file_permissions_httpd_server_modules_files:tst:1" version="1" check="all" comment="/etc/httpd/conf.modules.d/* permissions" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_file_permissions_httpd_server_modules_files:obj:1" />
+      <unix:state state_ref="oval:ssg-state_wrong_file_permissions_httpd_server_modules_files:ste:1" />
+    </unix:file_test>
+    <linux:rpminfo_test id="oval:ssg-test_package_httpd_removed:tst:1" version="1" check="all" comment="package httpd is removed" check_existence="none_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_test_package_httpd_removed:obj:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-object_file_permissions_httpd_server_modules_files:obj:1" version="1" comment="/etc/httpd/conf.modules.d/* permissions">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path operation="equals">/etc/httpd/conf.modules.d/</unix:path>
+      <unix:filename operation="pattern match">^.*$</unix:filename>
+    </unix:file_object>
+    <linux:rpminfo_object id="oval:ssg-obj_test_package_httpd_removed:obj:1" version="1">
+      <linux:name>httpd</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-state_wrong_file_permissions_httpd_server_modules_files:ste:1" version="2" operator="AND">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:uexec datatype="boolean">false</unix:uexec>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:gexec datatype="boolean">false</unix:gexec>
+      <unix:oread datatype="boolean">false</unix:oread>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+      <unix:oexec datatype="boolean">false</unix:oexec>
+    </unix:file_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

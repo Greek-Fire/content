@@ -1,0 +1,1 @@
+{"description": "Enter umask for daemons", "type": "string", "operator": "equals", "interactive": false, "options": {"022": "022", "027": "027", "default": "022"}, "warnings": [], "title": "daemon umask", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/system/permissions/restrictions/daemon_umask/var_umask_for_daemons.var"}

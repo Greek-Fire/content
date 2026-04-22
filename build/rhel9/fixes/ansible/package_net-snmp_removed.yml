@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall net-snmp Package: Ensure net-snmp is removed'
+  ansible.builtin.package:
+    name: net-snmp
+    state: absent
+  tags:
+  - CCE-85981-9
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - package_net-snmp_removed
+  - unknown_severity

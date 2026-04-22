@@ -1,0 +1,25 @@
+<def-group>
+        <definition class="compliance" id="file_at_deny_not_exist" version="1">
+
+        <metadata>
+        <title>Ensure that /etc/at.deny does not exist</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that/etc/at.deny does not exist.</description>
+    </metadata>
+        <criteria>
+            <criterion comment="Ensure that /etc/at.deny does not exist." test_ref="test_file_at_deny_not_exist" />
+        </criteria>
+    </definition>
+
+    <unix:file_test id="test_file_at_deny_not_exist" check="all" check_existence="none_exist"
+                    version="1" comment="Test that that /etc/at.deny does not exist">
+        <unix:object object_ref="object_file_at_deny_not_exist" />
+    </unix:file_test>
+
+    <unix:file_object comment="/etc/at.deny" id="object_file_at_deny_not_exist" version="1">
+        <unix:filepath>/etc/at.deny</unix:filepath>
+    </unix:file_object>
+</def-group>

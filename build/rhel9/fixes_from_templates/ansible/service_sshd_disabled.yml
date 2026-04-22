@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable SSH Server If Possible - Disable service sshd"
+  block:
+  - name: "Disable SSH Server If Possible - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable SSH Server If Possible - Ensure sshd.service is Masked"
+    ansible.builtin.systemd:
+      name: "sshd.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("sshd.service", multiline=True)'
+
+  - name: "Unit Socket Exists - sshd.socket"
+    ansible.builtin.command: systemctl -q list-unit-files sshd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable SSH Server If Possible - Disable Socket sshd"
+    ansible.builtin.systemd:
+      name: "sshd.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("sshd.socket", multiline=True)'
+  tags:
+  - special_service_block

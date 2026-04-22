@@ -1,0 +1,16 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_rhv,multi_platform_ubuntu,multi_platform_sle,multi_platform_slmicro,multi_platform_debian
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+if LC_ALL=C grep -q -m 1 "^install bluetooth" /etc/modprobe.d/bluetooth.conf ; then
+	
+	sed -i 's#^install bluetooth.*#install bluetooth /bin/false#g' /etc/modprobe.d/bluetooth.conf
+else
+	echo -e "\n# Disable per security requirements" >> /etc/modprobe.d/bluetooth.conf
+	echo "install bluetooth /bin/false" >> /etc/modprobe.d/bluetooth.conf
+fi
+
+if ! LC_ALL=C grep -q -m 1 "^blacklist bluetooth$" /etc/modprobe.d/bluetooth.conf ; then
+	echo "blacklist bluetooth" >> /etc/modprobe.d/bluetooth.conf
+fi

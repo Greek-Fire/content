@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Disable the use of user namespaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable the use of user namespaces - Find all files that contain user.max_user_namespaces
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*user.max_user_namespaces\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable the use of user namespaces - Find all files that set user.max_user_namespaces to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*user.max_user_namespaces\s*=\s*0$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable the use of user namespaces - Comment out any occurrences of user.max_user_namespaces from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*user.max_user_namespaces'
+    replace: '#user.max_user_namespaces'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable the use of user namespaces - Comment out any occurrences of user.max_user_namespaces from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*user.max_user_namespaces'
+    replace: '#user.max_user_namespaces'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable the use of user namespaces - Ensure sysctl user.max_user_namespaces is set to 0
+  ansible.posix.sysctl:
+    name: "user.max_user_namespaces"
+    value: "0"
+
+    sysctl_file: "/etc/sysctl.d/user_max_user_namespaces.conf"
+
+    state: present
+    reload: yes

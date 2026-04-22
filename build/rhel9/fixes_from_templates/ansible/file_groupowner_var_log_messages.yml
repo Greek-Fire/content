@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_var_log_messages_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_var_log_messages_newgroup: "0"
+
+- name: Test for existence /var/log/messages
+  ansible.builtin.stat:
+    path: "/var/log/messages"
+  register: file_exists
+
+- name: Ensure group owner on /var/log/messages
+  ansible.builtin.file:
+    path: "/var/log/messages"
+    follow: false
+    group: "{{ file_groupowner_var_log_messages_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

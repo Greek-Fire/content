@@ -1,0 +1,82 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the adm group is defined
+  ansible.builtin.getent:
+    database: group
+    key: adm
+  ignore_errors: true
+  when: file_groupowner_var_log_auth_newgroup is undefined
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_var_log_auth_newgroup variable if adm found
+  ansible.builtin.set_fact:
+    file_groupowner_var_log_auth_newgroup: adm
+  when: ansible_facts.getent_group["adm"] is defined
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the root group is defined
+  ansible.builtin.getent:
+    database: group
+    key: root
+  ignore_errors: true
+  when: file_groupowner_var_log_auth_newgroup is undefined
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_var_log_auth_newgroup variable if root found
+  ansible.builtin.set_fact:
+    file_groupowner_var_log_auth_newgroup: root
+  when: ansible_facts.getent_group["root"] is defined
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /var/log/auth.log
+  ansible.builtin.stat:
+    path: /var/log/auth.log
+  register: file_exists
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /var/log/auth.log
+  ansible.builtin.file:
+    path: /var/log/auth.log
+    follow: false
+    group: '{{ file_groupowner_var_log_auth_newgroup }}'
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_groupowner_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = medium
+- name: Ensure there are no legacy + NIS entries in /etc/passwd - Backup the Old /etc/passwd
+    File
+  ansible.builtin.copy:
+    src: /etc/passwd
+    dest: /etc/passwd-
+    remote_src: true
+  tags:
+  - CCE-83620-5
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_legacy_plus_entries_etc_passwd
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure there are no legacy + NIS entries in /etc/passwd - Remove Lines Starting
+    with + From /etc/passwd
+  ansible.builtin.lineinfile:
+    regexp: ^\+.*$
+    state: absent
+    path: /etc/passwd
+  tags:
+  - CCE-83620-5
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_legacy_plus_entries_etc_passwd
+  - no_reboot_needed
+  - restrict_strategy

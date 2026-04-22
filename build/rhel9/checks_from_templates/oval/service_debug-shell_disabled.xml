@@ -1,0 +1,92 @@
+<def-group><definition class="compliance" id="service_debug-shell_disabled" version="1">
+    <metadata>
+        <title>Disable debug-shell SystemD Service</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The debug-shell service should be disabled.</description>
+    </metadata>
+    <criteria comment="package systemd removed or service debug-shell is not configured to start" operator="OR">
+      <criterion comment="systemd removed" test_ref="service_debug-shell_disabled_test_service_debug-shell_package_systemd_removed" />
+      
+  
+      <criteria operator="OR" comment="service is not present or not configured">
+        <criteria operator="AND" comment="service debug-shell is not configured to start">
+          <criterion test_ref="test_service_not_running_service_debug-shell_disabled_debug-shell"
+            comment="debug-shell is not running"/>
+          <criterion test_ref="test_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell"
+            comment="Property LoadState of service debug-shell is masked"/>
+        </criteria>
+        <criterion test_ref="test_service_not_found_service_debug-shell_disabled_debug-shell"
+          comment="debug-shell is not found"/>
+      </criteria>
+
+    </criteria>
+  </definition>
+  
+  
+      <linux:systemdunitproperty_test id="test_service_not_running_service_debug-shell_disabled_debug-shell"
+        check="all" check_existence="any_exist"
+        comment="Test that the debug-shell service is not running" version="1">
+        <linux:object object_ref="obj_service_not_running_service_debug-shell_disabled_debug-shell"/>
+        <linux:state state_ref="state_service_not_running_service_debug-shell_disabled_debug-shell"/>
+      </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_object id="obj_service_not_running_service_debug-shell_disabled_debug-shell"
+      comment="Retrieve the ActiveState property of debug-shell" version="1">
+      <linux:unit operation="pattern match">^debug-shell\.(service|socket)$</linux:unit>
+      <linux:property>ActiveState</linux:property>
+    </linux:systemdunitproperty_object>
+
+    <linux:systemdunitproperty_state id="state_service_not_running_service_debug-shell_disabled_debug-shell"
+      version="1" comment="debug-shell is not running">
+      <linux:value operation="pattern match">inactive|failed</linux:value>
+    </linux:systemdunitproperty_state>
+
+    <linux:systemdunitproperty_test check="all" check_existence="any_exist"
+      id="test_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell"
+      comment="Test that the property LoadState from the service debug-shell is masked"
+      version="1">
+      <linux:object object_ref="obj_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell"/>
+      <linux:state state_ref="state_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell"/>
+    </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_object  comment="Retrieve the LoadState property of debug-shell"
+      version="1" id="obj_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell">
+      <linux:unit operation="pattern match">^debug-shell\.(service|socket)$</linux:unit>
+      <linux:property>LoadState</linux:property>
+    </linux:systemdunitproperty_object>
+
+    <linux:systemdunitproperty_state comment="LoadState is set to masked"
+      id="state_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell"
+      version="1">
+      <linux:value>masked</linux:value>
+    </linux:systemdunitproperty_state>
+
+
+    <linux:systemdunitproperty_test check="all" check_existence="any_exist"
+      id="test_service_not_found_service_debug-shell_disabled_debug-shell"
+      comment="Test that the service debug-shell is not found"
+      version="1">
+      <linux:object object_ref="obj_service_loadstate_is_masked_service_debug-shell_disabled_debug-shell"/>
+      <linux:state state_ref="state_service_is_not_found_service_debug-shell_disabled_debug-shell"/>
+    </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_state comment="Service is not found"
+      id="state_service_is_not_found_service_debug-shell_disabled_debug-shell"
+      version="1">
+      <linux:value>not-found</linux:value>
+    </linux:systemdunitproperty_state>
+
+  
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="service_debug-shell_disabled_test_service_debug-shell_package_systemd_removed" version="1"
+  comment="package systemd is removed">
+    <linux:object object_ref="obj_service_debug-shell_disabled_test_service_debug-shell_package_systemd_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_service_debug-shell_disabled_test_service_debug-shell_package_systemd_removed" version="1">
+    <linux:name>systemd</linux:name>
+  </linux:rpminfo_object>
+
+
+</def-group>

@@ -1,0 +1,52 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - aide_disable_silentreports
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Configure AIDE To Notify Personnel if Baseline Configurations Are Altered
+  block:
+
+  - name: Check for duplicate values
+    ansible.builtin.lineinfile:
+      path: ''
+      create: true
+      regexp: (?i)^\s*SILENTREPORTS=
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: dupes
+
+  - name: 'Deduplicate values from '
+    ansible.builtin.lineinfile:
+      path: ''
+      create: true
+      regexp: (?i)^\s*SILENTREPORTS=
+      state: absent
+    when: dupes.found is defined and dupes.found > 1
+
+  - name: 'Insert correct line to '
+    ansible.builtin.lineinfile:
+      path: ''
+      create: true
+      regexp: (?i)^\s*SILENTREPORTS=
+      line: SILENTREPORTS=no
+      state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - aide_disable_silentreports
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

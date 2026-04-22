@@ -1,0 +1,23 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall tftp-server Package: Ensure tftp-server is removed'
+  ansible.builtin.package:
+    name: tftp-server
+    state: absent
+  tags:
+  - CCE-84154-4
+  - DISA-STIG-RHEL-09-215060
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - package_tftp-server_removed

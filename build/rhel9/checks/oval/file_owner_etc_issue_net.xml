@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-file_owner_etc_issue_net:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Verify ownership of System Login Banner for Remote Connections</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86057-7" source="CCE" />
+        <oval-def:reference ref_id="file_owner_etc_issue_net" source="ssg" />
+        <oval-def:description>This test makes sure that /etc/issue.net is owned by 0.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check file ownership of /etc/issue.net" test_ref="oval:ssg-test_file_owner_etc_issue_net_0:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_file_owner_etc_issue_net_0:tst:1" version="1" check="all" comment="Testing user ownership of /etc/issue.net" check_existence="none_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_file_owner_etc_issue_net_0:obj:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-object_file_owner_etc_issue_net_0:obj:1" version="1" comment="/etc/issue.net">
+      <unix:filepath>/etc/issue.net</unix:filepath>
+      <oval-def:filter action="exclude">oval:ssg-symlink_file_owner:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_file_owner_etc_issue_net_0_0:ste:1</oval-def:filter>
+    </unix:file_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-symlink_file_owner:ste:1" version="1" operator="AND">
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+    <unix:file_state id="oval:ssg-state_file_owner_etc_issue_net_0_0:ste:1" version="1" operator="AND">
+      <unix:user_id datatype="int" operation="equals" var_ref="oval:ssg-var_file_owner_etc_issue_net_0_uid:var:1" />
+    </unix:file_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_file_owner_etc_issue_net_0_uid:var:1" version="1" datatype="int" comment="Set the uid to 0">
+      <oval-def:literal_component datatype="int">0</oval-def:literal_component>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

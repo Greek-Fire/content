@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv6_conf_all_accept_source_route_value)
+
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces - Find all files that contain net.ipv6.conf.all.accept_source_route
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.all.accept_source_route\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces - Find all files that set net.ipv6.conf.all.accept_source_route to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.all.accept_source_route\s*=\s*{{ sysctl_net_ipv6_conf_all_accept_source_route_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces - Comment out any occurrences of net.ipv6.conf.all.accept_source_route from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv6.conf.all.accept_source_route'
+    replace: '#net.ipv6.conf.all.accept_source_route'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces - Comment out any occurrences of net.ipv6.conf.all.accept_source_route from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv6.conf.all.accept_source_route'
+    replace: '#net.ipv6.conf.all.accept_source_route'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable Kernel Parameter for Accepting Source-Routed Packets on all IPv6 Interfaces - Ensure sysctl net.ipv6.conf.all.accept_source_route is set
+  ansible.posix.sysctl:
+    name: "net.ipv6.conf.all.accept_source_route"
+    value: "{{ sysctl_net_ipv6_conf_all_accept_source_route_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv6_conf_all_accept_source_route.conf"
+
+    state: present
+    reload: yes

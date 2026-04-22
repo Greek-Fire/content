@@ -1,0 +1,295 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Ensure /etc/rsyslog.conf exists
+  ansible.builtin.file:
+    path: /etc/rsyslog.conf
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Ensure /etc/rsyslog.d directory exists
+  ansible.builtin.file:
+    path: /etc/rsyslog.d
+    state: directory
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Remove multilined cron.* action() entries
+    from rsyslog.conf
+  ansible.builtin.shell: sed -i '/^[[:space:]]*cron\.\*.*action(/,/)/d' /etc/rsyslog.conf
+  changed_when: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Remove multilined cron.* action() entries
+    from rsyslog.d/*.conf
+  ansible.builtin.shell: find /etc/rsyslog.d -type f -name "*.conf" -exec sed -i '/^[[:space:]]*cron\.\*.*action(/,/)/d'
+    {} +
+  changed_when: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Remove *.* entries pointing to /var/log/cron from rsyslog.conf
+  ansible.builtin.lineinfile:
+    path: /etc/rsyslog.conf
+    create: false
+    regexp: (?i)^\s*\*\.\*\s+/var/log/cron\s*$
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Remove *.* entries pointing to /var/log/cron
+    from rsyslog.d/*.conf
+  ansible.builtin.shell: find /etc/rsyslog.d -type f -name "*.conf" -exec sed -i '\|^\s*\*\.\*\s\+/var/log/cron\s*$|d'
+    {} +
+  changed_when: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Check if the parameter cron.* is configured
+    in /etc/rsyslog.conf
+  ansible.builtin.lineinfile:
+    path: /etc/rsyslog.conf
+    regexp: ^\s*{{ "cron.*"| regex_escape }}
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: _config_file_has_parameter
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Check if the parameter cron.* is configured
+    in /etc/rsyslog.d
+  ansible.builtin.find:
+    paths:
+    - /etc/rsyslog.d
+    contains: ^\s*{{ "cron.*"| regex_escape }}
+  register: _config_dir_has_parameter
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Check if the parameter cron.* is configured
+    correctly in /etc/rsyslog.conf
+  ansible.builtin.lineinfile:
+    path: /etc/rsyslog.conf
+    regexp: ^\s*{{ "cron.*"| regex_escape }}/var/log/cron$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: _config_file_correctly
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Check if the parameter cron.* is configured
+    correctly in /etc/rsyslog.d
+  ansible.builtin.find:
+    paths:
+    - /etc/rsyslog.d
+    contains: ^\s*{{ "cron.*"| regex_escape }}/var/log/cron$
+  register: _config_dir_correctly
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog
+  block:
+
+  - name: Deduplicate values from /etc/rsyslog.conf
+    ansible.builtin.lineinfile:
+      path: /etc/rsyslog.conf
+      create: false
+      regexp: (?i)^\s*{{ "cron.*"| regex_escape }}
+      state: absent
+
+  - name: Check if /etc/rsyslog.d exists
+    ansible.builtin.stat:
+      path: /etc/rsyslog.d
+    register: _etc_rsyslog_d_exists
+
+  - name: Check if the parameter cron.* is present in /etc/rsyslog.d
+    ansible.builtin.find:
+      paths: /etc/rsyslog.d
+      recurse: 'yes'
+      follow: 'no'
+      contains: ^\s*{{ "cron.*"| regex_escape }}
+    register: _etc_rsyslog_d_has_parameter
+    when: _etc_rsyslog_d_exists.stat.isdir is defined and _etc_rsyslog_d_exists.stat.isdir
+
+  - name: Remove parameter from files in /etc/rsyslog.d
+    ansible.builtin.lineinfile:
+      path: '{{ item.path }}'
+      create: false
+      regexp: (?i)^\s*{{ "cron.*"| regex_escape }}
+      state: absent
+    with_items: '{{ _etc_rsyslog_d_has_parameter.files | default([]) }}'
+    when: _etc_rsyslog_d_has_parameter.matched > 0
+
+  - name: Insert correct line to /etc/rsyslog.d/cron.conf
+    ansible.builtin.lineinfile:
+      path: /etc/rsyslog.d/cron.conf
+      create: true
+      regexp: (?i)^\s*{{ "cron.*"| regex_escape }}
+      line: cron.* /var/log/cron
+      state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  - (_config_file_correctly.found == 0 and _config_dir_correctly.matched == 0) or
+    ((_config_file_has_parameter.found | int) + (_config_dir_has_parameter.matched
+    | int)) != 1
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging
+
+- name: Ensure cron Is Logging To Rsyslog - Restart the rsyslog service now
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-83994-4
+  - DISA-STIG-RHEL-09-652060
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_cron_logging

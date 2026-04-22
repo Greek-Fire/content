@@ -1,0 +1,46 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84221-1
+  - disable_strategy
+  - kerberos_disable_no_keytab
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find keytab files
+  ansible.builtin.find:
+    paths: /etc/
+    patterns: '*.keytab'
+  register: keytab_files
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84221-1
+  - disable_strategy
+  - kerberos_disable_no_keytab
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Remove keytab files
+  ansible.builtin.file:
+    path: '{{ item.path }}'
+    state: absent
+  with_items: '{{ keytab_files.files }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84221-1
+  - disable_strategy
+  - kerberos_disable_no_keytab
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

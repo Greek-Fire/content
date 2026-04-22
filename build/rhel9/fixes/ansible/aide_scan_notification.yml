@@ -1,0 +1,61 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90844-2
+  - DISA-STIG-RHEL-09-651015
+  - NIST-800-53-CM-3(5)
+  - NIST-800-53-CM-6(a)
+  - aide_scan_notification
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+- (xccdf-var var_aide_scan_notification_email)
+
+- name: Configure Notification of Post-AIDE Scan Details - Ensure AIDE is installed
+  ansible.builtin.package:
+    name: '{{ item }}'
+    state: present
+  with_items:
+  - aide
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90844-2
+  - DISA-STIG-RHEL-09-651015
+  - NIST-800-53-CM-3(5)
+  - NIST-800-53-CM-6(a)
+  - aide_scan_notification
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure Notification of Post-AIDE Scan Details - Setup Cron Tab
+  ansible.builtin.cron:
+    name: run AIDE check
+    minute: 5
+    hour: 4
+    weekday: 0
+    user: root
+    job: /usr/sbin/aide  --check | /bin/mail -s "$(hostname) - AIDE Integrity Check"
+      {{ var_aide_scan_notification_email }}
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90844-2
+  - DISA-STIG-RHEL-09-651015
+  - NIST-800-53-CM-3(5)
+  - NIST-800-53-CM-6(a)
+  - aide_scan_notification
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

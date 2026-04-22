@@ -1,0 +1,1 @@
+{"name": "cpe:/a:ocp4-master-node", "check_id": "node_is_ocp4_master_node", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Node is an OpenShift 4 master node", "definition_location": "/home/greek_fire/.git/content/shared/applicability/ocp4-master-node.yml", "template": null}

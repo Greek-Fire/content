@@ -1,0 +1,67 @@
+<def-group>
+  <definition class="compliance" id="file_groupownership_audit_configuration" version="1">
+   
+      <metadata>
+        <title>Audit Configuration Files Must Be Owned By Group root</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /etc/audit/, /etc/audit/rules.d/ is group owned by 0.</description>
+    </metadata>
+      <criteria>
+    
+      <criterion comment="Check file group ownership of /etc/audit/" test_ref="test_file_groupownership_audit_configuration_0" />
+    
+      <criterion comment="Check file group ownership of /etc/audit/rules.d/" test_ref="test_file_groupownership_audit_configuration_1" />
+    
+   
+    </criteria>
+  </definition>
+    <local_variable id="var_file_groupownership_audit_configuration_0_gid" comment="Set the gid to 0" datatype="int" version="1">
+      <literal_component datatype="int">0</literal_component>
+    </local_variable>
+
+  
+    <unix:file_test check="all" check_existence="none_exist" comment="Testing group ownership of /etc/audit/" id="test_file_groupownership_audit_configuration_0" version="1">
+      <unix:object object_ref="object_file_groupownership_audit_configuration_0" />
+    </unix:file_test>
+
+    <unix:file_object comment="/etc/audit/" id="object_file_groupownership_audit_configuration_0" version="1">
+        <unix:path>/etc/audit</unix:path>
+          <unix:filename operation="pattern match">^.*audit(\.rules|d\.conf)$</unix:filename>
+      <filter action="exclude">symlink_file_groupowner</filter>
+      
+      <filter action="exclude">state_file_groupownership_audit_configuration_0_0</filter>
+      
+    </unix:file_object>
+
+    
+      <unix:file_state id="state_file_groupownership_audit_configuration_0_0" version="1">
+        <unix:group_id datatype="int" operation="equals" var_ref="var_file_groupownership_audit_configuration_0_gid"></unix:group_id>
+      </unix:file_state>
+    
+  
+    <unix:file_test check="all" check_existence="none_exist" comment="Testing group ownership of /etc/audit/rules.d/" id="test_file_groupownership_audit_configuration_1" version="1">
+      <unix:object object_ref="object_file_groupownership_audit_configuration_1" />
+    </unix:file_test>
+
+    <unix:file_object comment="/etc/audit/rules.d/" id="object_file_groupownership_audit_configuration_1" version="1">
+        <unix:path>/etc/audit/rules.d</unix:path>
+          <unix:filename operation="pattern match">^.*\.rules$</unix:filename>
+      <filter action="exclude">symlink_file_groupowner</filter>
+      
+      <filter action="exclude">state_file_groupownership_audit_configuration_0_0</filter>
+      
+    </unix:file_object>
+
+    
+      <unix:file_state id="state_file_groupownership_audit_configuration_0_0" version="1">
+        <unix:group_id datatype="int" operation="equals" var_ref="var_file_groupownership_audit_configuration_0_gid"></unix:group_id>
+      </unix:file_state>
+    
+  
+    <unix:file_state id="symlink_file_groupowner" version="1">
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+</def-group>

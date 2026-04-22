@@ -1,0 +1,178 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects
+- (xccdf-var sysctl_net_ipv6_conf_all_accept_redirects_value)
+
+- name: Disable Accepting ICMP Redirects for All IPv6 Interfaces - Set fact for sysctl
+    paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects
+
+- name: Disable Accepting ICMP Redirects for All IPv6 Interfaces - Find all files
+    that contain net.ipv6.conf.all.accept_redirects
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv6.conf.all.accept_redirects\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects
+
+- name: Disable Accepting ICMP Redirects for All IPv6 Interfaces - Find all files
+    that set net.ipv6.conf.all.accept_redirects to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv6.conf.all.accept_redirects\s*=\s*{{ sysctl_net_ipv6_conf_all_accept_redirects_value
+      }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects
+
+- name: Disable Accepting ICMP Redirects for All IPv6 Interfaces - Comment out any
+    occurrences of net.ipv6.conf.all.accept_redirects from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*net.ipv6.conf.all.accept_redirects
+    replace: '#net.ipv6.conf.all.accept_redirects'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects
+
+- name: Disable Accepting ICMP Redirects for All IPv6 Interfaces - Comment out any
+    occurrences of net.ipv6.conf.all.accept_redirects from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*net.ipv6.conf.all.accept_redirects
+    replace: '#net.ipv6.conf.all.accept_redirects'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects
+
+- name: Disable Accepting ICMP Redirects for All IPv6 Interfaces - Ensure sysctl net.ipv6.conf.all.accept_redirects
+    is set
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.accept_redirects
+    value: '{{ sysctl_net_ipv6_conf_all_accept_redirects_value }}'
+    sysctl_file: /etc/sysctl.d/net_ipv6_conf_all_accept_redirects.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84125-4
+  - DISA-STIG-RHEL-09-254015
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_accept_redirects

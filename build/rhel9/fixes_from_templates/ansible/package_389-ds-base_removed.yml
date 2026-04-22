@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall 389-ds-base Package: Ensure 389-ds-base is removed"
+  ansible.builtin.package:
+    name: "389-ds-base"
+    state: absent

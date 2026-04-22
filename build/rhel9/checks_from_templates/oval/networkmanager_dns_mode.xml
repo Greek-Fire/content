@@ -1,0 +1,66 @@
+
+<def-group>
+  <definition class="compliance" id="networkmanager_dns_mode" version="1">
+    <metadata>
+        <title>NetworkManager DNS Mode Must Be Must Configured</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'dns' is configured with value 'none|default' in section 'main' in /etc/NetworkManager/NetworkManager.conf</description>
+    </metadata>
+    <criteria comment="networkmanager is configured correctly and configuration file exists"
+    operator="AND">
+    <criteria comment="networkmanager is configured correctly"
+    operator="OR"><criterion comment="Check the dns in /etc/NetworkManager/NetworkManager.conf"
+  test_ref="test_networkmanager_dns_mode" />
+        <criterion comment="Check the dns in /etc/NetworkManager/conf.d"
+  test_ref="test_networkmanager_dns_mode_config_dir" />
+    </criteria><criterion comment="test if configuration file /etc/NetworkManager/NetworkManager.conf exists for networkmanager_dns_mode" test_ref="test_networkmanager_dns_mode_config_file_exists" />
+    </criteria>
+  </definition>
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of dns setting in the /etc/NetworkManager/NetworkManager.conf file"
+  id="test_networkmanager_dns_mode" version="1">
+  <ind:object object_ref="obj_networkmanager_dns_mode" />
+  <ind:state state_ref="state_networkmanager_dns_mode" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_networkmanager_dns_mode" version="1">
+  <ind:filepath>/etc/NetworkManager/NetworkManager.conf</ind:filepath>
+  <ind:pattern operation="pattern match">^\s*\[main\].*(?:\n\s*[^[\s].*)*\n^[ \t]*dns\h*=\h*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+  
+<ind:textfilecontent54_state id="state_networkmanager_dns_mode" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^none|default$</ind:subexpression>
+</ind:textfilecontent54_state>
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of dns setting in the /etc/NetworkManager/conf.d file"
+  id="test_networkmanager_dns_mode_config_dir" version="1">
+  <ind:object object_ref="obj_networkmanager_dns_mode_config_dir" />
+  <ind:state state_ref="state_networkmanager_dns_mode_config_dir" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_networkmanager_dns_mode_config_dir" version="1">
+  <ind:path>/etc/NetworkManager/conf.d</ind:path>
+  <ind:filename operation="pattern match">.*\.conf$</ind:filename>
+  <ind:pattern operation="pattern match">^\s*\[main\].*(?:\n\s*[^[\s].*)*\n^[ \t]*dns\h*=\h*(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object>
+  
+<ind:textfilecontent54_state id="state_networkmanager_dns_mode_config_dir" version="1">
+  <ind:subexpression datatype="string" operation="pattern match">^none|default$</ind:subexpression>
+</ind:textfilecontent54_state>
+  <unix:file_test id="test_networkmanager_dns_mode_config_file_exists" check="all" check_existence="all_exist" comment="The configuration file /etc/NetworkManager/NetworkManager.conf exists for networkmanager_dns_mode" version="1">
+    <unix:object object_ref="obj_networkmanager_dns_mode_config_file" />
+  </unix:file_test>
+  <unix:file_object id="obj_networkmanager_dns_mode_config_file" comment="The configuration file /etc/NetworkManager/NetworkManager.conf for networkmanager_dns_mode" version="1">
+    <unix:filepath operation="pattern match">^/etc/NetworkManager/NetworkManager.conf</unix:filepath>
+  </unix:file_object>
+
+
+</def-group>

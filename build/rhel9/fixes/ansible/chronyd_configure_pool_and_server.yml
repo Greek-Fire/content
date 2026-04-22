@@ -1,0 +1,68 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_configure_pool_and_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+- (xccdf-var var_multiple_time_servers)
+- (xccdf-var var_multiple_time_pools)
+
+- name: Chrony Configure Pool and Server - Add missing / update wrong records for
+    remote time servers
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    regexp: ^\s*\bserver\b\s*\b{{ item }}\b$
+    state: present
+    line: server {{ item }}
+    create: true
+  with_items:
+  - '{{ var_multiple_time_servers.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_configure_pool_and_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Chrony Configure Pool and Server - Add missing / update wrong records for
+    remote time pools
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    regexp: ^\s*\bpool\b\s*\b{{ item }}\b$
+    state: present
+    line: pool {{ item }}
+    create: true
+  with_items:
+  - '{{ var_multiple_time_pools.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_configure_pool_and_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

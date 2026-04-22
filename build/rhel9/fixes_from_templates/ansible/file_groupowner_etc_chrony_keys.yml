@@ -1,0 +1,30 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the chrony group is defined
+  ansible.builtin.getent:
+    database: group
+    key: chrony
+  ignore_errors: yes
+  when: file_groupowner_etc_chrony_keys_newgroup is undefined
+
+- name: Set the file_groupowner_etc_chrony_keys_newgroup variable if chrony found
+  ansible.builtin.set_fact:
+    file_groupowner_etc_chrony_keys_newgroup: "chrony"
+  when: ansible_facts.getent_group["chrony"] is defined
+
+- name: Test for existence /etc/chrony.keys
+  ansible.builtin.stat:
+    path: "/etc/chrony.keys"
+  register: file_exists
+
+- name: Ensure group owner on /etc/chrony.keys
+  ansible.builtin.file:
+    path: "/etc/chrony.keys"
+    follow: false
+    group: "{{ file_groupowner_etc_chrony_keys_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

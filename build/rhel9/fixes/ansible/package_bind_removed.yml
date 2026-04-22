@@ -1,0 +1,36 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall bind Package: Ensure bind is removed'
+  ansible.builtin.package:
+    name: bind
+    state: absent
+  tags:
+  - CCE-86505-5
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_bind_removed
+
+- name: 'Uninstall bind Package: Ensure bind9.18 is removed'
+  ansible.builtin.package:
+    name: bind9.18
+    state: absent
+  tags:
+  - CCE-86505-5
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_bind_removed

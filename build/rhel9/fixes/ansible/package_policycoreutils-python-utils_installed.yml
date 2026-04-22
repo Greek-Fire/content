@@ -1,0 +1,32 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84070-2
+  - DISA-STIG-RHEL-09-431030
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_policycoreutils-python-utils_installed
+
+- name: Ensure policycoreutils-python-utils is installed
+  ansible.builtin.package:
+    name: policycoreutils-python-utils
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84070-2
+  - DISA-STIG-RHEL-09-431030
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_policycoreutils-python-utils_installed

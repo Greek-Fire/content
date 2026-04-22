@@ -1,0 +1,68 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_sle,multi_platform_almalinux
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90825-1
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.2
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - postfix_network_listening_disabled
+  - restrict_strategy
+- (xccdf-var var_postfix_inet_interfaces)
+
+- name: Gather list of packages
+  ansible.builtin.package_facts:
+    manager: auto
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"postfix" in ansible_facts.packages'
+  tags:
+  - CCE-90825-1
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.2
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - postfix_network_listening_disabled
+  - restrict_strategy
+
+- name: Make changes to Postfix configuration file
+  ansible.builtin.lineinfile:
+    path: /etc/postfix/main.cf
+    create: false
+    regexp: (?i)^inet_interfaces\s*=\s.*
+    line: inet_interfaces = {{ var_postfix_inet_interfaces }}
+    state: present
+    insertafter: ^inet_interfaces\s*=\s.*
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"postfix" in ansible_facts.packages'
+  - '"postfix" in ansible_facts.packages'
+  tags:
+  - CCE-90825-1
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.2
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - postfix_network_listening_disabled
+  - restrict_strategy

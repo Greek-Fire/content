@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove the GDM Package Group: Ensure gdm is removed"
+  ansible.builtin.package:
+    name: "gdm"
+    state: absent

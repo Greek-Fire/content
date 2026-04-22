@@ -1,0 +1,70 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84150-2
+  - NIST-800-171-3.1.13
+  - NIST-800-171-3.4.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-IA-5(1)(c)
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_telnet_disabled
+
+- name: Disable telnet Service - Collect systemd Socket Units Present in the System
+  ansible.builtin.command:
+    cmd: systemctl -q list-unit-files --type socket
+  register: result_systemd_unit_files
+  changed_when: false
+  check_mode: false
+  when: ( "telnet-server" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  tags:
+  - CCE-84150-2
+  - NIST-800-171-3.1.13
+  - NIST-800-171-3.4.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-IA-5(1)(c)
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_telnet_disabled
+
+- name: Disable telnet Service - Ensure telnet.socket is Masked
+  ansible.builtin.systemd:
+    name: telnet.socket
+    state: stopped
+    enabled: false
+    masked: true
+  when:
+  - ( "telnet-server" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  - result_systemd_unit_files.stdout_lines is search("telnet.socket")
+  tags:
+  - CCE-84150-2
+  - NIST-800-171-3.1.13
+  - NIST-800-171-3.4.7
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-IA-5(1)(c)
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_telnet_disabled

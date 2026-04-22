@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/audit/auditd.conf
+  ansible.builtin.stat:
+    path: "/etc/audit/auditd.conf"
+  register: file_exists
+
+- name: Ensure permission u-xs,g-xws,o-xwrt on /etc/audit/auditd.conf
+  ansible.builtin.file:
+    path: "/etc/audit/auditd.conf"
+    mode: "u-xs,g-xws,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

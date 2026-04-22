@@ -1,0 +1,164 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Check if watch
+    rule for /var/spool/cron already exists in /etc/audit/rules.d/
+  ansible.builtin.find:
+    paths: /etc/audit/rules.d
+    contains: ^\s*-w\s+/var/spool/cron\s+-p\s+wa(\s|$)+
+    patterns: '*.rules'
+  register: find_existing_watch_rules_d
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Search /etc/audit/rules.d
+    for other rules with specified key cronjobs
+  ansible.builtin.find:
+    paths: /etc/audit/rules.d
+    contains: ^.*(?:-F key=|-k\s+)cronjobs$
+    patterns: '*.rules'
+  register: find_watch_key
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched
+    == 0
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Use /etc/audit/rules.d/cronjobs.rules
+    as the recipient for the rule
+  ansible.builtin.set_fact:
+    all_files:
+    - /etc/audit/rules.d/cronjobs.rules
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - find_watch_key.matched is defined and find_watch_key.matched == 0 and find_existing_watch_rules_d.matched
+    is defined and find_existing_watch_rules_d.matched == 0
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Use matched
+    file as the recipient for the rule
+  ansible.builtin.set_fact:
+    all_files:
+    - '{{ find_watch_key.files | map(attribute=''path'') | list | first }}'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - find_watch_key.matched is defined and find_watch_key.matched > 0 and find_existing_watch_rules_d.matched
+    is defined and find_existing_watch_rules_d.matched == 0
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Add watch
+    rule for /var/spool/cron in /etc/audit/rules.d/
+  ansible.builtin.lineinfile:
+    path: '{{ all_files[0] }}'
+    line: -w /var/spool/cron -p wa -k cronjobs
+    create: true
+    mode: '0600'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - find_existing_watch_rules_d.matched is defined and find_existing_watch_rules_d.matched
+    == 0
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Check if watch
+    rule for /var/spool/cron already exists in /etc/audit/audit.rules
+  ansible.builtin.find:
+    paths: /etc/audit/
+    contains: ^\s*-w\s+/var/spool/cron\s+-p\s+wa(\s|$)+
+    patterns: audit.rules
+  register: find_existing_watch_audit_rules
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure auditd Collects Changes to Cron Jobs - /var/spool/cron - Add watch
+    rule for /var/spool/cron in /etc/audit/audit.rules
+  ansible.builtin.lineinfile:
+    line: -w /var/spool/cron -p wa -k cronjobs
+    state: present
+    dest: /etc/audit/audit.rules
+    create: true
+    mode: '0600'
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - find_existing_watch_audit_rules.matched is defined and find_existing_watch_audit_rules.matched
+    == 0
+  tags:
+  - CCE-86636-8
+  - DISA-STIG-RHEL-09-654097
+  - audit_rules_var_spool_cron
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

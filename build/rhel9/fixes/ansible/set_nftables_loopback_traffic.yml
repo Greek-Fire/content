@@ -1,0 +1,109 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic
+
+- name: Implement Loopback Rules
+  ansible.builtin.command: nft add rule inet filter input iif lo accept
+  when: ( "nftables" in ansible_facts.packages )
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic
+
+- name: Create Rule to Drop Input IP Address from Loopback
+  ansible.builtin.command: nft add rule inet filter input ip saddr 127.0.0.0/8 counter
+    drop
+  when: ( "nftables" in ansible_facts.packages )
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic
+
+- name: Check if IPv6 is Disabled in grub Configuration
+  ansible.builtin.shell: |
+    [ -z "$(grep "^\s*linux" /boot/grub2/grub.cfg | grep -v ipv6.disabled=1)" ]
+  register: ipv6_status
+  changed_when: false
+  check_mode: false
+  when: ( "nftables" in ansible_facts.packages )
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic
+
+- name: Check sysctl value of net.ipv6.conf.all.disable_ipv6
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.disable_ipv6
+    state: present
+    value: '1'
+  check_mode: true
+  register: sysctl_ipv6_all
+  when: ( "nftables" in ansible_facts.packages )
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic
+
+- name: Check sysctl value of net.ipv6.conf.default.disable_ipv6
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.default.disable_ipv6
+    state: present
+    value: '1'
+  check_mode: true
+  register: sysctl_ipv6_default
+  when: ( "nftables" in ansible_facts.packages )
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic
+
+- name: Implement IPv6 loopback rules
+  ansible.builtin.command: nft add rule inet filter input ip6 saddr ::1 counter drop
+  when:
+  - ( "nftables" in ansible_facts.packages )
+  - ipv6_status is not skipped
+  - sysctl_ipv6_default is not skipped
+  - sysctl_ipv6_all is not skipped
+  - ipv6_status.rc == 0 or sysctl_ipv6_all.found > 0 or sysctl_ipv6_default.found
+    > 0
+  tags:
+  - PCI-DSS-Req-1.4.1
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - set_nftables_loopback_traffic

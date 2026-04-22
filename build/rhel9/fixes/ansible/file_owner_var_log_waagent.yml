@@ -1,0 +1,86 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the syslog user is defined
+  ansible.builtin.getent:
+    database: passwd
+    key: syslog
+  ignore_errors: true
+  tags:
+  - configure_strategy
+  - file_owner_var_log_waagent
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_owner_var_log_waagent_newown variable if syslog found
+  ansible.builtin.set_fact:
+    file_owner_var_log_waagent_newown: syslog
+  when: ansible_facts.getent_passwd["syslog"] is defined
+  tags:
+  - configure_strategy
+  - file_owner_var_log_waagent
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the root user is defined
+  ansible.builtin.getent:
+    database: passwd
+    key: root
+  ignore_errors: true
+  when: file_owner_var_log_waagent_newown is undefined
+  tags:
+  - configure_strategy
+  - file_owner_var_log_waagent
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_owner_var_log_waagent_newown variable if root found
+  ansible.builtin.set_fact:
+    file_owner_var_log_waagent_newown: root
+  when: ansible_facts.getent_passwd["root"] is defined
+  tags:
+  - configure_strategy
+  - file_owner_var_log_waagent
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /var/log/ file(s) matching .*waagent.log.*
+  ansible.builtin.command: find -P /var/log/ -maxdepth 1 -type f  ! -user syslog !
+    -user root -regextype posix-extended -regex ".*waagent.log.*"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - file_owner_var_log_waagent
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /var/log/ file(s) matching .*waagent.log.*
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    owner: '{{ file_owner_var_log_waagent_newown }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - file_owner_var_log_waagent
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,89 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86570-9
+  - DISA-STIG-RHEL-09-215105
+  - configure_strategy
+  - fips_custom_stig_sub_policy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Implement STIG Sub Crypto Policy - Create custom crypto policy - cipher
+  ansible.builtin.lineinfile:
+    path: /etc/crypto-policies/policies/modules/STIG.pmod
+    owner: root
+    group: root
+    mode: '0644'
+    line: cipher@SSH=AES-256-GCM AES-256-CTR AES-128-GCM AES-128-CTR
+    create: true
+    regexp: cipher@SSH
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86570-9
+  - DISA-STIG-RHEL-09-215105
+  - configure_strategy
+  - fips_custom_stig_sub_policy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Implement STIG Sub Crypto Policy - Create custom crypto policy - mac
+  ansible.builtin.lineinfile:
+    path: /etc/crypto-policies/policies/modules/STIG.pmod
+    owner: root
+    group: root
+    mode: '0644'
+    line: mac@SSH=HMAC-SHA2-512 HMAC-SHA2-256
+    create: true
+    regexp: ^mac@SSH=
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86570-9
+  - DISA-STIG-RHEL-09-215105
+  - configure_strategy
+  - fips_custom_stig_sub_policy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Implement STIG Sub Crypto Policy - Check current crypto policy
+  ansible.builtin.command: update-crypto-policies --show
+  register: current_crypto_policy
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86570-9
+  - DISA-STIG-RHEL-09-215105
+  - configure_strategy
+  - fips_custom_stig_sub_policy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Implement STIG Sub Crypto Policy - Update crypto-policies
+  ansible.builtin.command: update-crypto-policies --set FIPS:STIG
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - current_crypto_policy.stdout.strip() != "FIPS:STIG"
+  tags:
+  - CCE-86570-9
+  - DISA-STIG-RHEL-09-215105
+  - configure_strategy
+  - fips_custom_stig_sub_policy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required

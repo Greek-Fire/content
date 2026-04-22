@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/crypttab
+  ansible.builtin.stat:
+    path: "/etc/crypttab"
+  register: file_exists
+
+- name: Ensure permission u-xs,g-xwrs,o-xwrt on /etc/crypttab
+  ansible.builtin.file:
+    path: "/etc/crypttab"
+    mode: "u-xs,g-xwrs,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

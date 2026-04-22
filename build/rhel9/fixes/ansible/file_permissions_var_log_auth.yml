@@ -1,0 +1,29 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Test for existence /var/log/auth.log
+  ansible.builtin.stat:
+    path: /var/log/auth.log
+  register: file_exists
+  tags:
+  - configure_strategy
+  - file_permissions_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure permission u-xs,g-xws,o-xwrt on /var/log/auth.log
+  ansible.builtin.file:
+    path: /var/log/auth.log
+    mode: u-xs,g-xws,o-xwrt
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_permissions_var_log_auth
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

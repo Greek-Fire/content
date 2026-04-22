@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall dovecot Package: Ensure dovecot is removed"
+  ansible.builtin.package:
+    name: "dovecot"
+    state: absent

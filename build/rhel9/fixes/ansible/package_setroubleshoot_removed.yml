@@ -1,0 +1,30 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84073-6
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_setroubleshoot_removed
+
+- name: 'Uninstall setroubleshoot Package: Ensure setroubleshoot is removed'
+  ansible.builtin.package:
+    name: setroubleshoot
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84073-6
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_setroubleshoot_removed

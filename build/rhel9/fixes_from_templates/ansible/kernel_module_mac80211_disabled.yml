@@ -1,0 +1,18 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_rhv,multi_platform_ubuntu,multi_platform_sle,multi_platform_slmicro
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Ensure kernel module 'mac80211' is disabled
+  ansible.builtin.lineinfile:
+    create: yes
+    dest: "/etc/modprobe.d/mac80211.conf"
+    regexp: 'install\s+mac80211'
+    line: "install mac80211 /bin/false"
+
+- name: Ensure kernel module 'mac80211' is blacklisted
+  ansible.builtin.lineinfile:
+    create: yes
+    dest: "/etc/modprobe.d/mac80211.conf"
+    regexp: '^blacklist mac80211$'
+    line: "blacklist mac80211"

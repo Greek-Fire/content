@@ -1,0 +1,75 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_rhv,multi_platform_ubuntu,multi_platform_sle,multi_platform_slmicro
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84139-5
+  - CJIS-5.10.1
+  - DISA-STIG-RHEL-09-213060
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSS-Req-1.4.2
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.2
+  - disable_strategy
+  - kernel_module_sctp_disabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Ensure kernel module 'sctp' is disabled
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/sctp.conf
+    regexp: install\s+sctp
+    line: install sctp /bin/false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84139-5
+  - CJIS-5.10.1
+  - DISA-STIG-RHEL-09-213060
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSS-Req-1.4.2
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.2
+  - disable_strategy
+  - kernel_module_sctp_disabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Ensure kernel module 'sctp' is blacklisted
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/sctp.conf
+    regexp: ^blacklist sctp$
+    line: blacklist sctp
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84139-5
+  - CJIS-5.10.1
+  - DISA-STIG-RHEL-09-213060
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSS-Req-1.4.2
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.2
+  - disable_strategy
+  - kernel_module_sctp_disabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required

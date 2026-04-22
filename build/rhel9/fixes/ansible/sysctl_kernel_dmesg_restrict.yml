@@ -1,0 +1,153 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict
+
+- name: Restrict Access to Kernel Message Buffer - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict
+
+- name: Restrict Access to Kernel Message Buffer - Find all files that contain kernel.dmesg_restrict
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*kernel.dmesg_restrict\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict
+
+- name: Restrict Access to Kernel Message Buffer - Find all files that set kernel.dmesg_restrict
+    to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*kernel.dmesg_restrict\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict
+
+- name: Restrict Access to Kernel Message Buffer - Comment out any occurrences of
+    kernel.dmesg_restrict from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*kernel.dmesg_restrict
+    replace: '#kernel.dmesg_restrict'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict
+
+- name: Restrict Access to Kernel Message Buffer - Comment out any occurrences of
+    kernel.dmesg_restrict from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*kernel.dmesg_restrict
+    replace: '#kernel.dmesg_restrict'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict
+
+- name: Restrict Access to Kernel Message Buffer - Ensure sysctl kernel.dmesg_restrict
+    is set to 1
+  ansible.posix.sysctl:
+    name: kernel.dmesg_restrict
+    value: '1'
+    sysctl_file: /etc/sysctl.d/kernel_dmesg_restrict.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83952-2
+  - DISA-STIG-RHEL-09-213010
+  - NIST-800-171-3.1.5
+  - NIST-800-53-SI-11(a)
+  - NIST-800-53-SI-11(b)
+  - disable_strategy
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+  - sysctl_kernel_dmesg_restrict

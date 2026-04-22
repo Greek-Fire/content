@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove the OpenSSH Server Package: Ensure openssh-server is removed"
+  ansible.builtin.package:
+    name: "openssh-server"
+    state: absent

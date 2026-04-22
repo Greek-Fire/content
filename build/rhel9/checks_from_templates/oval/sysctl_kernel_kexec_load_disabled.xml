@@ -1,0 +1,200 @@
+
+
+<def-group>
+  <definition class="compliance" id="sysctl_kernel_kexec_load_disabled" version="3">
+    <metadata>
+        <title>Disable Kernel Image Loading</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>The 'kernel.kexec_load_disabled' kernel parameter should be set to the appropriate value in system configuration and system runtime.</description>
+    </metadata>
+    <criteria operator="AND">
+      <extend_definition comment="kernel.kexec_load_disabled configuration setting check"
+                         definition_ref="sysctl_kernel_kexec_load_disabled_static"/>
+
+      <extend_definition comment="kernel.kexec_load_disabled runtime setting check"
+                         definition_ref="sysctl_kernel_kexec_load_disabled_runtime"/>
+    </criteria>
+  </definition>
+</def-group>
+
+
+<def-group>
+  <definition class="compliance" id="sysctl_kernel_kexec_load_disabled_runtime" version="3">
+    <metadata>
+        <title>Disable Kernel Image Loading</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>The kernel 'kernel.kexec_load_disabled' parameter should be set to 1 in the system runtime.</description>
+    </metadata>
+    <criteria operator="AND">
+      <criterion comment="kernel runtime parameter kernel.kexec_load_disabled set to 1"
+                 test_ref="test_sysctl_kernel_kexec_load_disabled_runtime"/>
+    </criteria>
+  </definition>
+
+  <unix:sysctl_test id="test_sysctl_kernel_kexec_load_disabled_runtime" version="1"
+                    comment="kernel runtime parameter kernel.kexec_load_disabled set to 1"
+                    check="all" check_existence="all_exist" state_operator="OR">
+    <unix:object object_ref="object_sysctl_kernel_kexec_load_disabled_runtime"/>
+
+    <unix:state state_ref="state_sysctl_kernel_kexec_load_disabled_runtime"/>
+
+  </unix:sysctl_test>
+
+  <unix:sysctl_object id="object_sysctl_kernel_kexec_load_disabled_runtime" version="1">
+    <unix:name>kernel.kexec_load_disabled</unix:name>
+  </unix:sysctl_object>
+
+
+  <unix:sysctl_state id="state_sysctl_kernel_kexec_load_disabled_runtime" version="1">
+
+    <unix:value datatype="int"
+                operation="equals">1</unix:value>
+
+  </unix:sysctl_state>
+
+</def-group>
+
+
+
+<def-group>
+  <definition class="compliance" id="sysctl_kernel_kexec_load_disabled_static" version="3">
+    <metadata>
+        <title>Disable Kernel Image Loading</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>The kernel 'kernel.kexec_load_disabled' parameter should be set to 1 in the system configuration.</description>
+    </metadata>
+
+    <criteria operator="OR">
+      <!--  Processing differently files in /usr/lib/sysctl.d/ as they are managed by packages and
+            won't be fixed by remediations, see sysctl.d(5) -->
+      <criterion comment="kernel static parameter kernel.kexec_load_disabled set to 1 in sysctl files not managed by packages"
+                    test_ref="test_sysctl_kernel_kexec_load_disabled_static_user" />
+      <criteria operator="AND">
+        <criterion comment="kernel static parameter kernel.kexec_load_disabled missing in sysctl files not managed by packages"
+                    test_ref="test_sysctl_kernel_kexec_load_disabled_static_user_missing" />
+        
+          <criterion comment="kernel static parameter kernel.kexec_load_disabled set to 1 in sysctl files managed by packages"
+                    test_ref="test_sysctl_kernel_kexec_load_disabled_static_pkg_correct" />
+        
+      </criteria>
+    </criteria>
+  </definition>
+
+  <ind:textfilecontent54_test id="test_sysctl_kernel_kexec_load_disabled_static_user_missing" version="1"
+                              check="all" check_existence="none_exist"
+                              comment="kernel.kexec_load_disabled static configuration">
+    <ind:object object_ref="object_static_user_sysctl_kernel_kexec_load_disabled" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_test id="test_sysctl_kernel_kexec_load_disabled_static_user" version="1"
+                              check="all" check_existence="all_exist"
+                              comment="kernel.kexec_load_disabled static configuration" state_operator="OR">
+    <ind:object object_ref="object_static_user_sysctl_kernel_kexec_load_disabled"/>
+
+    <ind:state state_ref="state_static_sysctld_sysctl_kernel_kexec_load_disabled"/>
+
+  </ind:textfilecontent54_test>
+
+  
+  <ind:textfilecontent54_test id="test_sysctl_kernel_kexec_load_disabled_static_pkg_correct" version="2" check="all"
+                          check_existence="all_exist"
+                          comment="kernel.kexec_load_disabled static configuration in /usr/lib/sysctl.d/*.conf"
+                          state_operator="OR">
+    <ind:object object_ref="object_static_usr_lib_sysctld_sysctl_kernel_kexec_load_disabled"/>
+
+    <ind:state state_ref="state_static_sysctld_sysctl_kernel_kexec_load_disabled"/>
+
+  </ind:textfilecontent54_test>
+  
+
+  <!-- Avoid directly referencing a possibly empty collection, one empty collection will cause the
+       variable to have no value even when there are valid objects. -->
+  <ind:textfilecontent54_object id="object_static_user_sysctl_kernel_kexec_load_disabled" version="1">
+    <set>
+      <object_reference>object_static_etc_lib_sysctls_sysctl_kernel_kexec_load_disabled</object_reference>
+      <object_reference>object_static_run_usr_local_sysctls_sysctl_kernel_kexec_load_disabled</object_reference>
+    </set>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_etc_lib_sysctls_sysctl_kernel_kexec_load_disabled" version="1">
+    <set>
+      <object_reference>object_static_etc_sysctls_sysctl_kernel_kexec_load_disabled</object_reference>
+
+    </set>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_etc_sysctls_sysctl_kernel_kexec_load_disabled" version="1">
+    <set>
+      <object_reference>object_static_sysctl_sysctl_kernel_kexec_load_disabled</object_reference>
+      <object_reference>object_static_etc_sysctld_sysctl_kernel_kexec_load_disabled</object_reference>
+    </set>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_run_usr_local_sysctls_sysctl_kernel_kexec_load_disabled" version="1">
+    <set>
+      <object_reference>object_static_usr_local_lib_sysctld_sysctl_kernel_kexec_load_disabled</object_reference>
+      <object_reference>object_static_run_sysctld_sysctl_kernel_kexec_load_disabled</object_reference>
+    </set>
+  </ind:textfilecontent54_object>
+  <ind:textfilecontent54_object id="object_static_sysctl_sysctl_kernel_kexec_load_disabled" version="1">
+
+    <ind:filepath>/etc/sysctl.conf</ind:filepath>
+
+    <ind:pattern operation="pattern match">^[\s]*kernel.kexec_load_disabled[\s]*=[\s]*(.*\S)[\s]*$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_etc_sysctld_sysctl_kernel_kexec_load_disabled" version="1">
+    <ind:path>/etc/sysctl.d</ind:path>
+    <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+    <ind:pattern operation="pattern match">^[\s]*kernel.kexec_load_disabled[\s]*=[\s]*(.*\S)[\s]*$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_run_sysctld_sysctl_kernel_kexec_load_disabled" version="1">
+    <ind:path>/run/sysctl.d</ind:path>
+    <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+    <ind:pattern operation="pattern match">^[\s]*kernel.kexec_load_disabled[\s]*=[\s]*(.*\S)[\s]*$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_usr_local_lib_sysctld_sysctl_kernel_kexec_load_disabled" version="1">
+    <ind:path>/usr/local/lib/sysctl.d</ind:path>
+    <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+    <ind:pattern operation="pattern match">^[\s]*kernel.kexec_load_disabled[\s]*=[\s]*(.*\S)[\s]*$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_usr_lib_sysctld_sysctl_kernel_kexec_load_disabled" version="1">
+    <ind:path>/usr/lib/sysctl.d</ind:path>
+    <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+    <ind:pattern operation="pattern match">^[\s]*kernel.kexec_load_disabled[\s]*=[\s]*(.*\S)[\s]*$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_object id="object_static_lib_sysctld_sysctl_kernel_kexec_load_disabled" version="1">
+    <ind:path>/lib/sysctl.d</ind:path>
+    <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+    <ind:pattern operation="pattern match">^[\s]*kernel.kexec_load_disabled[\s]*=[\s]*(.*\S)[\s]*$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+
+
+  <ind:textfilecontent54_state id="state_static_sysctld_sysctl_kernel_kexec_load_disabled" version="1">
+
+    <ind:subexpression operation="equals" datatype="int">1</ind:subexpression>
+
+  </ind:textfilecontent54_state>
+
+
+</def-group>

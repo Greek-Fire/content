@@ -1,0 +1,170 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding
+- (xccdf-var sysctl_net_ipv6_conf_all_forwarding_value)
+
+- name: Disable Kernel Parameter for IPv6 Forwarding - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding
+
+- name: Disable Kernel Parameter for IPv6 Forwarding - Find all files that contain
+    net.ipv6.conf.all.forwarding
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv6.conf.all.forwarding\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding
+
+- name: Disable Kernel Parameter for IPv6 Forwarding - Find all files that set net.ipv6.conf.all.forwarding
+    to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv6.conf.all.forwarding\s*=\s*{{ sysctl_net_ipv6_conf_all_forwarding_value
+      }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding
+
+- name: Disable Kernel Parameter for IPv6 Forwarding - Comment out any occurrences
+    of net.ipv6.conf.all.forwarding from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*net.ipv6.conf.all.forwarding
+    replace: '#net.ipv6.conf.all.forwarding'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding
+
+- name: Disable Kernel Parameter for IPv6 Forwarding - Comment out any occurrences
+    of net.ipv6.conf.all.forwarding from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*net.ipv6.conf.all.forwarding
+    replace: '#net.ipv6.conf.all.forwarding'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding
+
+- name: Disable Kernel Parameter for IPv6 Forwarding - Ensure sysctl net.ipv6.conf.all.forwarding
+    is set
+  ansible.posix.sysctl:
+    name: net.ipv6.conf.all.forwarding
+    value: '{{ sysctl_net_ipv6_conf_all_forwarding_value }}'
+    sysctl_file: /etc/sysctl.d/net_ipv6_conf_all_forwarding.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84114-8
+  - DISA-STIG-RHEL-09-254025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(b)
+  - NIST-800-53-CM-6.1(iv)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv6_conf_all_forwarding

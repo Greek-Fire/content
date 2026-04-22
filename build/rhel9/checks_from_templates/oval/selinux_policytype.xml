@@ -1,0 +1,48 @@
+<def-group>
+  <definition class="compliance" id="selinux_policytype" version="1">
+    <metadata>
+        <title>Configure SELinux Policy</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure 'SELINUXTYPE' is configured with value configured through XCCDF variable var_selinux_policy_name' in /etc/selinux/config</description>
+    </metadata>
+    <criteria comment="selinux is configured correctly and configuration file exists"
+    operator="AND">
+    <criteria comment="selinux is configured correctly"
+    operator="OR"><criterion comment="Check the SELINUXTYPE in /etc/selinux/config"
+  test_ref="test_selinux_policytype" />
+    </criteria><criterion comment="test if configuration file /etc/selinux/config exists for selinux_policytype" test_ref="test_selinux_policytype_config_file_exists" />
+    </criteria>
+  </definition>
+
+  
+  
+<external_variable comment="Variable defining the value the argument should have" datatype="string" id="var_selinux_policy_name" version="1" />
+
+  
+
+  
+<ind:textfilecontent54_test check="all" check_existence="all_exist"
+  comment="tests the value of SELINUXTYPE setting in the /etc/selinux/config file"
+  id="test_selinux_policytype" version="1">
+  <ind:object object_ref="obj_selinux_policytype" />
+  <ind:state state_ref="state_selinux_policytype" />
+</ind:textfilecontent54_test>
+  
+<ind:textfilecontent54_object id="obj_selinux_policytype" version="1">
+  <ind:filepath>/etc/selinux/config</ind:filepath>
+  <ind:pattern operation="pattern match">^SELINUXTYPE=(.+?)[ \t]*(?:$|#)</ind:pattern>
+  <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+</ind:textfilecontent54_object><ind:textfilecontent54_state id="state_selinux_policytype" version="1">
+  <ind:subexpression datatype="string" operation="equals" var_ref="var_selinux_policy_name" />
+</ind:textfilecontent54_state>
+  <unix:file_test id="test_selinux_policytype_config_file_exists" check="all" check_existence="all_exist" comment="The configuration file /etc/selinux/config exists for selinux_policytype" version="1">
+    <unix:object object_ref="obj_selinux_policytype_config_file" />
+  </unix:file_test>
+  <unix:file_object id="obj_selinux_policytype_config_file" comment="The configuration file /etc/selinux/config for selinux_policytype" version="1">
+    <unix:filepath operation="pattern match">^/etc/selinux/config</unix:filepath>
+  </unix:file_object>
+
+</def-group>

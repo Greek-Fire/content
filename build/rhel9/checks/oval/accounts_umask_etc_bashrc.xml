@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-accounts_umask_etc_bashrc:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure the Default Bash Umask is Set Correctly</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83644-5" source="CCE" />
+        <oval-def:reference ref_id="accounts_umask_etc_bashrc" source="ssg" />
+        <oval-def:description>The default umask for users of the bash shell</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Get value of var_accounts_user_umask variable as octal number" definition_ref="oval:ssg-var_accounts_user_umask_as_number:def:1" />
+        <oval-def:criterion test_ref="oval:ssg-tst_accounts_umask_etc_bashrc:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-var_accounts_user_umask_as_number:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Value of 'var_accounts_user_umask' variable represented as octal number</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="var_accounts_user_umask_as_number" source="ssg" />
+        <oval-def:description>Value of 'var_accounts_user_umask' variable represented as octal number</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion test_ref="oval:ssg-test_existence_of_var_accounts_user_umask_as_number_variable:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-tst_accounts_umask_etc_bashrc:tst:1" version="1" check="all" comment="Test the retrieved /etc/bashrc umask value(s) match the var_accounts_user_umask requirement" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_accounts_umask_etc_bashrc:obj:1" />
+      <ind:state state_ref="oval:ssg-ste_accounts_umask_etc_bashrc:ste:1" />
+    </ind:variable_test>
+    <ind:variable_test id="oval:ssg-test_existence_of_var_accounts_user_umask_as_number_variable:tst:1" version="1" check="all" comment="Verify the existence of var_accounts_user_umask_as_number variable" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_var_accounts_user_umask_umask_as_number:obj:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-obj_umask_from_etc_bashrc:obj:1" version="1" comment="Umask value from /etc/bashrc">
+      <ind:filepath>/etc/bashrc</ind:filepath>
+      <ind:pattern operation="pattern match">^[^#]*\bumask\s+(\d{3})\s*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-obj_accounts_umask_etc_bashrc:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_etc_bashrc_umask_as_number:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:variable_object id="oval:ssg-object_var_accounts_user_umask_umask_as_number:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_accounts_user_umask_umask_as_number:var:1</ind:var_ref>
+    </ind:variable_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-ste_accounts_umask_etc_bashrc:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="bitwise and" var_ref="oval:ssg-var_accounts_user_umask_umask_as_number:var:1" />
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_first_digit_of_umask_from_etc_bashrc:var:1" version="1" datatype="int" comment="First octal digit of umask from /etc/bashrc">
+      <oval-def:substring substring_start="1" substring_length="1">
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-obj_umask_from_etc_bashrc:obj:1" />
+      </oval-def:substring>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_second_digit_of_umask_from_etc_bashrc:var:1" version="1" datatype="int" comment="Second octal digit of umask from /etc/bashrc">
+      <oval-def:substring substring_start="2" substring_length="1">
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-obj_umask_from_etc_bashrc:obj:1" />
+      </oval-def:substring>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_third_digit_of_umask_from_etc_bashrc:var:1" version="1" datatype="int" comment="Third octal digit of umask from /etc/bashrc">
+      <oval-def:substring substring_start="3" substring_length="1">
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-obj_umask_from_etc_bashrc:obj:1" />
+      </oval-def:substring>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_etc_bashrc_umask_as_number:var:1" version="1" datatype="int" comment="/etc/bashrc umask converted from string to a number">
+      <oval-def:arithmetic arithmetic_operation="add">
+        <oval-def:arithmetic arithmetic_operation="multiply">
+          <oval-def:literal_component datatype="int">64</oval-def:literal_component>
+          <oval-def:variable_component var_ref="oval:ssg-var_first_digit_of_umask_from_etc_bashrc:var:1" />
+        </oval-def:arithmetic>
+        <oval-def:arithmetic arithmetic_operation="multiply">
+          <oval-def:literal_component datatype="int">8</oval-def:literal_component>
+          <oval-def:variable_component var_ref="oval:ssg-var_second_digit_of_umask_from_etc_bashrc:var:1" />
+        </oval-def:arithmetic>
+        <oval-def:variable_component var_ref="oval:ssg-var_third_digit_of_umask_from_etc_bashrc:var:1" />
+      </oval-def:arithmetic>
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_accounts_user_umask:var:1" version="1" datatype="string" comment="Value of var_accounts_user_umask (the required umask) as string" />
+    <oval-def:local_variable id="oval:ssg-var_first_digit_of_umask_from_var_accounts_user_umask:var:1" version="1" datatype="int" comment="First octal digit of umask from var_accounts_user_umask">
+      <oval-def:substring substring_start="1" substring_length="1">
+        <oval-def:variable_component var_ref="oval:ssg-var_accounts_user_umask:var:1" />
+      </oval-def:substring>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_second_digit_of_umask_from_var_accounts_user_umask:var:1" version="1" datatype="int" comment="Second octal digit of umask from var_accounts_user_umask">
+      <oval-def:substring substring_start="2" substring_length="1">
+        <oval-def:variable_component var_ref="oval:ssg-var_accounts_user_umask:var:1" />
+      </oval-def:substring>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_third_digit_of_umask_from_var_accounts_user_umask:var:1" version="1" datatype="int" comment="Third octal digit of umask from var_accounts_user_umask">
+      <oval-def:substring substring_start="3" substring_length="1">
+        <oval-def:variable_component var_ref="oval:ssg-var_accounts_user_umask:var:1" />
+      </oval-def:substring>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_accounts_user_umask_umask_as_number:var:1" version="1" datatype="int" comment="var_accounts_user_umask umask converted from string to a number">
+      <oval-def:arithmetic arithmetic_operation="add">
+        <oval-def:arithmetic arithmetic_operation="multiply">
+          <oval-def:literal_component datatype="int">64</oval-def:literal_component>
+          <oval-def:variable_component var_ref="oval:ssg-var_first_digit_of_umask_from_var_accounts_user_umask:var:1" />
+        </oval-def:arithmetic>
+        <oval-def:arithmetic arithmetic_operation="multiply">
+          <oval-def:literal_component datatype="int">8</oval-def:literal_component>
+          <oval-def:variable_component var_ref="oval:ssg-var_second_digit_of_umask_from_var_accounts_user_umask:var:1" />
+        </oval-def:arithmetic>
+        <oval-def:variable_component var_ref="oval:ssg-var_third_digit_of_umask_from_var_accounts_user_umask:var:1" />
+      </oval-def:arithmetic>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

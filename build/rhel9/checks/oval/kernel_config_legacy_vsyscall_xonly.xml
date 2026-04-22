@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-kernel_config_legacy_vsyscall_xonly:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Disable vsyscall emulate execution only</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-87805-8" source="CCE" />
+        <oval-def:reference ref_id="kernel_config_legacy_vsyscall_xonly" source="ssg" />
+        <oval-def:description>The kernel CONFIG_LEGACY_VSYSCALL_XONLY should have value n</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criteria operator="AND">
+          <oval-def:criterion comment="Check presence of build configuration of installed kernels" test_ref="oval:ssg-test_kernel_config_legacy_vsyscall_xonly:tst:1" />
+          <oval-def:criterion comment="Ensure all kernels have the config" test_ref="oval:ssg-test_all_kernels_config_legacy_vsyscall_xonly_compliant:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criterion comment="Check absense of build configuration of installed kernels" test_ref="oval:ssg-test_kernel_config_legacy_vsyscall_xonly_absence:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_kernel_config_legacy_vsyscall_xonly:tst:1" version="1" check="all" comment="Check /boot/config-.* files for CONFIG_LEGACY_VSYSCALL_XONLY=n" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_kernel_config_legacy_vsyscall_xonly:obj:1" />
+      <ind:state state_ref="oval:ssg-state_kernel_config_legacy_vsyscall_xonly:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_kernel_config_legacy_vsyscall_xonly_absence:tst:1" version="1" check="all" comment="Check /boot/config-.* files for absence of CONFIG_LEGACY_VSYSCALL_XONLY" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_kernel_config_legacy_vsyscall_xonly:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_all_kernels_config_legacy_vsyscall_xonly_compliant:tst:1" version="1" check="all" comment="Check if all installed kernels are compliant" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_var_kernel_config_legacy_vsyscall_xonly_count:obj:1" />
+      <ind:state state_ref="oval:ssg-state_var_kernel_config_legacy_vsyscall_xonly:ste:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_kernel_config_legacy_vsyscall_xonly:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/boot/config-.*$</ind:filepath>
+      <ind:pattern operation="pattern match">^CONFIG_LEGACY_VSYSCALL_XONLY="?(.*?)"?$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-object_var_kernel_config_legacy_vsyscall_xonly_count:obj:1" version="1">
+      <ind:var_ref>oval:ssg-local_var_config_legacy_vsyscall_xonly_count_kernels_installed:var:1</ind:var_ref>
+    </ind:variable_object>
+    <unix:file_object id="oval:ssg-object_kernel_config_legacy_vsyscall_xonly_files:obj:1" version="1" comment="Collect the kernel config files">
+      <unix:path>/boot</unix:path>
+      <unix:filename operation="pattern match">^config-.*$</unix:filename>
+    </unix:file_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_kernel_config_legacy_vsyscall_xonly:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals" datatype="string">n</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:variable_state id="oval:ssg-state_var_kernel_config_legacy_vsyscall_xonly:ste:1" version="1" operator="AND">
+      <ind:value operation="equals" datatype="int" var_ref="oval:ssg-local_var_config_legacy_vsyscall_xonly_count_compliant_configs:var:1" />
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-local_var_config_legacy_vsyscall_xonly_count_kernels_installed:var:1" version="1" datatype="int" comment="Count number of kernels installed">
+      <oval-def:count>
+        <oval-def:unique>
+          <oval-def:object_component object_ref="oval:ssg-object_kernel_config_legacy_vsyscall_xonly_files:obj:1" item_field="filepath" />
+        </oval-def:unique>
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-local_var_config_legacy_vsyscall_xonly_count_compliant_configs:var:1" version="1" datatype="int" comment="Count number of configs found">
+      <oval-def:count>
+        <oval-def:unique>
+          <oval-def:object_component object_ref="oval:ssg-object_kernel_config_legacy_vsyscall_xonly:obj:1" item_field="filepath" />
+        </oval-def:unique>
+      </oval-def:count>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

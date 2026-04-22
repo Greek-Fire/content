@@ -1,0 +1,101 @@
+<def-group>
+  <definition class="compliance" id="dir_permissions_library_dirs" version="1">
+  
+    <metadata>
+        <title>Verify that Shared Library Directories Have Restrictive Permissions</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /lib/, /lib64/, /usr/lib/, /usr/lib64/ has mode 7755.
+      If the target file or directory has an extended ACL, then it will fail the mode check.
+      </description>
+    </metadata>
+    <criteria>
+  
+      <criterion comment="Check file mode of /lib/" test_ref="test_file_permissionsdir_permissions_library_dirs_0"/>
+  
+      <criterion comment="Check file mode of /lib64/" test_ref="test_file_permissionsdir_permissions_library_dirs_1"/>
+  
+      <criterion comment="Check file mode of /usr/lib/" test_ref="test_file_permissionsdir_permissions_library_dirs_2"/>
+  
+      <criterion comment="Check file mode of /usr/lib64/" test_ref="test_file_permissionsdir_permissions_library_dirs_3"/>
+  
+  
+    </criteria>
+  </definition>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /lib/" id="test_file_permissionsdir_permissions_library_dirs_0" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_library_dirs_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/lib/" id="object_file_permissionsdir_permissions_library_dirs_0" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/lib</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_library_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_library_dirs_0_mode_7755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_library_dirs_0_mode_7755or_stricter_" operator="AND" version="3">
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /lib64/" id="test_file_permissionsdir_permissions_library_dirs_1" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_library_dirs_1" />
+  </unix:file_test>
+
+  <unix:file_object comment="/lib64/" id="object_file_permissionsdir_permissions_library_dirs_1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/lib64</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_library_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_library_dirs_1_mode_7755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_library_dirs_1_mode_7755or_stricter_" operator="AND" version="3">
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/lib/" id="test_file_permissionsdir_permissions_library_dirs_2" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_library_dirs_2" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/lib/" id="object_file_permissionsdir_permissions_library_dirs_2" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/lib</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_library_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_library_dirs_2_mode_7755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_library_dirs_2_mode_7755or_stricter_" operator="AND" version="3">
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/lib64/" id="test_file_permissionsdir_permissions_library_dirs_3" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_library_dirs_3" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/lib64/" id="object_file_permissionsdir_permissions_library_dirs_3" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/lib64</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_library_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_library_dirs_3_mode_7755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_library_dirs_3_mode_7755or_stricter_" operator="AND" version="3">
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+
+  <unix:file_state id="exclude_symlinks_dir_permissions_library_dirs" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

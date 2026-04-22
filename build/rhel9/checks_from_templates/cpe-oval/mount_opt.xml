@@ -1,0 +1,45 @@
+<def-group>
+  <definition class="inventory" id="installed_env_mount_opt" version="1">
+    <metadata>
+        <title>Mountpoint /opt is active (mounted) or configured in /etc/fstab</title>
+            <affected family="unix">
+                <platform>Red Hat Enterprise Linux 9</platform>
+            </affected>
+        <description></description>
+    </metadata>
+    <criteria operator="OR">
+      <criteria>
+        
+   <criterion comment="The path /opt is an active (mounted) mount point"
+     test_ref="test_mount_active_opt_exists" />
+      </criteria>
+      <criteria>
+        
+   <criterion comment="The path /opt is a mount point configured in /etc/fstab"
+     test_ref="test_mount_configured_fstab_opt_exists" />
+      </criteria>
+    </criteria>
+  </definition>
+  
+  <linux:partition_test check="all" check_existence="all_exist" version="1"
+      comment="Mountpoint /opt exists"
+      id="test_mount_active_opt_exists">
+    <linux:object object_ref="object_mount_active_opt_exists" />
+  </linux:partition_test>
+
+  <linux:partition_object id="object_mount_active_opt_exists" version="1">
+    <linux:mount_point>/opt</linux:mount_point>
+  </linux:partition_object>
+  
+  <ind:textfilecontent54_test check="all" check_existence="all_exist" version="1"
+      comment="Mountpoint /opt is configured"
+      id="test_mount_configured_fstab_opt_exists">
+    <ind:object object_ref="object_mount_configured_fstab_opt_exists" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_mount_configured_fstab_opt_exists" version="1">
+    <ind:filepath>/etc/fstab</ind:filepath>
+    <ind:pattern operation="pattern match">^[\s]*[\S]+[\s]+/opt[\s]+[\S]+[\s]+([\S]+)</ind:pattern>
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+</def-group>

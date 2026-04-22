@@ -1,0 +1,56 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - file_owner_etc_hosts_deny
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_owner_etc_hosts_deny_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_hosts_deny_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_owner_etc_hosts_deny
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /etc/hosts.deny
+  ansible.builtin.stat:
+    path: /etc/hosts.deny
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_owner_etc_hosts_deny
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /etc/hosts.deny
+  ansible.builtin.file:
+    path: /etc/hosts.deny
+    follow: false
+    owner: '{{ file_owner_etc_hosts_deny_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_owner_etc_hosts_deny
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

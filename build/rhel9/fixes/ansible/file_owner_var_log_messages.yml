@@ -1,0 +1,47 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_var_log_messages_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_var_log_messages_newown: '0'
+  tags:
+  - CCE-83915-9
+  - DISA-STIG-RHEL-09-232180
+  - configure_strategy
+  - file_owner_var_log_messages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /var/log/messages
+  ansible.builtin.stat:
+    path: /var/log/messages
+  register: file_exists
+  tags:
+  - CCE-83915-9
+  - DISA-STIG-RHEL-09-232180
+  - configure_strategy
+  - file_owner_var_log_messages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /var/log/messages
+  ansible.builtin.file:
+    path: /var/log/messages
+    follow: false
+    owner: '{{ file_owner_var_log_messages_newown }}'
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-83915-9
+  - DISA-STIG-RHEL-09-232180
+  - configure_strategy
+  - file_owner_var_log_messages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

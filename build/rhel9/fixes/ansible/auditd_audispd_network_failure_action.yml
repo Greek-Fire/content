@@ -1,0 +1,46 @@
+# platform = Red Hat Virtualization 4,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_sle,multi_platform_slmicro,multi_platform_almalinux
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90187-6
+  - NIST-800-53-AU-5(1)
+  - NIST-800-53-AU-5(2)
+  - NIST-800-53-AU-5(4)
+  - NIST-800-53-AU-5(b)
+  - NIST-800-53-CM-6(a)
+  - auditd_audispd_network_failure_action
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+- (xccdf-var var_audispd_network_failure_action)
+
+- name: Make sure that network failure action is configured for Audispd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/audisp-remote.conf
+    line: network_failure_action = {{ var_audispd_network_failure_action }}
+    regexp: ^\s*network_failure_action\s*=.*$
+    create: true
+    state: present
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90187-6
+  - NIST-800-53-AU-5(1)
+  - NIST-800-53-AU-5(2)
+  - NIST-800-53-AU-5(4)
+  - NIST-800-53-AU-5(b)
+  - NIST-800-53-CM-6(a)
+  - auditd_audispd_network_failure_action
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

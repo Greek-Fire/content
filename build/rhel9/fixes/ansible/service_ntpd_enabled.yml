@@ -1,0 +1,54 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87863-7
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_ntpd_enabled
+
+- name: Enable the NTP Daemon - Enable service ntpd
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the NTP Daemon - Enable Service ntpd
+    ansible.builtin.systemd:
+      name: ntpd
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"ntp" in ansible_facts.packages'
+  tags:
+  - CCE-87863-7
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_ntpd_enabled
+  - special_service_block
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"ntp" in ansible_facts.packages'

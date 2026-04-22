@@ -1,0 +1,18 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall nfs-utils Package: Ensure nfs-utils is removed'
+  ansible.builtin.package:
+    name: nfs-utils
+    state: absent
+  tags:
+  - CCE-84243-5
+  - DISA-STIG-RHEL-09-215025
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_nfs-utils_removed

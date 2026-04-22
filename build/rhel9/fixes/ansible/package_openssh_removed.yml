@@ -1,0 +1,16 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Remove the OpenSSH Client and Server Package: Ensure openssh is removed'
+  ansible.builtin.package:
+    name: openssh
+    state: absent
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_openssh_removed

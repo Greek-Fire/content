@@ -1,0 +1,220 @@
+# platform = multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_sle,multi_platform_almalinux
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+- (xccdf-var rsyslog_remote_loghost_address)
+
+- name: 'Configure TLS for rsyslog remote logging: search for omfwd action directive
+    in rsyslog include files'
+  ansible.builtin.find:
+    paths: /etc/rsyslog.d/
+    pattern: '*.conf'
+    contains: ^\s*action\s*\(\s*type\s*=\s*"omfwd".*
+  register: rsyslog_includes_with_directive
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: search for omfwd action directive
+    in rsyslog main config file'
+  ansible.builtin.find:
+    paths: /etc
+    pattern: rsyslog.conf
+    contains: ^\s*action\s*\(\s*type\s*=\s*"omfwd".*
+  register: rsyslog_main_file_with_directive
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: declare Rsyslog option parameters
+    to be inserted if entirely missing'
+  ansible.builtin.set_fact:
+    rsyslog_parameters_to_add_if_missing:
+    - protocol
+    - target
+    - port
+    - StreamDriver
+    - StreamDriverMode
+    - StreamDriverAuthMode
+    - streamdriver.CheckExtendedKeyPurpose
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: declare Rsyslog option values to
+    be inserted if entirely missing'
+  ansible.builtin.set_fact:
+    rsyslog_values_to_add_if_missing:
+    - tcp
+    - '{{ rsyslog_remote_loghost_address }}'
+    - '6514'
+    - gtls
+    - '1'
+    - x509/name
+    - 'on'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: declare Rsyslog option parameters
+    to be replaced if defined with wrong values'
+  ansible.builtin.set_fact:
+    rsyslog_parameters_to_replace_if_wrong_value:
+    - protocol
+    - StreamDriver
+    - StreamDriverMode
+    - StreamDriverAuthMode
+    - streamdriver.CheckExtendedKeyPurpose
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: declare Rsyslog option values to
+    be replaced when having wrong value'
+  ansible.builtin.set_fact:
+    rsyslog_values_to_replace_if_wrong_value:
+    - tcp
+    - gtls
+    - '1'
+    - x509/name
+    - 'on'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: assemble list of files with existing
+    directives'
+  ansible.builtin.set_fact:
+    rsyslog_files: '{{ rsyslog_includes_with_directive.files | map(attribute=''path'')
+      | list + rsyslog_main_file_with_directive.files | map(attribute=''path'') |
+      list }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: try to fix existing directives'
+  block:
+
+  - name: 'Configure TLS for rsyslog remote logging: Fix existing omfwd directives
+      by adjusting the value'
+    ansible.builtin.replace:
+      path: '{{ item[0] }}'
+      regexp: (?i)^(\s*action\s*\(\s*type\s*=\s*"omfwd"[\s\S]*)({{ item[1][0] | regex_escape()
+        }}\s*=\s*"\S*")([\s\S]*\))$
+      replace: \1{{ item[1][0] }}="{{ item[1][1] }}"\3
+    loop: '{{ rsyslog_files | product (rsyslog_parameters_to_replace_if_wrong_value
+      | zip(rsyslog_values_to_replace_if_wrong_value)) | list }}'
+
+  - name: 'Configure TLS for rsyslog remote logging: Fix existing omfwd directives
+      by adding parameter and value'
+    ansible.builtin.replace:
+      path: '{{ item[0] }}'
+      regexp: (?i)^(\s*action\s*\(\s*type\s*=\s*"omfwd"(?:[\s\S](?!{{ item[1][0] |
+        regex_escape() }}))*.)(\))$
+      replace: \1 {{ item[1][0] }}="{{ item[1][1] }}" \2
+    loop: '{{ rsyslog_files | product (rsyslog_parameters_to_add_if_missing | zip(rsyslog_values_to_add_if_missing))
+      | list }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - rsyslog_includes_with_directive.matched or rsyslog_main_file_with_directive.matched
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls
+
+- name: 'Configure TLS for rsyslog remote logging: Add missing rsyslog directive'
+  ansible.builtin.lineinfile:
+    dest: /etc/rsyslog.conf
+    line: action(type="omfwd" protocol="tcp" Target="{{ rsyslog_remote_loghost_address
+      }}" port="6514" StreamDriver="gtls" StreamDriverMode="1" StreamDriverAuthMode="x509/name"
+      streamdriver.CheckExtendedKeyPurpose="on")
+    create: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - not rsyslog_includes_with_directive.matched and not rsyslog_main_file_with_directive.matched
+  tags:
+  - CCE-83991-0
+  - NIST-800-53-AU-9(3)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_remote_tls

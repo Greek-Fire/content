@@ -1,0 +1,53 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83673-4
+  - NIST-800-53-AU-2(a)
+  - audit_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Put contents into /etc/audit/rules.d/11-loginuid.rules according to policy
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/11-loginuid.rules
+    content: |+
+      ## Make the loginuid immutable. This prevents tampering with the auid.
+      --loginuid-immutable
+
+    force: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83673-4
+  - NIST-800-53-AU-2(a)
+  - audit_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure immutable Audit login UIDs - Remove any permissions from group and
+    other
+  ansible.builtin.file:
+    path: /etc/audit/rules.d/11-loginuid.rules
+    mode: g-rwx,o-rwx
+    state: touch
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83673-4
+  - NIST-800-53-AU-2(a)
+  - audit_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

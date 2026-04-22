@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove telnet Clients: Ensure telnet is removed"
+  ansible.builtin.package:
+    name: "telnet"
+    state: absent

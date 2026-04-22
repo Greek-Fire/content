@@ -1,0 +1,62 @@
+# platform = multi_platform_sle,multi_platform_slmicro,multi_platform_rhel
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - smartcard_configure_cert_checking
+
+- name: Package facts
+  ansible.builtin.package_facts: null
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture != "s390x"
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - smartcard_configure_cert_checking
+
+- name: Replace 'none' from cert_policy
+  ansible.builtin.replace:
+    path: /etc/pam_pkcs11/pam_pkcs11.conf
+    regexp: (^\s*cert_policy\s*=\s*)none\s*;(\s*$)
+    replace: \g<1>ocsp_on,ca,signature;\g<2>
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture != "s390x"
+  - '''pam_pkcs11'' in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - smartcard_configure_cert_checking
+
+- name: Add 'ocsp_on' parameter for cert_policy in /etc/pam_pkcs11/pam_pkcs11.conf
+  ansible.builtin.replace:
+    path: /etc/pam_pkcs11/pam_pkcs11.conf
+    regexp: (^\s*cert_policy\s*=\s*)(?!.*ocsp_on)(.*)
+    replace: \g<1>ocsp_on,\g<2>
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture != "s390x"
+  - '''pam_pkcs11'' in ansible_facts.packages'
+  tags:
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+  - smartcard_configure_cert_checking

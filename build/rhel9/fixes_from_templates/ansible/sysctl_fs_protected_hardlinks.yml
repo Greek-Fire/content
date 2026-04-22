@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Enable Kernel Parameter to Enforce DAC on Hardlinks - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on Hardlinks - Find all files that contain fs.protected_hardlinks
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_hardlinks\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on Hardlinks - Find all files that set fs.protected_hardlinks to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_hardlinks\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on Hardlinks - Comment out any occurrences of fs.protected_hardlinks from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*fs.protected_hardlinks'
+    replace: '#fs.protected_hardlinks'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on Hardlinks - Comment out any occurrences of fs.protected_hardlinks from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*fs.protected_hardlinks'
+    replace: '#fs.protected_hardlinks'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Enable Kernel Parameter to Enforce DAC on Hardlinks - Ensure sysctl fs.protected_hardlinks is set to 1
+  ansible.posix.sysctl:
+    name: "fs.protected_hardlinks"
+    value: "1"
+
+    sysctl_file: "/etc/sysctl.d/fs_protected_hardlinks.conf"
+
+    state: present
+    reload: yes

@@ -1,0 +1,20 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+
+- name: "Put contents into /etc/audit/rules.d/11-loginuid.rules according to policy"
+  ansible.builtin.copy:
+    dest: "/etc/audit/rules.d/11-loginuid.rules"
+    content: |+
+        ## Make the loginuid immutable. This prevents tampering with the auid.
+        --loginuid-immutable
+
+    force: yes
+
+- name: Configure immutable Audit login UIDs - Remove any permissions from group and other
+  ansible.builtin.file:
+    path: /etc/audit/rules.d/11-loginuid.rules
+    mode: g-rwx,o-rwx
+    state: touch

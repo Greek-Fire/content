@@ -1,0 +1,1 @@
+{"name": "cpe:/o:fedoraproject:fedora:45", "check_id": "installed_OS_is_fedora", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Fedora 45", "definition_location": "", "template": null}

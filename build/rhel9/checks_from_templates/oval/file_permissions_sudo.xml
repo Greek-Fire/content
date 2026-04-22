@@ -1,0 +1,52 @@
+<def-group>
+  <definition class="compliance" id="file_permissions_sudo" version="1">
+  
+    <metadata>
+        <title>Ensure That the sudo Binary Has the Correct Permissions</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /usr/bin/sudo has mode 4110.
+      If the target file or directory has an extended ACL, then it will fail the mode check.
+      </description>
+    </metadata>
+    <criteria>
+  
+      <criterion comment="Check file mode of /usr/bin/sudo" test_ref="test_file_permissions_sudo_0"/>
+  
+  
+    </criteria>
+  </definition>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/bin/sudo" id="test_file_permissions_sudo_0" version="3">
+    <unix:object object_ref="object_file_permissions_sudo_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/bin/sudo" id="object_file_permissions_sudo_0" version="1">
+      <unix:filepath>/usr/bin/sudo</unix:filepath>
+      <filter action="exclude">exclude_symlinks__sudo</filter>
+      <filter action="exclude">state_file_permissions_sudo_0_mode_4110</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissions_sudo_0_mode_4110" operator="AND" version="3">
+      <unix:suid datatype="boolean">true</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:uread datatype="boolean">false</unix:uread>
+      <unix:uwrite datatype="boolean">false</unix:uwrite>
+      <unix:uexec datatype="boolean">true</unix:uexec>
+      <unix:gread datatype="boolean">false</unix:gread>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:gexec datatype="boolean">true</unix:gexec>
+      <unix:oread datatype="boolean">false</unix:oread>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+      <unix:oexec datatype="boolean">false</unix:oexec>
+  </unix:file_state>
+  
+
+  <unix:file_state id="exclude_symlinks__sudo" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

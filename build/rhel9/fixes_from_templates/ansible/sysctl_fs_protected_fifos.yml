@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Enable Kernel Parameter to Enforce DAC on FIFOs - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on FIFOs - Find all files that contain fs.protected_fifos
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_fifos\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on FIFOs - Find all files that set fs.protected_fifos to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_fifos\s*=\s*2$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on FIFOs - Comment out any occurrences of fs.protected_fifos from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*fs.protected_fifos'
+    replace: '#fs.protected_fifos'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on FIFOs - Comment out any occurrences of fs.protected_fifos from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*fs.protected_fifos'
+    replace: '#fs.protected_fifos'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Enable Kernel Parameter to Enforce DAC on FIFOs - Ensure sysctl fs.protected_fifos is set to 2
+  ansible.posix.sysctl:
+    name: "fs.protected_fifos"
+    value: "2"
+
+    sysctl_file: "/etc/sysctl.d/fs_protected_fifos.conf"
+
+    state: present
+    reload: yes

@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the directory_owner_etc_selinux_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    directory_owner_etc_selinux_newown: "0"
+
+- name: Ensure owner on directory /etc/selinux/
+  ansible.builtin.file:
+    path: "/etc/selinux/"
+    follow: false
+    state: directory
+
+    owner: "{{ directory_owner_etc_selinux_newown }}"
+
+
+

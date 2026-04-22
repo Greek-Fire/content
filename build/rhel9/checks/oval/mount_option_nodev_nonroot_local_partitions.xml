@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-mount_option_nodev_nonroot_local_partitions:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Add nodev Option to Non-Root Local Partitions</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83873-0" source="CCE" />
+        <oval-def:reference ref_id="mount_option_nodev_nonroot_local_partitions" source="ssg" />
+        <oval-def:description>The nodev mount option prevents files from being interpreted
+      as character or block devices. Legitimate character and block devices
+      should exist in the /dev directory on the root partition or within chroot
+      jails built for system services. All other locations should not allow
+      character and block devices.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion negate="true" comment="nodev on local filesystems" test_ref="oval:ssg-test_nodev_nonroot_local_partitions:tst:1" />
+        <oval-def:criterion comment="nodev on local filesystems in /etc/fstab" test_ref="oval:ssg-test_nodev_nonroot_local_partitions_in_fstab:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <linux:partition_test id="oval:ssg-test_nodev_nonroot_local_partitions:tst:1" version="1" check="all" comment="nodev on local filesystems" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_non_root_partitions:obj:1" />
+      <linux:state state_ref="oval:ssg-state_local_nodev:ste:1" />
+    </linux:partition_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_nodev_nonroot_local_partitions_in_fstab:tst:1" version="1" check="all" comment="nodev on local filesystems in /etc/fstab" check_existence="any_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_non_root_partitions_in_fstab:obj:1" />
+      <ind:state state_ref="oval:ssg-state_non_root_partitions_in_fstab:ste:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <linux:partition_object id="oval:ssg-object_non_root_partitions:obj:1" version="1">
+      <linux:mount_point operation="pattern match">^/(?!boot|efi)\w.*$</linux:mount_point>
+      <oval-def:filter action="include">oval:ssg-state_local_nodev:ste:1</oval-def:filter>
+    </linux:partition_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_non_root_partitions_in_fstab:obj:1" version="1">
+      <ind:filepath>/etc/fstab</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*(?!#)(?:/dev/\S+|UUID=\S+)\s+/(?!boot|efi)\w\S*\s+\S+\s+(\S+)</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <linux:partition_state id="oval:ssg-state_local_nodev:ste:1" version="1" operator="AND">
+      <linux:device operation="pattern match">^/dev/.*$</linux:device>
+      <linux:fs_type operation="pattern match">^(?!afs$|autofs$|ceph$|cifs$|smb3$|smbfs$|sshfs$|ncpfs$|ncp$|nfs$|nfs4$|gfs$|gfs2$|glusterfs$|gpfs$|pvfs2$|ocfs2$|lustre$|davfs$|fuse\.sshfs$).+</linux:fs_type>
+      <linux:mount_options datatype="string" entity_check="all" operation="not equal">nodev</linux:mount_options>
+    </linux:partition_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_non_root_partitions_in_fstab:ste:1" version="1" operator="AND">
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+      <ind:subexpression operation="pattern match">nodev</ind:subexpression>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

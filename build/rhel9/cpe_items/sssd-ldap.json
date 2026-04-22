@@ -1,0 +1,1 @@
+{"name": "cpe:/a:sssd-ldap", "check_id": "sssd_conf_uses_ldap", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "SSSD is configured to use LDAP", "definition_location": "/home/greek_fire/.git/content/shared/applicability/sssd-ldap.yml", "template": null}

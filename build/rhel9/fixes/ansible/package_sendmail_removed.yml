@@ -1,0 +1,38 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90830-1
+  - DISA-STIG-RHEL-09-215020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_sendmail_removed
+
+- name: 'Uninstall Sendmail Package: Ensure sendmail is removed'
+  ansible.builtin.package:
+    name: sendmail
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90830-1
+  - DISA-STIG-RHEL-09-215020
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_sendmail_removed

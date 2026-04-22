@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Enable Kernel Parameter to Enforce DAC on Symlinks - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on Symlinks - Find all files that contain fs.protected_symlinks
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_symlinks\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on Symlinks - Find all files that set fs.protected_symlinks to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.protected_symlinks\s*=\s*1$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Enable Kernel Parameter to Enforce DAC on Symlinks - Comment out any occurrences of fs.protected_symlinks from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*fs.protected_symlinks'
+    replace: '#fs.protected_symlinks'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Enable Kernel Parameter to Enforce DAC on Symlinks - Comment out any occurrences of fs.protected_symlinks from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*fs.protected_symlinks'
+    replace: '#fs.protected_symlinks'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Enable Kernel Parameter to Enforce DAC on Symlinks - Ensure sysctl fs.protected_symlinks is set to 1
+  ansible.posix.sysctl:
+    name: "fs.protected_symlinks"
+    value: "1"
+
+    sysctl_file: "/etc/sysctl.d/fs_protected_symlinks.conf"
+
+    state: present
+    reload: yes

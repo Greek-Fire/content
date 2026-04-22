@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_ownership_lastlog_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_ownership_lastlog_newown: "0"
+
+- name: Test for existence /usr/bin/lastlog
+  ansible.builtin.stat:
+    path: "/usr/bin/lastlog"
+  register: file_exists
+
+- name: Ensure owner on /usr/bin/lastlog
+  ansible.builtin.file:
+    path: "/usr/bin/lastlog"
+    follow: false
+    owner: "{{ file_ownership_lastlog_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

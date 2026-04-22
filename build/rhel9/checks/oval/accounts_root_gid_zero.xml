@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-accounts_root_gid_zero:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Verify Root Has A Primary GID 0</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86298-7" source="CCE" />
+        <oval-def:reference ref_id="accounts_root_gid_zero" source="ssg" />
+        <oval-def:description>The root account should have primary group of 0</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="tests that the root account's gid is equal to 0" test_ref="oval:ssg-test_accounts_root_gid_zero:tst:1" />
+        <oval-def:criterion comment="no other users have primary group ID 0" test_ref="oval:ssg-test_accounts_root_gid_zero_no_other_gid_0:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_accounts_root_gid_zero:tst:1" version="1" check="all" comment="test that the root user has GID 0 in the /etc/passwd file" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_root_gid_zero:obj:1" />
+      <ind:state state_ref="oval:ssg-state_accounts_root_gid_zero:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_accounts_root_gid_zero_no_other_gid_0:tst:1" version="1" check="all" comment="test that there are no other accounts with GID 0 except root" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_accounts_root_gid_zero_no_other_gid_0:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_accounts_root_gid_zero:obj:1" version="1">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match">^root:.+:\d+:(\d+).+</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_accounts_root_gid_zero_no_other_gid_0:obj:1" version="1">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match">^(?!\b(root|sync|shutdown|halt|operator)\b).+:.+:\d+:0:.+$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_accounts_root_gid_zero:ste:1" version="1" operator="AND" comment="root account's gid is equal to 0">
+      <ind:subexpression operation="equals" datatype="int">0</ind:subexpression>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

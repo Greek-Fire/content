@@ -1,0 +1,86 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the sssd user is defined
+  ansible.builtin.getent:
+    database: passwd
+    key: sssd
+  ignore_errors: true
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_sssd
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_ownerships_var_log_sssd_newown variable if sssd found
+  ansible.builtin.set_fact:
+    file_ownerships_var_log_sssd_newown: sssd
+  when: ansible_facts.getent_passwd["sssd"] is defined
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_sssd
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the root user is defined
+  ansible.builtin.getent:
+    database: passwd
+    key: root
+  ignore_errors: true
+  when: file_ownerships_var_log_sssd_newown is undefined
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_sssd
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_ownerships_var_log_sssd_newown variable if root found
+  ansible.builtin.set_fact:
+    file_ownerships_var_log_sssd_newown: root
+  when: ansible_facts.getent_passwd["root"] is defined
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_sssd
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /var/log/sssd/ file(s) matching .* recursively
+  ansible.builtin.command: find -P /var/log/sssd/  -type f  ! -user sssd ! -user root
+    -regextype posix-extended -regex ".*"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_sssd
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /var/log/sssd/ file(s) matching .*
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    owner: '{{ file_ownerships_var_log_sssd_newown }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_sssd
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

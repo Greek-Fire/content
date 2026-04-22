@@ -1,0 +1,71 @@
+<def-group>
+  <definition class="compliance" id="dir_permissions_system_journal" version="1">
+  
+    <metadata>
+        <title>Verify Permissions on the system journal directories</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /run/log/journal/, /var/log/journal/ has mode 2750.
+      If the target file or directory has an extended ACL, then it will fail the mode check.
+      </description>
+    </metadata>
+    <criteria>
+  
+      <criterion comment="Check file mode of /run/log/journal/" test_ref="test_file_permissionsdir_permissions_system_journal_0"/>
+  
+      <criterion comment="Check file mode of /var/log/journal/" test_ref="test_file_permissionsdir_permissions_system_journal_1"/>
+  
+  
+    </criteria>
+  </definition>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /run/log/journal/" id="test_file_permissionsdir_permissions_system_journal_0" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_system_journal_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/run/log/journal/" id="object_file_permissionsdir_permissions_system_journal_0" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/run/log/journal</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_system_journal</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_system_journal_0_mode_2750or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_system_journal_0_mode_2750or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:oread datatype="boolean">false</unix:oread>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+      <unix:oexec datatype="boolean">false</unix:oexec>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /var/log/journal/" id="test_file_permissionsdir_permissions_system_journal_1" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_system_journal_1" />
+  </unix:file_test>
+
+  <unix:file_object comment="/var/log/journal/" id="object_file_permissionsdir_permissions_system_journal_1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/var/log/journal</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_system_journal</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_system_journal_1_mode_2750or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_system_journal_1_mode_2750or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:oread datatype="boolean">false</unix:oread>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+      <unix:oexec datatype="boolean">false</unix:oexec>
+  </unix:file_state>
+  
+
+  <unix:file_state id="exclude_symlinks_dir_permissions_system_journal" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

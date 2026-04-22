@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84174-2
+  - DISA-STIG-RHEL-09-232235
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_groupowner_cron_weekly
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_cron_weekly_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_cron_weekly_newgroup: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84174-2
+  - DISA-STIG-RHEL-09-232235
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_groupowner_cron_weekly
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/cron.weekly/
+  ansible.builtin.file:
+    path: /etc/cron.weekly/
+    follow: false
+    state: directory
+    group: '{{ file_groupowner_cron_weekly_newgroup }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84174-2
+  - DISA-STIG-RHEL-09-232235
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - configure_strategy
+  - file_groupowner_cron_weekly
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

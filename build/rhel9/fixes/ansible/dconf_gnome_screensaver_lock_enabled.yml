@@ -1,0 +1,238 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_sle,multi_platform_almalinux
+# reboot = false
+# strategy = unknown
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Enable GNOME3 Screensaver
+    Lock After Idle Period
+  community.general.ini_file:
+    dest: /etc/dconf/db/local.d/00-security-settings
+    section: org/gnome/desktop/screensaver
+    option: lock-enabled
+    value: 'true'
+    create: true
+    no_extra_spaces: true
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution != 'SLES'
+  register: screensaver_config
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Prevent user modification
+    of GNOME lock-enabled
+  ansible.builtin.lineinfile:
+    path: /etc/dconf/db/local.d/locks/00-security-settings-lock
+    regexp: ^/org/gnome/desktop/screensaver/lock-enabled$
+    line: /org/gnome/desktop/screensaver/lock-enabled
+    create: true
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution != 'SLES'
+  register: screensaver_lock
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Enable GNOME3 Screensaver
+    Lock After Idle Period
+  community.general.ini_file:
+    dest: /etc/dconf/db/distro.d/00-security-settings
+    section: org/gnome/desktop/lockdown
+    option: disable-lock-screen
+    value: 'false'
+    create: true
+    no_extra_spaces: true
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution == 'SLES'
+  register: lockdown_config
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Prevent user modification
+    of GNOME disable-lock-screen
+  ansible.builtin.lineinfile:
+    path: /etc/dconf/db/distro.d/locks/00-security-settings-lock
+    regexp: ^/org/gnome/desktop/lockdown/disable-lock-screen$
+    line: /org/gnome/desktop/lockdown/disable-lock-screen
+    create: true
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution == 'SLES'
+  register: lockdown_lock
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Check GNOME3 screenserver
+    disable-lock-screen false
+  ansible.builtin.command: gsettings get org.gnome.desktop.lockdown disable-lock-screen
+  register: cmd_out
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution == 'SLES'
+  changed_when: false
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Update GNOME3 screenserver
+    disable-lock-screen false
+  ansible.builtin.command: gsettings set org.gnome.desktop.lockdown disable-lock-screen
+    false
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution == 'SLES'
+  - cmd_out.stdout != 'false'
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Update dconf database for
+    non-SLES systems
+  ansible.builtin.command: dconf update
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution != 'SLES'
+  - (screensaver_config is changed or screensaver_lock is changed)
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Enable GNOME3 Screensaver Lock After Idle Period - Update dconf database for
+    SLES systems
+  ansible.builtin.command: dconf update
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - ansible_distribution == 'SLES'
+  - (lockdown_config is changed or lockdown_lock is changed)
+  tags:
+  - CCE-89302-4
+  - CJIS-5.5.5
+  - DISA-STIG-RHEL-09-271055
+  - DISA-STIG-RHEL-09-271060
+  - NIST-800-171-3.1.10
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-8.1.8
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.8
+  - dconf_gnome_screensaver_lock_enabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy

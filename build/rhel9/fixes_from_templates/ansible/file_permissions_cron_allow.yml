@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/cron.allow
+  ansible.builtin.stat:
+    path: "/etc/cron.allow"
+  register: file_exists
+
+- name: Ensure permission u-xs,g-xws,o-xwrt on /etc/cron.allow
+  ansible.builtin.file:
+    path: "/etc/cron.allow"
+    mode: "u-xs,g-xws,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

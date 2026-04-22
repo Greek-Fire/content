@@ -1,0 +1,105 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the dir_ownership_binary_dirs_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    dir_ownership_binary_dirs_newown: '0'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /bin/ recursively
+  ansible.builtin.file:
+    path: /bin/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_binary_dirs_newown }}'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /sbin/ recursively
+  ansible.builtin.file:
+    path: /sbin/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_binary_dirs_newown }}'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /usr/bin/ recursively
+  ansible.builtin.file:
+    path: /usr/bin/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_binary_dirs_newown }}'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /usr/sbin/ recursively
+  ansible.builtin.file:
+    path: /usr/sbin/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_binary_dirs_newown }}'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /usr/local/bin/ recursively
+  ansible.builtin.file:
+    path: /usr/local/bin/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_binary_dirs_newown }}'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /usr/local/sbin/ recursively
+  ansible.builtin.file:
+    path: /usr/local/sbin/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_ownership_binary_dirs_newown }}'
+  tags:
+  - configure_strategy
+  - dir_ownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

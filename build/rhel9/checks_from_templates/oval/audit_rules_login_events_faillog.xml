@@ -1,0 +1,67 @@
+
+
+<def-group>
+  <definition class="compliance" id="audit_rules_login_events_faillog" version="1">
+  
+    <metadata>
+        <title>Record Attempts to Alter Logon and Logout Events - faillog</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Check if actions on '/var/log/faillog' are configured to be audited</description>
+    </metadata>
+  
+
+    <criteria operator="OR">
+
+      <!-- Test the augenrules case -->
+      <criteria operator="AND">
+        <extend_definition comment="audit augenrules" definition_ref="audit_rules_augenrules" />
+
+        <criterion comment="audit augenrules faillog" test_ref="test_audit_rules_login_events_faillog_augenrules" />
+
+      </criteria>
+
+      <!-- Test the auditctl case -->
+      <criteria operator="AND">
+        <extend_definition comment="audit auditctl" definition_ref="audit_rules_auditctl" />
+
+        <criterion comment="audit auditctl faillog" test_ref="test_audit_rules_login_events_faillog_auditctl" />
+
+      </criteria>
+
+    </criteria>
+  </definition>
+
+
+
+  <ind:textfilecontent54_test check="all" comment="audit augenrules faillog" id="test_audit_rules_login_events_faillog_augenrules" version="1">
+    <ind:object object_ref="object_audit_rules_login_events_faillog_augenrules" />
+  </ind:textfilecontent54_test>
+  <ind:textfilecontent54_object id="object_audit_rules_login_events_faillog_augenrules" version="1">
+    <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+    <ind:pattern operation="pattern match" var_ref="audit_rules_login_events_faillog_path_pattern"/>
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_test check="all" comment="audit auditctl faillog" id="test_audit_rules_login_events_faillog_auditctl" version="1">
+    <ind:object object_ref="object_audit_rules_login_events_faillog_auditctl" />
+  </ind:textfilecontent54_test>
+  <ind:textfilecontent54_object id="object_audit_rules_login_events_faillog_auditctl" version="1">
+    <ind:filepath>/etc/audit/audit.rules</ind:filepath>
+    <ind:pattern operation="pattern match" var_ref="audit_rules_login_events_faillog_path_pattern" />
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+  <local_variable id="audit_rules_login_events_faillog_path_pattern" comment="The composite pattern used to detect if audit as been configured" datatype="string" version="1">
+    <concat>
+      <literal_component>^\-w[\s]+</literal_component>
+  
+      <literal_component>\/var\/log\/faillog</literal_component>
+  
+      <literal_component>[\s]+\-p[\s]+\b([rx]*w[rx]*a[rx]*|[rx]*a[rx]*w[rx]*)\b.*$</literal_component>
+    </concat>
+  </local_variable>
+
+  
+</def-group>

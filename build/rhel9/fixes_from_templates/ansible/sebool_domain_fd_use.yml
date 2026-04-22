@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Enable the domain_fd_use SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_domain_fd_use)
+- name: "Enable the domain_fd_use SELinux Boolean - Set SELinux Boolean domain_fd_use Accordingly"
+  ansible.posix.seboolean:
+    name: domain_fd_use
+    state: "{{ var_domain_fd_use }}"
+    persistent: yes

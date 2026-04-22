@@ -1,0 +1,60 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_rhv,multi_platform_ubuntu,multi_platform_sle,multi_platform_slmicro
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86764-8
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - kernel_module_hfs_disabled
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+
+- name: Ensure kernel module 'hfs' is disabled
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/hfs.conf
+    regexp: install\s+hfs
+    line: install hfs /bin/false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86764-8
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - kernel_module_hfs_disabled
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required
+
+- name: Ensure kernel module 'hfs' is blacklisted
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/hfs.conf
+    regexp: ^blacklist hfs$
+    line: blacklist hfs
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86764-8
+  - NIST-800-171-3.4.6
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - kernel_module_hfs_disabled
+  - low_complexity
+  - low_severity
+  - medium_disruption
+  - reboot_required

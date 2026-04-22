@@ -1,0 +1,43 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the systemd-journal group is defined
+  ansible.builtin.getent:
+    database: group
+    key: systemd-journal
+  ignore_errors: yes
+  when: dir_groupowner_system_journal_newgroup is undefined
+
+- name: Set the dir_groupowner_system_journal_newgroup variable if systemd-journal found
+  ansible.builtin.set_fact:
+    dir_groupowner_system_journal_newgroup: "systemd-journal"
+  when: ansible_facts.getent_group["systemd-journal"] is defined
+
+- name: Ensure group owner on /run/log/journal/ recursively
+  ansible.builtin.file:
+    path: "/run/log/journal/"
+    follow: false
+    state: directory
+
+    recurse: yes
+
+    group: "{{ dir_groupowner_system_journal_newgroup }}"
+
+
+
+
+
+- name: Ensure group owner on /var/log/journal/ recursively
+  ansible.builtin.file:
+    path: "/var/log/journal/"
+    follow: false
+    state: directory
+
+    recurse: yes
+
+    group: "{{ dir_groupowner_system_journal_newgroup }}"
+
+
+

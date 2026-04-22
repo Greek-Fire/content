@@ -1,0 +1,1 @@
+{"name": "cpe:/o:centos:centos:8", "check_id": "installed_OS_is_centos8", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "CentOS 8", "definition_location": "/home/greek_fire/.git/content/shared/applicability/centos8.yml", "template": null}

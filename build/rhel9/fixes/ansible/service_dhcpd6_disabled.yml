@@ -1,0 +1,57 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_dhcpd6_disabled
+
+- name: Disable DHCPD6 Service - Disable service dhcpd6
+  block:
+
+  - name: Disable DHCPD6 Service - Collect systemd Services Present in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable DHCPD6 Service - Ensure dhcpd6.service is Masked
+    ansible.builtin.systemd:
+      name: dhcpd6.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("dhcpd6.service", multiline=True)
+
+  - name: Unit Socket Exists - dhcpd6.socket
+    ansible.builtin.command: systemctl -q list-unit-files dhcpd6.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable DHCPD6 Service - Disable Socket dhcpd6
+    ansible.builtin.systemd:
+      name: dhcpd6.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("dhcpd6.socket", multiline=True)
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_dhcpd6_disabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

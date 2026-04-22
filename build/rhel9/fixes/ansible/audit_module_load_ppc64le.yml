@@ -1,0 +1,58 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90788-1
+  - NIST-800-53-AU-2(a)
+  - audit_module_load_ppc64le
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Put contents into /etc/audit/rules.d/43-module-load.rules according to policy
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/43-module-load.rules
+    content: |
+      ## These rules watch for kernel module insertion. By monitoring
+      ## the syscall, we do not need any watches on programs.
+      -a always,exit -F arch=b64 -S init_module,finit_module -F key=module-load
+      -a always,exit -F arch=b64 -S delete_module -F key=module-unload
+    force: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture == "ppc64le"
+  tags:
+  - CCE-90788-1
+  - NIST-800-53-AU-2(a)
+  - audit_module_load_ppc64le
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure auditing of loading and unloading of kernel modules (ppc64le) -
+    Remove any permissions from group and other
+  ansible.builtin.file:
+    path: /etc/audit/rules.d/43-module-load.rules
+    mode: g-rwx,o-rwx
+    state: touch
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture == "ppc64le"
+  tags:
+  - CCE-90788-1
+  - NIST-800-53-AU-2(a)
+  - audit_module_load_ppc64le
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

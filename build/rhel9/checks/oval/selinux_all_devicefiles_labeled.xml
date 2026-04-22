@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-selinux_all_devicefiles_labeled:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure No Device Files are Unlabeled by SELinux</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-85920-7" source="CCE" />
+        <oval-def:reference ref_id="selinux_all_devicefiles_labeled" source="ssg" />
+        <oval-def:description>All device files in /dev should be assigned an SELinux security context other than 'device_t' and 'unlabeled_t'.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="device_t in /dev" test_ref="oval:ssg-test_selinux_dev_device_t:tst:1" />
+        <oval-def:criterion comment="unlabeled_t in /dev" test_ref="oval:ssg-test_selinux_dev_unlabeled_t:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <linux:selinuxsecuritycontext_test id="oval:ssg-test_selinux_dev_device_t:tst:1" version="2" check="none satisfy" comment="device_t in /dev" check_existence="any_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_selinux_dev_device_t:obj:1" />
+      <linux:state state_ref="oval:ssg-state_selinux_dev_device_t:ste:1" />
+    </linux:selinuxsecuritycontext_test>
+    <linux:selinuxsecuritycontext_test id="oval:ssg-test_selinux_dev_unlabeled_t:tst:1" version="2" check="none satisfy" comment="unlabeled_t in /dev" check_existence="any_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_selinux_dev_unlabeled_t:obj:1" />
+      <linux:state state_ref="oval:ssg-state_selinux_dev_unlabeled_t:ste:1" />
+    </linux:selinuxsecuritycontext_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-object_dev_device_files:obj:1" version="1" comment="device files within /dev directory">
+      <unix:behaviors recurse_direction="down" />
+      <unix:path operation="equals">/dev</unix:path>
+      <unix:filename operation="pattern match">^.*$</unix:filename>
+      <oval-def:filter action="include">oval:ssg-state_block_or_char_device_file:ste:1</oval-def:filter>
+    </unix:file_object>
+    <linux:selinuxsecuritycontext_object id="oval:ssg-object_selinux_dev_device_t:obj:1" version="1" comment="device_t in /dev">
+      <linux:filepath operation="equals" var_ref="oval:ssg-variable_dev_device_files:var:1" var_check="at least one" />
+      <oval-def:filter action="include">oval:ssg-state_selinux_dev_device_t:ste:1</oval-def:filter>
+    </linux:selinuxsecuritycontext_object>
+    <linux:selinuxsecuritycontext_object id="oval:ssg-object_selinux_dev_unlabeled_t:obj:1" version="1" comment="unlabeled_t in /dev">
+      <linux:filepath operation="equals" var_ref="oval:ssg-variable_dev_device_files:var:1" var_check="at least one" />
+      <oval-def:filter action="include">oval:ssg-state_selinux_dev_unlabeled_t:ste:1</oval-def:filter>
+    </linux:selinuxsecuritycontext_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-state_block_or_char_device_file:ste:1" version="1" operator="AND" comment="device files">
+      <unix:type operation="pattern match">^(block|character) special$</unix:type>
+    </unix:file_state>
+    <linux:selinuxsecuritycontext_state id="oval:ssg-state_selinux_dev_device_t:ste:1" version="1" operator="AND" comment="device_t label">
+      <linux:type datatype="string" operation="equals">device_t</linux:type>
+    </linux:selinuxsecuritycontext_state>
+    <linux:selinuxsecuritycontext_state id="oval:ssg-state_selinux_dev_unlabeled_t:ste:1" version="1" operator="AND" comment="unlabeled_t label">
+      <linux:type datatype="string" operation="equals">unlabeled_t</linux:type>
+    </linux:selinuxsecuritycontext_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-variable_dev_device_files:var:1" version="1" datatype="string" comment="all device files within /dev directory">
+      <oval-def:object_component object_ref="oval:ssg-object_dev_device_files:obj:1" item_field="filepath" />
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

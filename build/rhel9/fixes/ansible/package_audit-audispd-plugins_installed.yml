@@ -1,0 +1,36 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89457-6
+  - PCI-DSS-Req-10.5.3
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_audit-audispd-plugins_installed
+
+- name: Ensure audit-audispd-plugins is installed
+  ansible.builtin.package:
+    name: audit-audispd-plugins
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89457-6
+  - PCI-DSS-Req-10.5.3
+  - PCI-DSSv4-10.3
+  - PCI-DSSv4-10.3.3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_audit-audispd-plugins_installed

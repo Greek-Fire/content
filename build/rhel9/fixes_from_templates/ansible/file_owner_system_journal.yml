@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_system_journal_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_system_journal_newown: "0"
+
+- name: Test for existence ^/var/log/journal/.*/system.journal$
+  ansible.builtin.stat:
+    path: "^/var/log/journal/.*/system.journal$"
+  register: file_exists
+
+- name: Ensure owner on ^/var/log/journal/.*/system.journal$
+  ansible.builtin.file:
+    path: "^/var/log/journal/.*/system.journal$"
+    follow: false
+    owner: "{{ file_owner_system_journal_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

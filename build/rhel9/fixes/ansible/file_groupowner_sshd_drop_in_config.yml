@@ -1,0 +1,81 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86253-2
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_sshd_drop_in_config_newgroup variable if represented
+    by gid
+  ansible.builtin.set_fact:
+    file_groupowner_sshd_drop_in_config_newgroup: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86253-2
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/ssh/sshd_config.d/ file(s) matching ^.*$
+  ansible.builtin.command: find -P /etc/ssh/sshd_config.d/ -maxdepth 1 -type f  !
+    -group 0 -regextype posix-extended -regex "^.*$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86253-2
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/ssh/sshd_config.d/ file(s) matching ^.*$
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    group: '{{ file_groupowner_sshd_drop_in_config_newgroup }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86253-2
+  - DISA-STIG-RHEL-09-255105
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - configure_strategy
+  - file_groupowner_sshd_drop_in_config
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

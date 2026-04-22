@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Disable Core Dumps for SUID programs - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable Core Dumps for SUID programs - Find all files that contain fs.suid_dumpable
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.suid_dumpable\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Core Dumps for SUID programs - Find all files that set fs.suid_dumpable to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*fs.suid_dumpable\s*=\s*0$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Core Dumps for SUID programs - Comment out any occurrences of fs.suid_dumpable from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*fs.suid_dumpable'
+    replace: '#fs.suid_dumpable'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable Core Dumps for SUID programs - Comment out any occurrences of fs.suid_dumpable from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*fs.suid_dumpable'
+    replace: '#fs.suid_dumpable'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable Core Dumps for SUID programs - Ensure sysctl fs.suid_dumpable is set to 0
+  ansible.posix.sysctl:
+    name: "fs.suid_dumpable"
+    value: "0"
+
+    sysctl_file: "/etc/sysctl.d/fs_suid_dumpable.conf"
+
+    state: present
+    reload: yes

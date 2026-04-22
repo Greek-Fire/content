@@ -1,0 +1,102 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux
+# reboot = false
+# strategy = unknown
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-85903-3
+  - dconf_gnome_disable_geolocation
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Disable Geolocation in GNOME3 - location tracking
+  community.general.ini_file:
+    dest: /etc/dconf/db/local.d/00-security-settings
+    section: org/gnome/system/location
+    option: enabled
+    value: 'false'
+    create: true
+    no_extra_spaces: true
+  register: result_ini1
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - CCE-85903-3
+  - dconf_gnome_disable_geolocation
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Disable Geolocation in GNOME3 - clock location tracking
+  community.general.ini_file:
+    dest: /etc/dconf/db/local.d/00-security-settings
+    section: org/gnome/clocks
+    option: gelocation
+    value: 'false'
+    create: true
+  register: result_ini2
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - CCE-85903-3
+  - dconf_gnome_disable_geolocation
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Prevent user modification of GNOME geolocation - location tracking
+  ansible.builtin.lineinfile:
+    path: /etc/dconf/db/local.d/locks/00-security-settings-lock
+    regexp: ^/org/gnome/system/location/enabled$
+    line: /org/gnome/system/location/enabled
+    create: true
+  register: result_lineinfile1
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - CCE-85903-3
+  - dconf_gnome_disable_geolocation
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Prevent user modification of GNOME geolocation - clock location tracking
+  ansible.builtin.lineinfile:
+    path: /etc/dconf/db/local.d/locks/00-security-settings-lock
+    regexp: ^/org/gnome/clocks/geolocation$
+    line: /org/gnome/clocks/geolocation
+    create: true
+  register: result_lineinfile2
+  when: '"gdm" in ansible_facts.packages'
+  tags:
+  - CCE-85903-3
+  - dconf_gnome_disable_geolocation
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy
+
+- name: Dconf Update
+  ansible.builtin.command: dconf update
+  when:
+  - '"gdm" in ansible_facts.packages'
+  - result_ini1 is changed or result_ini2 is changed or result_lineinfile1 is changed
+    or result_lineinfile2 is changed
+  tags:
+  - CCE-85903-3
+  - dconf_gnome_disable_geolocation
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - unknown_strategy

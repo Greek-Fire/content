@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86946-1
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - disable_strategy
+  - file_at_deny_not_exist
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure that /etc/at.deny does not exist - Remove /etc/at.deny
+  ansible.builtin.file:
+    path: /etc/at.deny
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86946-1
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.6
+  - disable_strategy
+  - file_at_deny_not_exist
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

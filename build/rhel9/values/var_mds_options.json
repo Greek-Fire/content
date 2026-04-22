@@ -1,0 +1,1 @@
+{"description": "Defines the MDS vulneratility mitigation to employ.", "type": "string", "operator": "equals", "interactive": false, "options": {"default": "full", "full": "full", "full_nosmt": "full,nosmt"}, "warnings": [], "title": "MDS vulnerability mitigation", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/system/bootloader-grub2/var_mds_options.var"}

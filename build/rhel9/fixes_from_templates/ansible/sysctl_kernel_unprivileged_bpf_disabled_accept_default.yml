@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_kernel_unprivileged_bpf_disabled_value)
+
+
+- name: Disable Access to Network bpf() Syscall From Unprivileged Processes - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable Access to Network bpf() Syscall From Unprivileged Processes - Find all files that contain kernel.unprivileged_bpf_disabled
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.unprivileged_bpf_disabled\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Access to Network bpf() Syscall From Unprivileged Processes - Find all files that set kernel.unprivileged_bpf_disabled to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.unprivileged_bpf_disabled\s*=\s*{{ sysctl_kernel_unprivileged_bpf_disabled_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Access to Network bpf() Syscall From Unprivileged Processes - Comment out any occurrences of kernel.unprivileged_bpf_disabled from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*kernel.unprivileged_bpf_disabled'
+    replace: '#kernel.unprivileged_bpf_disabled'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable Access to Network bpf() Syscall From Unprivileged Processes - Comment out any occurrences of kernel.unprivileged_bpf_disabled from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*kernel.unprivileged_bpf_disabled'
+    replace: '#kernel.unprivileged_bpf_disabled'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable Access to Network bpf() Syscall From Unprivileged Processes - Ensure sysctl kernel.unprivileged_bpf_disabled is set
+  ansible.posix.sysctl:
+    name: "kernel.unprivileged_bpf_disabled"
+    value: "{{ sysctl_kernel_unprivileged_bpf_disabled_value }}"
+
+    sysctl_file: "/etc/sysctl.d/kernel_unprivileged_bpf_disabled.conf"
+
+    state: present
+    reload: yes

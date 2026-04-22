@@ -1,0 +1,636 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-audit_rules_unsuccessful_file_modification_open_by_handle_at_rule_order:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure auditd Unauthorized Access Attempts To open_by_handle_at Are Ordered Correctly</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-89998-9" source="CCE" />
+        <oval-def:reference ref_id="audit_rules_unsuccessful_file_modification_open_by_handle_at_rule_order" source="ssg" />
+        <oval-def:description>Audit rules about the information on the unsuccessful use of open_by_handle_at is configured in the proper rule order.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="audit augenrules" definition_ref="oval:ssg-audit_rules_augenrules:def:1" />
+          <oval-def:criterion comment="audit augenrules 32-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eacces_augenrules:tst:1" />
+          <oval-def:criterion comment="audit augenrules 32-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eperm_augenrules:tst:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:extend_definition negate="true" comment="64-bit system" definition_ref="oval:ssg-system_info_architecture_64bit:def:1" />
+            <oval-def:criteria operator="AND">
+              <oval-def:criterion comment="audit augenrules 64-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eacces_augenrules:tst:1" />
+              <oval-def:criterion comment="audit augenrules 64-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eperm_augenrules:tst:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+        </oval-def:criteria>
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="audit auditctl" definition_ref="oval:ssg-audit_rules_auditctl:def:1" />
+          <oval-def:criterion comment="audit augenrules 32-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eacces_auditctl:tst:1" />
+          <oval-def:criterion comment="audit augenrules 32-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eperm_auditctl:tst:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:extend_definition negate="true" comment="64-bit_system" definition_ref="oval:ssg-system_info_architecture_64bit:def:1" />
+            <oval-def:criteria operator="AND">
+              <oval-def:criterion comment="audit augenrules 32-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eacces_auditctl:tst:1" />
+              <oval-def:criterion comment="audit augenrules 32-bit" test_ref="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eperm_auditctl:tst:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-audit_rules_auditctl:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test if auditctl is in use for audit rules</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="audit_rules_auditctl" source="ssg" />
+        <oval-def:description>Test if auditctl is in use for audit rules.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="audit auditctl" test_ref="oval:ssg-test_audit_rules_auditctl:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-audit_rules_augenrules:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test if augenrules is enabled for audit rules</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="audit_rules_augenrules" source="ssg" />
+        <oval-def:description>Test if augenrules is enabled for audit rules.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="audit augenrules" test_ref="oval:ssg-test_audit_rules_augenrules:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-system_info_architecture_64bit:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test for 64-bit Architecture</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="system_info_architecture_64bit" source="ssg" />
+        <oval-def:description>Generic test for 64-bit architectures to be used by other tests</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:extend_definition comment="Generic test for x86_64 architecture" definition_ref="oval:ssg-system_info_architecture_x86_64:def:1" />
+        <oval-def:extend_definition comment="Generic test for ppc64 architecture" definition_ref="oval:ssg-system_info_architecture_ppc_64:def:1" />
+        <oval-def:extend_definition comment="Generic test for aarch64 architecture" definition_ref="oval:ssg-system_info_architecture_aarch_64:def:1" />
+        <oval-def:extend_definition comment="Generic test for s390x architecture" definition_ref="oval:ssg-system_info_architecture_s390_64:def:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-system_info_architecture_aarch_64:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test for aarch_64 Architecture</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="system_info_architecture_aarch_64" source="ssg" />
+        <oval-def:description>Generic test for aarch_64 architecture to be used by other tests</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Generic test for aarch_64 architecture" test_ref="oval:ssg-test_system_info_architecture_aarch_64:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-system_info_architecture_ppc_64:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test for PPC and PPCLE Architecture</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="system_info_architecture_ppc_64" source="ssg" />
+        <oval-def:description>Generic test for PPC PPC64LE architecture to be used by other tests</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criterion comment="Generic test for ppc64 architecture" test_ref="oval:ssg-test_system_info_architecture_ppc_64:tst:1" />
+        <oval-def:criterion comment="Generic test for ppcle64 architecture" test_ref="oval:ssg-test_system_info_architecture_ppcle_64:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-system_info_architecture_s390_64:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test for s390_64 Architecture</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="system_info_architecture_s390_64" source="ssg" />
+        <oval-def:description>Generic test for s390_64 architecture to be used by other tests</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Generic test for s390_64 architecture" test_ref="oval:ssg-test_system_info_architecture_s390_64:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-system_info_architecture_x86_64:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test for x86_64 Architecture</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="system_info_architecture_x86_64" source="ssg" />
+        <oval-def:description>Generic test for x86_64 architecture to be used by other tests</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Generic test for x86_64 architecture" test_ref="oval:ssg-test_system_info_architecture_x86_64:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eacces_augenrules:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eacces_augenrules:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eperm_augenrules:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eperm_augenrules:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eacces_augenrules:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eacces_augenrules:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eperm_augenrules:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eperm_augenrules:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eacces_auditctl:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eacces_auditctl:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_32bit_eperm_auditctl:tst:1" version="1" check="all" comment="Test order of audit 32bit auditctl eperm rules order" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eperm_auditctl:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eacces_auditctl:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eacces_auditctl:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_arufm_open_by_handle_at_order_64bit_eperm_auditctl:tst:1" version="1" check="all" comment="defined audit rule must exist" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eperm_auditctl:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_audit_rules_auditctl:tst:1" version="1" check="all" comment="audit auditctl" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_auditctl:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_audit_rules_augenrules:tst:1" version="1" check="all" comment="audit augenrules" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_augenrules:obj:1" />
+    </ind:textfilecontent54_test>
+    <unix:uname_test id="oval:ssg-test_system_info_architecture_aarch_64:tst:1" version="1" check="all" comment="64 bit architecture" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_system_info_architecture_aarch_64:obj:1" />
+      <unix:state state_ref="oval:ssg-state_system_info_architecture_aarch_64:ste:1" />
+    </unix:uname_test>
+    <unix:uname_test id="oval:ssg-test_system_info_architecture_ppc_64:tst:1" version="1" check="all" comment="64 bit architecture" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_system_info_architecture_ppc_64:obj:1" />
+      <unix:state state_ref="oval:ssg-state_system_info_architecture_ppc_64:ste:1" />
+    </unix:uname_test>
+    <unix:uname_test id="oval:ssg-test_system_info_architecture_ppcle_64:tst:1" version="1" check="all" comment="64 bit architecture" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_system_info_architecture_ppcle_64:obj:1" />
+      <unix:state state_ref="oval:ssg-state_system_info_architecture_ppcle_64:ste:1" />
+    </unix:uname_test>
+    <unix:uname_test id="oval:ssg-test_system_info_architecture_s390_64:tst:1" version="1" check="all" comment="64 bit architecture" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_system_info_architecture_s390_64:obj:1" />
+      <unix:state state_ref="oval:ssg-state_system_info_architecture_s390_64:ste:1" />
+    </unix:uname_test>
+    <unix:uname_test id="oval:ssg-test_system_info_architecture_x86_64:tst:1" version="1" check="all" comment="64 bit architecture" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_system_info_architecture_x86_64:obj:1" />
+      <unix:state state_ref="oval:ssg-state_system_info_architecture_x86_64:ste:1" />
+    </unix:uname_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a20100_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a201003_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_eacces_augenrules_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a20100_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a201003_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_eperm_augenrules_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a20100_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a201003_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eacces_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_64bit_open_by_handle_at_eacces_augenrules_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a20100_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a201003_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eperm_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_64bit_open_by_handle_at_eperm_augenrules_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a20100_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a201003_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_auditctl_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a20100_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a201003_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_32bit_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_auditctl_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a20100_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a201003_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eacces_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_open_by_handle_at_order_64bit_auditctl_eacces_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a20100_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a201003_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_arufm_open_by_handle_at_order_64bit_eperm_auditctl:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_arufm_rule_order_64bit_open_by_handle_at_auditctl_eperm_regex:var:1" />
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_audit_rules_auditctl:obj:1" version="1">
+      <ind:filepath>/usr/lib/systemd/system/auditd.service</ind:filepath>
+      <ind:pattern operation="pattern match">^ExecStartPost=\-\/sbin\/auditctl.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_audit_rules_augenrules:obj:1" version="1">
+      <ind:filepath>/usr/lib/systemd/system/auditd.service</ind:filepath>
+      <ind:pattern operation="pattern match">^(ExecStartPost=\-\/sbin\/augenrules.*$|Requires=augenrules.service)</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:uname_object id="oval:ssg-object_system_info_architecture_aarch_64:obj:1" version="1" comment="64 bit architecture" />
+    <unix:uname_object id="oval:ssg-object_system_info_architecture_ppc_64:obj:1" version="1" comment="64 bit architecture" />
+    <unix:uname_object id="oval:ssg-object_system_info_architecture_ppcle_64:obj:1" version="1" comment="64 bit architecture" />
+    <unix:uname_object id="oval:ssg-object_system_info_architecture_s390_64:obj:1" version="1" comment="64 bit architecture" />
+    <unix:uname_object id="oval:ssg-object_system_info_architecture_x86_64:obj:1" version="1" comment="64 bit architecture" />
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:uname_state id="oval:ssg-state_system_info_architecture_aarch_64:ste:1" version="1" operator="AND" comment="64 bit architecture">
+      <unix:processor_type operation="equals">aarch64</unix:processor_type>
+    </unix:uname_state>
+    <unix:uname_state id="oval:ssg-state_system_info_architecture_ppc_64:ste:1" version="1" operator="AND" comment="64 bit architecture">
+      <unix:processor_type operation="equals">ppc64</unix:processor_type>
+    </unix:uname_state>
+    <unix:uname_state id="oval:ssg-state_system_info_architecture_ppcle_64:ste:1" version="1" operator="AND" comment="64 bit architecture">
+      <unix:processor_type operation="equals">ppc64le</unix:processor_type>
+    </unix:uname_state>
+    <unix:uname_state id="oval:ssg-state_system_info_architecture_s390_64:ste:1" version="1" operator="AND" comment="64 bit architecture">
+      <unix:processor_type operation="equals">s390x</unix:processor_type>
+    </unix:uname_state>
+    <unix:uname_state id="oval:ssg-state_system_info_architecture_x86_64:ste:1" version="1" operator="AND" comment="64 bit architecture">
+      <unix:processor_type operation="equals">x86_64</unix:processor_type>
+    </unix:uname_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:constant_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" version="1" datatype="string" comment="audit rule arch and syscal">
+      <oval-def:value>^[\s]*-a[\s]+always,exit[\s]+(?:-F[\s]+arch=b32[\s]+)(?:-S[\s]+(?:[\S]+,)*(open_by_handle_at)(?:,[\S]+)*)[\s]+</oval-def:value>
+    </oval-def:constant_variable>
+    <oval-def:constant_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" version="1" datatype="string" comment="audit rule arch and syscal">
+      <oval-def:value>^[\s]*-a[\s]+always,exit[\s]+(?:-F[\s]+arch=b64[\s]+)(?:-S[\s]+(?:[\S]+,)*(open_by_handle_at)(?:,[\S]+)*)[\s]+</oval-def:value>
+    </oval-def:constant_variable>
+    <oval-def:constant_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" version="1" datatype="string" comment="audit rule auid and key">
+      <oval-def:value>[\s]+(?:-F\s+auid&gt;=1000[\s]+)(?:-F\s+auid!=(?:unset|4294967295)[\s]+)(?:-k[\s]+|-F[\s]+key=)[\S]+[\s]*$</oval-def:value>
+    </oval-def:constant_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a20100_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;0100)[\s]+(?:-F\s+exit=-EACCES)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a201003_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;01003)[\s]+(?:-F\s+exit=-EACCES)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+exit=-EACCES)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a20100_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;0100)[\s]+(?:-F\s+exit=-EPERM)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_a201003_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;01003)[\s]+(?:-F\s+exit=-EPERM)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_32bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+exit=-EPERM)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a20100_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;0100)[\s]+(?:-F\s+exit=-EACCES)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a201003_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;01003)[\s]+(?:-F\s+exit=-EACCES)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+exit=-EACCES)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a20100_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;0100)[\s]+(?:-F\s+exit=-EPERM)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_a201003_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+a2&amp;01003)[\s]+(?:-F\s+exit=-EPERM)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_64bit_head:var:1" />
+        <oval-def:literal_component>(?:-F\s+exit=-EPERM)</oval-def:literal_component>
+        <oval-def:variable_component var_ref="oval:ssg-var_audit_rule_open_by_handle_at_order_tail:var:1" />
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_eacces_augenrules_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_eperm_augenrules_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_64bit_open_by_handle_at_eacces_augenrules_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eacces_augenrules:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_64bit_open_by_handle_at_eperm_augenrules_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eperm_augenrules:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_auditctl_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_32bit_open_by_handle_at_auditctl_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a201003_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_32bit_a20100_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_32bit_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_open_by_handle_at_order_64bit_auditctl_eacces_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eacces_auditctl:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_arufm_rule_order_64bit_open_by_handle_at_auditctl_eperm_regex:var:1" version="1" datatype="string" comment="arches to audit">
+      <oval-def:concat>
+        <oval-def:literal_component>^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>$\n(^(?!</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a201003_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>|</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_64bit_a20100_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>).*$\n)*^</oval-def:literal_component>
+        <oval-def:object_component item_field="text" object_ref="oval:ssg-object_arufm_open_by_handle_at_order_nofilter_64bit_eperm_auditctl:obj:1" />
+        <oval-def:literal_component>$</oval-def:literal_component>
+      </oval-def:concat>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall cyrus-imapd Package: Ensure cyrus-imapd is removed"
+  ansible.builtin.package:
+    name: "cyrus-imapd"
+    state: absent

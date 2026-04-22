@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Disable storing core dumps - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable storing core dumps - Find all files that contain kernel.core_pattern
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.core_pattern\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable storing core dumps - Find all files that set kernel.core_pattern to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.core_pattern\s*=\s*\|/bin/false$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable storing core dumps - Comment out any occurrences of kernel.core_pattern from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*kernel.core_pattern'
+    replace: '#kernel.core_pattern'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable storing core dumps - Comment out any occurrences of kernel.core_pattern from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*kernel.core_pattern'
+    replace: '#kernel.core_pattern'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable storing core dumps - Ensure sysctl kernel.core_pattern is set to |/bin/false
+  ansible.posix.sysctl:
+    name: "kernel.core_pattern"
+    value: "|/bin/false"
+
+    sysctl_file: "/etc/sysctl.d/kernel_core_pattern.conf"
+
+    state: present
+    reload: yes

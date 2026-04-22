@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces - Find all files that contain net.ipv4.ip_forward
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.ip_forward\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces - Find all files that set net.ipv4.ip_forward to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv4.ip_forward\s*=\s*0$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces - Comment out any occurrences of net.ipv4.ip_forward from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv4.ip_forward'
+    replace: '#net.ipv4.ip_forward'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces - Comment out any occurrences of net.ipv4.ip_forward from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv4.ip_forward'
+    replace: '#net.ipv4.ip_forward'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Disable Kernel Parameter for IP Forwarding on IPv4 Interfaces - Ensure sysctl net.ipv4.ip_forward is set to 0
+  ansible.posix.sysctl:
+    name: "net.ipv4.ip_forward"
+    value: "0"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv4_ip_forward.conf"
+
+    state: present
+    reload: yes

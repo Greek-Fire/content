@@ -1,0 +1,42 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_cron_enabled
+
+- name: Enable cron Service - Enable service crond
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable cron Service - Enable Service crond
+    ansible.builtin.systemd:
+      name: crond
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"cronie" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_cron_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

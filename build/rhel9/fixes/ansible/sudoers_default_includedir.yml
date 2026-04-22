@@ -1,0 +1,135 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Check for duplicate values
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^#includedir.*$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: dupes
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Deduplicate values from /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^#includedir.*$
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - dupes.found is defined and dupes.found > 1
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Insert correct line into /etc/sudoers
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^#includedir.*$
+    line: '#includedir /etc/sudoers.d'
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Ensure sudoers doesn't include other non-default file
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^[#@]include[\s]+.*$
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Ensure sudoers doesn't have non-default includedir
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers
+    create: false
+    regexp: ^@includedir[\s]+.*$
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Find out if /etc/sudoers.d/* files contain file or directory includes
+  ansible.builtin.find:
+    path: /etc/sudoers.d
+    patterns: '*'
+    contains: ^[#@]include(dir)?\s.*$
+  register: sudoers_d_includes
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir
+
+- name: Remove found occurrences of file and directory includes from /etc/sudoers.d/*
+    files
+  ansible.builtin.lineinfile:
+    path: '{{ item.path }}'
+    regexp: ^[#@]include(dir)?\s.*$
+    state: absent
+  with_items: '{{ sudoers_d_includes.files }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86477-7
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sudoers_default_includedir

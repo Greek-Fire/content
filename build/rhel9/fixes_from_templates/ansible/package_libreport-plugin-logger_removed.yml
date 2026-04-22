@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall libreport-plugin-logger Package: Ensure libreport-plugin-logger is removed"
+  ansible.builtin.package:
+    name: "libreport-plugin-logger"
+    state: absent

@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the directory_owner_etc_nftables_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    directory_owner_etc_nftables_newown: "0"
+
+- name: Ensure owner on directory /etc/nftables/
+  ansible.builtin.file:
+    path: "/etc/nftables/"
+    follow: false
+    state: directory
+
+    owner: "{{ directory_owner_etc_nftables_newown }}"
+
+
+

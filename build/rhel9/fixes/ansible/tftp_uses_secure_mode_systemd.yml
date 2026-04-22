@@ -1,0 +1,181 @@
+# platform = multi_platform_all
+# reboot = false
+# complexity = medium
+# strategy = configure
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+- (xccdf-var var_tftpd_secure_directory)
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Find valid drop-ins
+  ansible.builtin.find:
+    paths: /etc/systemd/system/tftp.service.d
+    patterns: '*.conf'
+    contains: ^\s*ExecStart\s*=\s*/\S+\s+-s\s+/\S+$
+  register: valid_dropins
+  failed_when: false
+  when: '"tftp-server" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Find all drop-in files
+  ansible.builtin.find:
+    paths: /etc/systemd/system/tftp.service.d
+    patterns: '*.conf'
+    contains: ^\s*ExecStart\s*=.*$
+    file_type: file
+  register: all_dropins
+  failed_when: false
+  when: '"tftp-server" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Get invalid drop-ins
+  ansible.builtin.set_fact:
+    invalid_dropins: '{{ all_dropins.files | rejectattr(''path'', ''in'', valid_dropins.files
+      | map(attribute=''path'') | list) | map(attribute=''path'') | list }}'
+  when: '"tftp-server" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Comment all ExecStart in invalid
+    drop-ins
+  ansible.builtin.lineinfile:
+    path: '{{ item }}'
+    regexp: ^\s*ExecStart\s*=.*
+    state: absent
+  loop: '{{ invalid_dropins }}'
+  when:
+  - '"tftp-server" in ansible_facts.packages'
+  - invalid_dropins | length > 0
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Check if a valid drop-in exists
+  ansible.builtin.set_fact:
+    tftp_config_valid: '{{ (valid_dropins.matched | default(0)) > 0 }}'
+  when: '"tftp-server" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Check if tftp.service contains
+    valid ExecStart
+  ansible.builtin.find:
+    paths: /usr/lib/systemd/system
+    patterns: tftp.service
+    contains: ^\s*ExecStart\s*=\s*/\S+\s+-s\s+/\S+
+  register: valid_tftp_service
+  when:
+  - '"tftp-server" in ansible_facts.packages'
+  - not tftp_config_valid
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Check if a valid tftp.service
+    exists
+  ansible.builtin.set_fact:
+    original_valid: '{{ (valid_tftp_service.matched | default(0)) > 0 }}'
+  when:
+  - '"tftp-server" in ansible_facts.packages'
+  - not tftp_config_valid
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Recalculate global config validity
+  ansible.builtin.set_fact:
+    tftp_config_valid: '{{ tftp_config_valid or original_valid | default(false) }}'
+  when: '"tftp-server" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd
+
+- name: Ensure tftp systemd Service Uses Secure Mode - Remediate only if necessary
+  block:
+
+  - name: Ensure drop-in directory exists
+    ansible.builtin.file:
+      path: /etc/systemd/system/tftp.service.d
+      state: directory
+
+  - name: Deploy 10-ssg-hardening.conf drop-in
+    ansible.builtin.copy:
+      dest: /etc/systemd/system/tftp.service.d/10-ssg-hardening.conf
+      content: |-
+        [Service]
+        # clear any existing ExecStart in the original unit
+        ExecStart=
+        ExecStart=/usr/sbin/in.tftpd -s {{ var_tftpd_secure_directory }}
+
+  - name: Reload systemd and restart tftp service
+    ansible.builtin.systemd:
+      daemon_reload: true
+      name: tftp
+      state: restarted
+      enabled: true
+  when:
+  - '"tftp-server" in ansible_facts.packages'
+  - not tftp_config_valid
+  tags:
+  - NIST-800-53-IA-5 (1) (c)
+  - configure_strategy
+  - low_disruption
+  - medium_complexity
+  - medium_severity
+  - no_reboot_needed
+  - tftp_uses_secure_mode_systemd

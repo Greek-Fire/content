@@ -1,0 +1,1 @@
+{"name": "cpe:/o:openembedded:poky:", "check_id": "installed_OS_is_poky", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "OpenEmbedded Poky reference distribution", "definition_location": "", "template": null}

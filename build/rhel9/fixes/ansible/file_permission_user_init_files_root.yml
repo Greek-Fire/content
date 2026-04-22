@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- (xccdf-var var_user_initialization_files_regex)
+
+- name: Ensure All User Initialization Files Have Mode 0740 Or Less Permissive - Gather
+    User Info
+  ansible.builtin.getent:
+    database: passwd
+  tags:
+  - CCE-87087-3
+  - DISA-STIG-RHEL-09-232045
+  - file_permission_user_init_files_root
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure All User Initialization Files Have Mode 0740 Or Less Permissive - Find
+    Init Files
+  ansible.builtin.find:
+    paths: '{{ item.value[4] }}'
+    pattern: '{{ var_user_initialization_files_regex }}'
+    hidden: true
+    use_regex: true
+  with_dict: '{{ ansible_facts.getent_passwd }}'
+  when:
+  - item.value[4] != "/sbin/nologin"
+  - item.key not in ["nobody", "nfsnobody"]
+  - item.value[1] | int >= 1000 or item.key == "root"
+  register: found_init_files
+  tags:
+  - CCE-87087-3
+  - DISA-STIG-RHEL-09-232045
+  - file_permission_user_init_files_root
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure All User Initialization Files Have Mode 0740 Or Less Permissive - Fix
+    Init Files Permissions
+  ansible.builtin.file:
+    path: '{{ item.1.path }}'
+    mode: u-s,g-wxs,o=
+  loop: '{{ q(''ansible.builtin.subelements'', found_init_files.results, ''files'',
+    {''skip_missing'': True}) }}'
+  tags:
+  - CCE-87087-3
+  - DISA-STIG-RHEL-09-232045
+  - file_permission_user_init_files_root
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

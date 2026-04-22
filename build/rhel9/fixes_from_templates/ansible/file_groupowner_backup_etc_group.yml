@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_backup_etc_group_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_backup_etc_group_newgroup: "0"
+
+- name: Test for existence /etc/group-
+  ansible.builtin.stat:
+    path: "/etc/group-"
+  register: file_exists
+
+- name: Ensure group owner on /etc/group-
+  ansible.builtin.file:
+    path: "/etc/group-"
+    follow: false
+    group: "{{ file_groupowner_backup_etc_group_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

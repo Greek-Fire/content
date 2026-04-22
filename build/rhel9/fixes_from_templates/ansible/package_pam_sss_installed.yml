@@ -1,0 +1,9 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Ensure libpam-sss is installed
+  ansible.builtin.package:
+    name: "libpam-sss"
+    state: present

@@ -1,0 +1,157 @@
+<def-group>
+  <definition class="compliance" id="dir_permissions_binary_dirs" version="1">
+  
+    <metadata>
+        <title>Verify that System Executable Directories Have Restrictive Permissions</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that /bin/, /sbin/, /usr/bin/, /usr/sbin/, /usr/local/bin/, /usr/local/sbin/ has mode 0755.
+      If the target file or directory has an extended ACL, then it will fail the mode check.
+      </description>
+    </metadata>
+    <criteria>
+  
+      <criterion comment="Check file mode of /bin/" test_ref="test_file_permissionsdir_permissions_binary_dirs_0"/>
+  
+      <criterion comment="Check file mode of /sbin/" test_ref="test_file_permissionsdir_permissions_binary_dirs_1"/>
+  
+      <criterion comment="Check file mode of /usr/bin/" test_ref="test_file_permissionsdir_permissions_binary_dirs_2"/>
+  
+      <criterion comment="Check file mode of /usr/sbin/" test_ref="test_file_permissionsdir_permissions_binary_dirs_3"/>
+  
+      <criterion comment="Check file mode of /usr/local/bin/" test_ref="test_file_permissionsdir_permissions_binary_dirs_4"/>
+  
+      <criterion comment="Check file mode of /usr/local/sbin/" test_ref="test_file_permissionsdir_permissions_binary_dirs_5"/>
+  
+  
+    </criteria>
+  </definition>
+
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /bin/" id="test_file_permissionsdir_permissions_binary_dirs_0" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_binary_dirs_0" />
+  </unix:file_test>
+
+  <unix:file_object comment="/bin/" id="object_file_permissionsdir_permissions_binary_dirs_0" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/bin</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_binary_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_binary_dirs_0_mode_0755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_binary_dirs_0_mode_0755or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /sbin/" id="test_file_permissionsdir_permissions_binary_dirs_1" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_binary_dirs_1" />
+  </unix:file_test>
+
+  <unix:file_object comment="/sbin/" id="object_file_permissionsdir_permissions_binary_dirs_1" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/sbin</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_binary_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_binary_dirs_1_mode_0755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_binary_dirs_1_mode_0755or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/bin/" id="test_file_permissionsdir_permissions_binary_dirs_2" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_binary_dirs_2" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/bin/" id="object_file_permissionsdir_permissions_binary_dirs_2" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/bin</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_binary_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_binary_dirs_2_mode_0755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_binary_dirs_2_mode_0755or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/sbin/" id="test_file_permissionsdir_permissions_binary_dirs_3" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_binary_dirs_3" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/sbin/" id="object_file_permissionsdir_permissions_binary_dirs_3" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/sbin</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_binary_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_binary_dirs_3_mode_0755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_binary_dirs_3_mode_0755or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/local/bin/" id="test_file_permissionsdir_permissions_binary_dirs_4" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_binary_dirs_4" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/local/bin/" id="object_file_permissionsdir_permissions_binary_dirs_4" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/local/bin</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_binary_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_binary_dirs_4_mode_0755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_binary_dirs_4_mode_0755or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+  <unix:file_test check="all" check_existence="none_exist" comment="Testing mode of /usr/local/sbin/" id="test_file_permissionsdir_permissions_binary_dirs_5" version="3">
+    <unix:object object_ref="object_file_permissionsdir_permissions_binary_dirs_5" />
+  </unix:file_test>
+
+  <unix:file_object comment="/usr/local/sbin/" id="object_file_permissionsdir_permissions_binary_dirs_5" version="1">
+      <unix:behaviors recurse="directories" recurse_direction="down" max_depth="-1" recurse_file_system="local" />
+      <unix:path>/usr/local/sbin</unix:path>
+      <unix:filename xsi:nil="true" />
+      <filter action="exclude">exclude_symlinks_dir_permissions_binary_dirs</filter>
+      <filter action="exclude">state_file_permissionsdir_permissions_binary_dirs_5_mode_0755or_stricter_</filter>
+  </unix:file_object>
+
+  <unix:file_state id="state_file_permissionsdir_permissions_binary_dirs_5_mode_0755or_stricter_" operator="AND" version="3">
+      <unix:suid datatype="boolean">false</unix:suid>
+      <unix:sgid datatype="boolean">false</unix:sgid>
+      <unix:sticky datatype="boolean">false</unix:sticky>
+      <unix:gwrite datatype="boolean">false</unix:gwrite>
+      <unix:owrite datatype="boolean">false</unix:owrite>
+  </unix:file_state>
+  
+
+  <unix:file_state id="exclude_symlinks_dir_permissions_binary_dirs" version="1">
+    <unix:type operation="equals">symbolic link</unix:type>
+  </unix:file_state>
+</def-group>

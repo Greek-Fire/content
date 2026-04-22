@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+
+- name: Harden the operation of the BPF just-in-time compiler - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Harden the operation of the BPF just-in-time compiler - Find all files that contain net.core.bpf_jit_harden
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.core.bpf_jit_harden\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Harden the operation of the BPF just-in-time compiler - Find all files that set net.core.bpf_jit_harden to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.core.bpf_jit_harden\s*=\s*2$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Harden the operation of the BPF just-in-time compiler - Comment out any occurrences of net.core.bpf_jit_harden from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.core.bpf_jit_harden'
+    replace: '#net.core.bpf_jit_harden'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Harden the operation of the BPF just-in-time compiler - Comment out any occurrences of net.core.bpf_jit_harden from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.core.bpf_jit_harden'
+    replace: '#net.core.bpf_jit_harden'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Harden the operation of the BPF just-in-time compiler - Ensure sysctl net.core.bpf_jit_harden is set to 2
+  ansible.posix.sysctl:
+    name: "net.core.bpf_jit_harden"
+    value: "2"
+
+    sysctl_file: "/etc/sysctl.d/net_core_bpf_jit_harden.conf"
+
+    state: present
+    reload: yes

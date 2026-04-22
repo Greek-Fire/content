@@ -1,0 +1,24 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+
+var_auditd_freq='(bash-populate var_auditd_freq)'
+
+
+
+if [ -e "/etc/audit/auditd.conf" ] ; then
+    
+    LC_ALL=C sed -i "/^\s*freq\s*=\s*/Id" "/etc/audit/auditd.conf"
+else
+    touch "/etc/audit/auditd.conf"
+fi
+# make sure file has newline at the end
+sed -i -e '$a\' "/etc/audit/auditd.conf"
+
+cp "/etc/audit/auditd.conf" "/etc/audit/auditd.conf.bak"
+# Insert at the end of the file
+printf '%s\n' "freq = $var_auditd_freq" >> "/etc/audit/auditd.conf"
+# Clean up after ourselves.
+rm "/etc/audit/auditd.conf.bak"

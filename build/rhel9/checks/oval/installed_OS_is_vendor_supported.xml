@@ -1,0 +1,743 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-installed_OS_is_vendor_supported:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>The Installed Operating System Is Vendor Supported</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83453-1" source="CCE" />
+        <oval-def:reference ref_id="installed_OS_is_vendor_supported" source="ssg" />
+        <oval-def:description>
+        The operating system installed on the system is supported by a vendor that provides security patches.
+      </oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Installed operating system is supported by a vendor" operator="OR">
+        <oval-def:extend_definition comment="Installed OS is ALMALINUX9" definition_ref="oval:ssg-installed_OS_is_almalinux9:def:1" />
+        <oval-def:extend_definition comment="Installed OS is RHEL8" definition_ref="oval:ssg-installed_OS_is_rhel8:def:1" />
+        <oval-def:extend_definition comment="Installed OS is RHEL9" definition_ref="oval:ssg-installed_OS_is_rhel9:def:1" />
+        <oval-def:extend_definition comment="Installed OS is RHEL10" definition_ref="oval:ssg-installed_OS_is_rhel10:def:1" />
+        <oval-def:extend_definition comment="Installed OS is Hummingbird" definition_ref="oval:ssg-installed_OS_is_hummingbird:def:1" />
+        <oval-def:extend_definition comment="Installed OS is OL7" definition_ref="oval:ssg-installed_OS_is_ol7:def:1" />
+        <oval-def:extend_definition comment="Installed OS is OL8" definition_ref="oval:ssg-installed_OS_is_ol8:def:1" />
+        <oval-def:extend_definition comment="Installed OS is OL9" definition_ref="oval:ssg-installed_OS_is_ol9:def:1" />
+        <oval-def:extend_definition comment="Installed OS is SLE12" definition_ref="oval:ssg-installed_OS_is_sle12:def:1" />
+        <oval-def:extend_definition comment="Installed OS is SLE15" definition_ref="oval:ssg-installed_OS_is_sle15:def:1" />
+        <oval-def:extend_definition comment="Installed OS is SLE16" definition_ref="oval:ssg-installed_OS_is_sle16:def:1" />
+        <oval-def:extend_definition comment="Installed OS is SLE Micro 5" definition_ref="oval:ssg-installed_OS_is_slmicro5:def:1" />
+        <oval-def:extend_definition comment="Installed OS is SLE Micro 6" definition_ref="oval:ssg-installed_OS_is_slmicro6:def:1" />
+        <oval-def:extend_definition comment="Installed OS is Ubuntu 22.04" definition_ref="oval:ssg-installed_OS_is_ubuntu2204:def:1" />
+        <oval-def:extend_definition comment="Installed OS is Ubuntu 24.04" definition_ref="oval:ssg-installed_OS_is_ubuntu2404:def:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_almalinux9:def:1" version="3" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>AlmaLinux OS 9</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:almalinux:almalinux:9" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_almalinux9" source="ssg" />
+        <oval-def:description>The operating system installed on the system is AlmaLinux OS 9</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="current OS is 9" operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criterion comment="AlmaLinux OS is installed" test_ref="oval:ssg-test_almalinux:tst:1" />
+        <oval-def:criterion comment="AlmaLinux OS 9 is installed" test_ref="oval:ssg-test_almalinux9:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_hummingbird:def:1" version="3" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Installed operating system is hummingbird</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/a:redhat:hummingbird" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_hummingbird" source="ssg" />
+        <oval-def:description>The operating system installed on the system is hummingbird</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criterion comment="hummingbird-release RPM packages are installed" test_ref="oval:ssg-test_hummingbird_release_rpm:tst:1" />
+        <oval-def:criterion comment="CPE vendor is 'redhat' and product is 'hummingbird'" test_ref="oval:ssg-test_hummingbird_vendor_product:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ol7:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Oracle Linux 7</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:oracle:linux:7" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_ol7" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Oracle Linux 7</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="Oracle Linux 7 System is installed" test_ref="oval:ssg-test_ol7_system:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ol8:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Oracle Linux 8</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:oracle:linux:8" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_ol8" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Oracle Linux 8</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="Oracle Linux 8 System is installed" test_ref="oval:ssg-test_ol8_system:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ol9:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Oracle Linux 9</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:oracle:linux:9" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_ol9" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Oracle Linux 9</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="Oracle Linux 9 System is installed" test_ref="oval:ssg-test_ol9_system:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Installed operating system is part of the Unix family</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="installed_OS_is_part_of_Unix_family" source="ssg" />
+        <oval-def:description>The operating system installed on the system is part of the Unix OS family</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_unix_family:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_rhel10:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Red Hat Enterprise Linux 10</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:redhat:enterprise_linux:10" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_rhel10" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Red Hat Enterprise Linux 10</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_rhel10_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="RHEL 10 is installed" test_ref="oval:ssg-test_rhel10:tst:1" />
+          <oval-def:criteria comment="Red Hat Enterprise Virtualization Host is installed" operator="AND">
+            <oval-def:criterion comment="Red Hat Virtualization Host (RHVH)" test_ref="oval:ssg-test_rhvh4_version:tst:1" />
+            <oval-def:criterion comment="Red Hat Enterprise Virtualization Host is based on RHEL 10" test_ref="oval:ssg-test_rhevh_rhel10_version:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_rhel8:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Red Hat Enterprise Linux 8</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:redhat:enterprise_linux:8" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_rhel8" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Red Hat Enterprise Linux 8</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_rhel8_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criteria comment="RHEL 8 is installed" operator="AND">
+            <oval-def:criterion comment="RHEL 8 is installed" test_ref="oval:ssg-test_rhel8:tst:1" />
+            <oval-def:extend_definition negate="true" comment="Installed OS is not OL8" definition_ref="oval:ssg-installed_OS_is_ol8:def:1" />
+          </oval-def:criteria>
+          <oval-def:criteria comment="Red Hat Enterprise Virtualization Host is installed" operator="AND">
+            <oval-def:criterion comment="Red Hat Virtualization Host (RHVH)" test_ref="oval:ssg-test_rhvh4_version:tst:1" />
+            <oval-def:criterion comment="Red Hat Enterprise Virtualization Host is based on RHEL 8" test_ref="oval:ssg-test_rhevh_rhel8_version:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_rhel9:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Red Hat Enterprise Linux 9</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:redhat:enterprise_linux:9" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_rhel9" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      Red Hat Enterprise Linux 9</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_rhel9_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criteria comment="RHEL 9 is installed" operator="AND">
+            <oval-def:criterion comment="RHEL 9 is installed" test_ref="oval:ssg-test_rhel9:tst:1" />
+            <oval-def:extend_definition negate="true" comment="Installed OS is not OL9" definition_ref="oval:ssg-installed_OS_is_ol9:def:1" />
+          </oval-def:criteria>
+          <oval-def:criteria comment="Red Hat Enterprise Virtualization Host is installed" operator="AND">
+            <oval-def:criterion comment="Red Hat Virtualization Host (RHVH)" test_ref="oval:ssg-test_rhvh4_version:tst:1" />
+            <oval-def:criterion comment="Red Hat Enterprise Virtualization Host is based on RHEL 9" test_ref="oval:ssg-test_rhevh_rhel9_version:tst:1" />
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_sle12:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>SUSE Linux Enterprise 12</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:suse:linux_enterprise_server:12" source="CPE" />
+        <oval-def:reference ref_id="cpe:/o:suse:linux_enterprise_desktop:12" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_sle12" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      SUSE Linux Enterprise 12.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_sle12_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="SLE 12 Desktop is installed" test_ref="oval:ssg-test_sle12_desktop:tst:1" />
+          <oval-def:criterion comment="SLE 12 Server is installed" test_ref="oval:ssg-test_sle12_server:tst:1" />
+          <oval-def:criterion comment="SLES 12 for SAP Applications is installed" test_ref="oval:ssg-test_sles_12_for_sap:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_sle15:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>SUSE Linux Enterprise 15</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:suse:linux_enterprise_server:15" source="CPE" />
+        <oval-def:reference ref_id="cpe:/o:suse:linux_enterprise_desktop:15" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_sle15" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+      SUSE Linux Enterprise 15.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_sle15_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="SLE 15 Desktop is installed" test_ref="oval:ssg-test_sle15_desktop:tst:1" />
+          <oval-def:criterion comment="SLE 15 Server is installed" test_ref="oval:ssg-test_sle15_server:tst:1" />
+          <oval-def:criterion comment="SLES 15 for SAP Applications is installed" test_ref="oval:ssg-test_sles_15_for_sap:tst:1" />
+          <oval-def:criterion comment="SUSE Manager 4 is installed" test_ref="oval:ssg-test_suma_4:tst:1" />
+          <oval-def:criterion comment="SLE HPC is installed" test_ref="oval:ssg-test_sle_hpc:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_sle16:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>SUSE Linux Enterprise 16</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:suse:linux_enterprise_server:16" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_sle16" source="ssg" />
+        <oval-def:description>The operating system installed on the system is SUSE Linux Enterprise Server 16.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_sle16_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="SLE 16 Server is installed" test_ref="oval:ssg-test_sle16_server:tst:1" />
+          <oval-def:criterion comment="SLES 16 for SAP Applications is installed" test_ref="oval:ssg-test_sles_16_for_sap:tst:1" />
+          <oval-def:criterion comment="SLES 16 for High Availability Extension is installed" test_ref="oval:ssg-test_sles_16_for_ha:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_slmicro5:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>SUSE Linux Enterprise Micro</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:suse:suse-microos:5.2" source="CPE" />
+        <oval-def:reference ref_id="cpe:/o:suse:sle-micro:5.3" source="CPE" />
+        <oval-def:reference ref_id="cpe:/o:suse:sle-micro:5.4" source="CPE" />
+        <oval-def:reference ref_id="cpe:/o:suse:sle-micro:5.5" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_slmicro5" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+                SUSE Linux Enterprise Micro.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_slmicro5_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="SUSE MicroOS 5.* is installed" test_ref="oval:ssg-test_slmicroos5:tst:1" />
+          <oval-def:criterion comment="SLE Micro 5.* is installed" test_ref="oval:ssg-test_slmicro5:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_slmicro6:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>SUSE Linux Enterprise Micro</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:suse:sl-micro:6.0" source="CPE" />
+        <oval-def:reference ref_id="cpe:/o:suse:sl-micro:6.1" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_slmicro6" source="ssg" />
+        <oval-def:description>The operating system installed on the system is
+                SUSE Linux Micro.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Installed operating system is part of the unix family" test_ref="oval:ssg-test_slmicro6_unix_family:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="SLE Micro 6.* is installed" test_ref="oval:ssg-test_slmicro6:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ubuntu:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Ubuntu</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="installed_OS_is_ubuntu" source="ssg" />
+        <oval-def:description>The operating system installed is an Ubuntu System</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="System is Ubuntu" operator="AND">
+        <oval-def:extend_definition comment="Installed OS is part of the Unix family" definition_ref="oval:ssg-installed_OS_is_part_of_Unix_family:def:1" />
+        <oval-def:criterion comment="lsb-based distrib" test_ref="oval:ssg-test_lsb:tst:1" />
+        <oval-def:criterion comment="Ubuntu is installed" test_ref="oval:ssg-test_ubuntu:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ubuntu2204:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Ubuntu 22.04 LTS</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:canonical:ubuntu_linux:22.04" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_ubuntu2204" source="ssg" />
+        <oval-def:description>The operating system installed on the system is Ubuntu 22.04 LTS</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="current Ubuntu version is Jammy" operator="AND">
+        <oval-def:extend_definition comment="Ubuntu is installed" definition_ref="oval:ssg-installed_OS_is_ubuntu:def:1" />
+        <oval-def:criterion comment="Jammy is installed" test_ref="oval:ssg-test_ubuntu_jammy:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-installed_OS_is_ubuntu2404:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title>Ubuntu 24.04 LTS</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="cpe:/o:canonical:ubuntu_linux:24.04" source="CPE" />
+        <oval-def:reference ref_id="installed_OS_is_ubuntu2404" source="ssg" />
+        <oval-def:description>The operating system installed on the system is Ubuntu 24.04 LTS</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="current Ubuntu version is Noble" operator="AND">
+        <oval-def:extend_definition comment="Ubuntu is installed" definition_ref="oval:ssg-installed_OS_is_ubuntu:def:1" />
+        <oval-def:criterion comment="Noble is installed" test_ref="oval:ssg-test_ubuntu_noble:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_almalinux:tst:1" version="1" check="all" comment="/etc/almalinux-release exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-obj_almalinux:obj:1" />
+    </unix:file_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_almalinux9:tst:1" version="1" check="all" comment="Check Custom OS version" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_almalinux9:obj:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-test_hummingbird_release_rpm:tst:1" version="1" check="all" comment="hummingbird-release RPM packages are installed" state_operator="AND">
+      <linux:object object_ref="oval:ssg-object_hummingbird_release_rpm:obj:1" />
+    </linux:rpminfo_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_hummingbird_vendor_product:tst:1" version="1" check="all" comment="CPE vendor is 'redhat' and 'product' is hummingbird" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_hummingbird_vendor_product:obj:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-test_ol7_system:tst:1" version="1" check="all" comment="oraclelinux-release is version 7" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_ol7_system:obj:1" />
+      <linux:state state_ref="oval:ssg-state_ol7_system:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_ol8_system:tst:1" version="1" check="all" comment="oraclelinux-release is version 8" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_ol8_system:obj:1" />
+      <linux:state state_ref="oval:ssg-state_ol8_system:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_ol9_system:tst:1" version="1" check="all" comment="oraclelinux-release is version 9" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_ol9_system:obj:1" />
+      <linux:state state_ref="oval:ssg-state_ol9_system:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_unix_family:tst:1" version="1" check="all" comment="Test installed OS is part of the unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_unix_family:ste:1" />
+    </ind:family_test>
+    <ind:family_test id="oval:ssg-test_rhel10_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhel10_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhel10_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_rhel10:tst:1" version="1" check="all" comment="redhat-release is version 10" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_rhel10:obj:1" />
+      <linux:state state_ref="oval:ssg-state_rhel10:ste:1" />
+    </linux:rpminfo_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_rhevh_rhel10_version:tst:1" version="1" check="all" comment="RHEVH base RHEL is version 10" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhevh_rhel10_version:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhevh_rhel10_version:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:family_test id="oval:ssg-test_rhel8_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhel8_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhel8_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_rhel8:tst:1" version="1" check="all" comment="redhat-release is version 8" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_rhel8:obj:1" />
+      <linux:state state_ref="oval:ssg-state_rhel8:ste:1" />
+    </linux:rpminfo_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_rhevh_rhel8_version:tst:1" version="1" check="all" comment="RHEVH base RHEL is version 8" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhevh_rhel8_version:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhevh_rhel8_version:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:family_test id="oval:ssg-test_rhel9_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhel9_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhel9_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_rhel9:tst:1" version="1" check="all" comment="redhat-release is version 9" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_rhel9:obj:1" />
+      <linux:state state_ref="oval:ssg-state_rhel9:ste:1" />
+    </linux:rpminfo_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_rhevh_rhel9_version:tst:1" version="1" check="all" comment="RHEVH base RHEL is version 9" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_rhevh_rhel9_version:obj:1" />
+      <ind:state state_ref="oval:ssg-state_rhevh_rhel9_version:ste:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-test_rhvh4_version:tst:1" version="1" check="all" comment="redhat-release-virtualization-host RPM package is installed" check_existence="only_one_exists" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_rhvh4_version:obj:1" />
+      <linux:state state_ref="oval:ssg-state_rhvh4_version:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_sle12_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_sle12_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_sle12_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_sle12_desktop:tst:1" version="1" check="all" comment="sled-release is version 6" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sle12_desktop:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sle12_desktop:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sle12_server:tst:1" version="1" check="all" comment="sles-release is version 6" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sle12_server:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sle12_server:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sles_12_for_sap:tst:1" version="1" check="all" comment="SLES_SAP-release is version 12" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sles_12_for_sap:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sles_12_for_sap:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_sle15_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_sle15_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_sle15_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_sle15_desktop:tst:1" version="1" check="all" comment="sled-release is version 15" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sle15_desktop:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sle15_desktop:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sle15_server:tst:1" version="1" check="all" comment="sles-release is version 15" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sle15_server:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sle15_server:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sles_15_for_sap:tst:1" version="1" check="all" comment="SLES_SAP-release is version 15" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sles_15_for_sap:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sles_15_for_sap:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_suma_4:tst:1" version="1" check="all" comment="SUMA is version 4" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_suma_4:obj:1" />
+      <linux:state state_ref="oval:ssg-state_suma_4:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sle_hpc:tst:1" version="1" check="all" comment="SLE HPC release is version 15" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sle_hpc:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sle_hpc:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_sle16_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_sle16_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_sle16_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_sle16_server:tst:1" version="1" check="all" comment="SLES-release is version 16" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sle16_server:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sle16_server:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sles_16_for_sap:tst:1" version="1" check="all" comment="SLES_SAP-release is version 16" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sles_16_for_sap:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sles_16_for_sap:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_sles_16_for_ha:tst:1" version="1" check="all" comment="sle-ha-release is version 16" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_sles_16_for_ha:obj:1" />
+      <linux:state state_ref="oval:ssg-state_sles_16_for_ha:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_slmicro5_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_slmicro5_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_slmicro5_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_slmicroos5:tst:1" version="1" check="all" comment="sle-micro-release is version 5" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_slmicroos5:obj:1" />
+      <linux:state state_ref="oval:ssg-state_slmicroos5:ste:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-test_slmicro5:tst:1" version="1" check="all" comment="sle-micro-release is version 5" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_slmicro5:obj:1" />
+      <linux:state state_ref="oval:ssg-state_slmicro5:ste:1" />
+    </linux:rpminfo_test>
+    <ind:family_test id="oval:ssg-test_slmicro6_unix_family:tst:1" version="1" check="all" comment="installed OS part of unix family" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_slmicro6_unix_family:obj:1" />
+      <ind:state state_ref="oval:ssg-state_slmicro6_unix_family:ste:1" />
+    </ind:family_test>
+    <linux:rpminfo_test id="oval:ssg-test_slmicro6:tst:1" version="1" check="all" comment="sle-micro-release is version 6" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_slmicro6:obj:1" />
+      <linux:state state_ref="oval:ssg-state_slmicro6:ste:1" />
+    </linux:rpminfo_test>
+    <unix:file_test id="oval:ssg-test_lsb:tst:1" version="1" check="all" comment="/etc/lsb-release exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-obj_lsb:obj:1" />
+    </unix:file_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_ubuntu:tst:1" version="1" check="all" comment="Check Ubuntu" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_ubuntu:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_ubuntu_jammy:tst:1" version="1" check="all" comment="Check Ubuntu version" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_ubuntu_jammy:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_ubuntu_noble:tst:1" version="1" check="all" comment="Check Ubuntu version" state_operator="AND">
+      <ind:object object_ref="oval:ssg-obj_ubuntu_noble:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-obj_almalinux:obj:1" version="1" comment="check /etc/almalinux file">
+      <unix:filepath>/etc/almalinux-release</unix:filepath>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_almalinux9:obj:1" version="1" comment="Check AlmaLinux OS version">
+      <ind:filepath>/etc/almalinux-release</ind:filepath>
+      <ind:pattern operation="pattern match">^AlmaLinux release 9.[0-9]+ .*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-object_hummingbird_release_rpm:obj:1" version="1">
+      <linux:name operation="pattern match">hummingbird-release.*</linux:name>
+    </linux:rpminfo_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_hummingbird_vendor_product:obj:1" version="1">
+      <ind:filepath>/etc/system-release-cpe</ind:filepath>
+      <ind:pattern operation="pattern match">^cpe:\/a:redhat:hummingbird:[\d]+$</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_ol7_system:obj:1" version="1">
+      <linux:name>oraclelinux-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_ol8_system:obj:1" version="1">
+      <linux:name>oraclelinux-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_ol9_system:obj:1" version="1">
+      <linux:name>oraclelinux-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-object_unix_family:obj:1" version="1" />
+    <ind:family_object id="oval:ssg-obj_rhel10_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_rhel10:obj:1" version="1">
+      <linux:name>redhat-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_rhevh_rhel10_version:obj:1" version="1">
+      <ind:filepath>/etc/redhat-release</ind:filepath>
+      <ind:pattern operation="pattern match">^Red Hat Enterprise Linux release (\d)\.\d+$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:family_object id="oval:ssg-obj_rhel8_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_rhel8:obj:1" version="1">
+      <linux:name>redhat-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_rhevh_rhel8_version:obj:1" version="1">
+      <ind:filepath>/etc/redhat-release</ind:filepath>
+      <ind:pattern operation="pattern match">^Red Hat Enterprise Linux release (\d)\.\d+$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:family_object id="oval:ssg-obj_rhel9_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_rhel9:obj:1" version="1">
+      <linux:name>redhat-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_rhevh_rhel9_version:obj:1" version="1">
+      <ind:filepath>/etc/redhat-release</ind:filepath>
+      <ind:pattern operation="pattern match">^Red Hat Enterprise Linux release (\d)\.\d+$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_rhvh4_version:obj:1" version="1">
+      <linux:name>redhat-release-virtualization-host</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-obj_sle12_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_sle12_desktop:obj:1" version="1">
+      <linux:name>sled-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sle12_server:obj:1" version="1">
+      <linux:name>sles-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sles_12_for_sap:obj:1" version="1">
+      <linux:name>SLES_SAP-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-obj_sle15_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_sle15_desktop:obj:1" version="1">
+      <linux:name>sled-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sle15_server:obj:1" version="1">
+      <linux:name>sles-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sles_15_for_sap:obj:1" version="1">
+      <linux:name>SLES_SAP-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_suma_4:obj:1" version="1">
+      <linux:name>SUSE-Manager-Server-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sle_hpc:obj:1" version="1">
+      <linux:name>SLE_HPC-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-obj_sle16_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_sle16_server:obj:1" version="1">
+      <linux:name>SLES-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sles_16_for_sap:obj:1" version="1">
+      <linux:name>SLES_SAP-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_sles_16_for_ha:obj:1" version="1">
+      <linux:name>sle-ha-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-obj_slmicro5_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_slmicroos5:obj:1" version="1">
+      <linux:name>SUSE-MicroOS-release</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_slmicro5:obj:1" version="1">
+      <linux:name>SLE-Micro-release</linux:name>
+    </linux:rpminfo_object>
+    <ind:family_object id="oval:ssg-obj_slmicro6_unix_family:obj:1" version="1" />
+    <linux:rpminfo_object id="oval:ssg-obj_slmicro6:obj:1" version="1">
+      <linux:name>SL-Micro-release</linux:name>
+    </linux:rpminfo_object>
+    <unix:file_object id="oval:ssg-obj_lsb:obj:1" version="1" comment="check /etc/lsb-release file">
+      <unix:filepath>/etc/lsb-release</unix:filepath>
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_ubuntu:obj:1" version="1" comment="Check Ubuntu">
+      <ind:filepath>/etc/lsb-release</ind:filepath>
+      <ind:pattern operation="pattern match">^DISTRIB_ID=Ubuntu$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_ubuntu_jammy:obj:1" version="1" comment="Check Ubuntu version">
+      <ind:filepath>/etc/lsb-release</ind:filepath>
+      <ind:pattern operation="pattern match">^DISTRIB_CODENAME=jammy$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_ubuntu_noble:obj:1" version="1" comment="Check Ubuntu version">
+      <ind:filepath>/etc/lsb-release</ind:filepath>
+      <ind:pattern operation="pattern match">^DISTRIB_CODENAME=noble$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <linux:rpminfo_state id="oval:ssg-state_ol7_system:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^7.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_ol8_system:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^8.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_ol9_system:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^9.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <ind:family_state id="oval:ssg-state_rhel10_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_rhel10:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^10.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_rhevh_rhel10_version:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">10</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:family_state id="oval:ssg-state_rhel8_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_rhel8:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^8\.\d{1,2}$</linux:version>
+    </linux:rpminfo_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_rhevh_rhel8_version:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">8</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <ind:family_state id="oval:ssg-state_rhel9_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_rhel9:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^9.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_rhevh_rhel9_version:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="pattern match">9</ind:subexpression>
+    </ind:textfilecontent54_state>
+    <linux:rpminfo_state id="oval:ssg-state_rhvh4_version:ste:1" version="1" operator="AND">
+      <linux:evr datatype="evr_string" operation="greater than or equal">0:4.4</linux:evr>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_sle12_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_sle12_desktop:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^12.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sle12_server:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^12.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sles_12_for_sap:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^12.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_sle15_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_sle15_desktop:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^15.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sle15_server:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^15.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sles_15_for_sap:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^15.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_suma_4:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^4.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sle_hpc:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^15.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_sle16_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_sle16_server:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^16.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sles_16_for_sap:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^16.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_sles_16_for_ha:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^16.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_slmicro5_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_slmicroos5:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^5.*$</linux:version>
+    </linux:rpminfo_state>
+    <linux:rpminfo_state id="oval:ssg-state_slmicro5:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^5.*$</linux:version>
+    </linux:rpminfo_state>
+    <ind:family_state id="oval:ssg-state_slmicro6_unix_family:ste:1" version="1" operator="AND">
+      <ind:family>unix</ind:family>
+    </ind:family_state>
+    <linux:rpminfo_state id="oval:ssg-state_slmicro6:ste:1" version="1" operator="AND">
+      <linux:version operation="pattern match">^6.*$</linux:version>
+    </linux:rpminfo_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

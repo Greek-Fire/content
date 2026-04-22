@@ -1,0 +1,38 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84215-3
+  - DISA-STIG-RHEL-09-252010
+  - PCI-DSS-Req-10.4
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_chrony_installed
+
+- name: Ensure chrony is installed
+  ansible.builtin.package:
+    name: chrony
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-84215-3
+  - DISA-STIG-RHEL-09-252010
+  - PCI-DSS-Req-10.4
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_chrony_installed

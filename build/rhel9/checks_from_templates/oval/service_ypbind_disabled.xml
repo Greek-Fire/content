@@ -1,0 +1,92 @@
+<def-group><definition class="compliance" id="service_ypbind_disabled" version="1">
+    <metadata>
+        <title>Disable ypbind Service</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The ypbind service should be disabled.</description>
+    </metadata>
+    <criteria comment="package ypbind removed or service ypbind is not configured to start" operator="OR">
+      <criterion comment="ypbind removed" test_ref="service_ypbind_disabled_test_service_ypbind_package_ypbind_removed" />
+      
+  
+      <criteria operator="OR" comment="service is not present or not configured">
+        <criteria operator="AND" comment="service ypbind is not configured to start">
+          <criterion test_ref="test_service_not_running_service_ypbind_disabled_ypbind"
+            comment="ypbind is not running"/>
+          <criterion test_ref="test_service_loadstate_is_masked_service_ypbind_disabled_ypbind"
+            comment="Property LoadState of service ypbind is masked"/>
+        </criteria>
+        <criterion test_ref="test_service_not_found_service_ypbind_disabled_ypbind"
+          comment="ypbind is not found"/>
+      </criteria>
+
+    </criteria>
+  </definition>
+  
+  
+      <linux:systemdunitproperty_test id="test_service_not_running_service_ypbind_disabled_ypbind"
+        check="all" check_existence="any_exist"
+        comment="Test that the ypbind service is not running" version="1">
+        <linux:object object_ref="obj_service_not_running_service_ypbind_disabled_ypbind"/>
+        <linux:state state_ref="state_service_not_running_service_ypbind_disabled_ypbind"/>
+      </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_object id="obj_service_not_running_service_ypbind_disabled_ypbind"
+      comment="Retrieve the ActiveState property of ypbind" version="1">
+      <linux:unit operation="pattern match">^ypbind\.(service|socket)$</linux:unit>
+      <linux:property>ActiveState</linux:property>
+    </linux:systemdunitproperty_object>
+
+    <linux:systemdunitproperty_state id="state_service_not_running_service_ypbind_disabled_ypbind"
+      version="1" comment="ypbind is not running">
+      <linux:value operation="pattern match">inactive|failed</linux:value>
+    </linux:systemdunitproperty_state>
+
+    <linux:systemdunitproperty_test check="all" check_existence="any_exist"
+      id="test_service_loadstate_is_masked_service_ypbind_disabled_ypbind"
+      comment="Test that the property LoadState from the service ypbind is masked"
+      version="1">
+      <linux:object object_ref="obj_service_loadstate_is_masked_service_ypbind_disabled_ypbind"/>
+      <linux:state state_ref="state_service_loadstate_is_masked_service_ypbind_disabled_ypbind"/>
+    </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_object  comment="Retrieve the LoadState property of ypbind"
+      version="1" id="obj_service_loadstate_is_masked_service_ypbind_disabled_ypbind">
+      <linux:unit operation="pattern match">^ypbind\.(service|socket)$</linux:unit>
+      <linux:property>LoadState</linux:property>
+    </linux:systemdunitproperty_object>
+
+    <linux:systemdunitproperty_state comment="LoadState is set to masked"
+      id="state_service_loadstate_is_masked_service_ypbind_disabled_ypbind"
+      version="1">
+      <linux:value>masked</linux:value>
+    </linux:systemdunitproperty_state>
+
+
+    <linux:systemdunitproperty_test check="all" check_existence="any_exist"
+      id="test_service_not_found_service_ypbind_disabled_ypbind"
+      comment="Test that the service ypbind is not found"
+      version="1">
+      <linux:object object_ref="obj_service_loadstate_is_masked_service_ypbind_disabled_ypbind"/>
+      <linux:state state_ref="state_service_is_not_found_service_ypbind_disabled_ypbind"/>
+    </linux:systemdunitproperty_test>
+
+    <linux:systemdunitproperty_state comment="Service is not found"
+      id="state_service_is_not_found_service_ypbind_disabled_ypbind"
+      version="1">
+      <linux:value>not-found</linux:value>
+    </linux:systemdunitproperty_state>
+
+  
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="service_ypbind_disabled_test_service_ypbind_package_ypbind_removed" version="1"
+  comment="package ypbind is removed">
+    <linux:object object_ref="obj_service_ypbind_disabled_test_service_ypbind_package_ypbind_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_service_ypbind_disabled_test_service_ypbind_package_ypbind_removed" version="1">
+    <linux:name>ypbind</linux:name>
+  </linux:rpminfo_object>
+
+
+</def-group>

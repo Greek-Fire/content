@@ -1,0 +1,81 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83644-5
+  - DISA-STIG-RHEL-09-412055
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_bashrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+- (xccdf-var var_accounts_user_umask)
+
+- name: Check if umask in /etc/bashrc is already set
+  ansible.builtin.lineinfile:
+    path: /etc/bashrc
+    regexp: ^[^#]*\bumask\s+\d+$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: umask_replace
+  when: '"bash" in ansible_facts.packages'
+  tags:
+  - CCE-83644-5
+  - DISA-STIG-RHEL-09-412055
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_bashrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Replace user umask in /etc/bashrc
+  ansible.builtin.replace:
+    path: /etc/bashrc
+    regexp: ^([^#]*\b)umask\s+\d+$
+    replace: \g<1>umask {{ var_accounts_user_umask }}
+  when:
+  - '"bash" in ansible_facts.packages'
+  - umask_replace.found > 0
+  tags:
+  - CCE-83644-5
+  - DISA-STIG-RHEL-09-412055
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_bashrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure the Default umask is Appended Correctly
+  ansible.builtin.lineinfile:
+    create: true
+    path: /etc/bashrc
+    line: umask {{ var_accounts_user_umask }}
+  when:
+  - '"bash" in ansible_facts.packages'
+  - umask_replace.found == 0
+  tags:
+  - CCE-83644-5
+  - DISA-STIG-RHEL-09-412055
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - accounts_umask_etc_bashrc
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

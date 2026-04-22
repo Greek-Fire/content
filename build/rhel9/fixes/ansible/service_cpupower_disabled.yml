@@ -1,0 +1,63 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_cpupower_disabled
+
+- name: Disable CPU Speed (cpupower) - Disable service cpupower
+  block:
+
+  - name: Disable CPU Speed (cpupower) - Collect systemd Services Present in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable CPU Speed (cpupower) - Ensure cpupower.service is Masked
+    ansible.builtin.systemd:
+      name: cpupower.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("cpupower.service", multiline=True)
+
+  - name: Unit Socket Exists - cpupower.socket
+    ansible.builtin.command: systemctl -q list-unit-files cpupower.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable CPU Speed (cpupower) - Disable Socket cpupower
+    ansible.builtin.systemd:
+      name: cpupower.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("cpupower.socket", multiline=True)
+  tags:
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_cpupower_disabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

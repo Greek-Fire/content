@@ -1,0 +1,59 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-85924-9
+  - NIST-800-53-AU-2(a)
+  - audit_access_success_aarch64
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Put contents into /etc/audit/rules.d/30-ospp-v42-3-access-success.rules according
+    to policy
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/30-ospp-v42-3-access-success.rules
+    content: |
+      ## Successful file access (any other opens) This has to go last.
+      ## These next two are likely to result in a whole lot of events
+      -a always,exit -F arch=b32 -S open,openat,openat2,open_by_handle_at -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-access
+      -a always,exit -F arch=b64 -S openat,openat2,open_by_handle_at -F success=1 -F auid>=1000 -F auid!=unset -F key=successful-access
+    force: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture == "aarch64"
+  tags:
+  - CCE-85924-9
+  - NIST-800-53-AU-2(a)
+  - audit_access_success_aarch64
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure auditing of successful file accesses (AArch64) - Remove any permissions
+    from group and other
+  ansible.builtin.file:
+    path: /etc/audit/rules.d/30-ospp-v42-3-access-success.rules
+    mode: g-rwx,o-rwx
+    state: touch
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture == "aarch64"
+  tags:
+  - CCE-85924-9
+  - NIST-800-53-AU-2(a)
+  - audit_access_success_aarch64
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

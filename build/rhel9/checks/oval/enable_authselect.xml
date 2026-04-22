@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-enable_authselect:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Enable authselect</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-89732-2" source="CCE" />
+        <oval-def:reference ref_id="enable_authselect" source="ssg" />
+        <oval-def:description>Check that authselect is enabled</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="Check that authselect symlinks are set up properly." operator="AND">
+        <oval-def:criterion comment="The 'fingerprint-auth' PAM config is a symlink to its authselect counterpart" test_ref="oval:ssg-test_pam_fingerprint_symlinked_to_authselect:tst:1" />
+        <oval-def:criterion comment="The 'password-auth' PAM config is a symlink to its authselect counterpart" test_ref="oval:ssg-test_pam_password_symlinked_to_authselect:tst:1" />
+        <oval-def:criterion comment="The 'postlogin' PAM config is a symlink to its authselect counterpart" test_ref="oval:ssg-test_pam_postlogin_symlinked_to_authselect:tst:1" />
+        <oval-def:criterion comment="The 'smartcard-auth' PAM config is a symlink to its authselect counterpart" test_ref="oval:ssg-test_pam_smartcard_symlinked_to_authselect:tst:1" />
+        <oval-def:criterion comment="The 'system-auth' PAM config is a symlink to its authselect counterpart" test_ref="oval:ssg-test_pam_system_symlinked_to_authselect:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:symlink_test id="oval:ssg-test_pam_fingerprint_symlinked_to_authselect:tst:1" version="1" check="all" comment="The 'fingerprint-auth' PAM config is a symlink to its authselect counterpart" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_pam_fingerprint_symlinked_to_authselect:obj:1" />
+      <unix:state state_ref="oval:ssg-state_pam_fingerprint_symlinked_to_authselect:ste:1" />
+    </unix:symlink_test>
+    <unix:symlink_test id="oval:ssg-test_pam_password_symlinked_to_authselect:tst:1" version="1" check="all" comment="The 'password-auth' PAM config is a symlink to its authselect counterpart" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_pam_password_symlinked_to_authselect:obj:1" />
+      <unix:state state_ref="oval:ssg-state_pam_password_symlinked_to_authselect:ste:1" />
+    </unix:symlink_test>
+    <unix:symlink_test id="oval:ssg-test_pam_postlogin_symlinked_to_authselect:tst:1" version="1" check="all" comment="The 'postlogin' PAM config is a symlink to its authselect counterpart" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_pam_postlogin_symlinked_to_authselect:obj:1" />
+      <unix:state state_ref="oval:ssg-state_pam_postlogin_symlinked_to_authselect:ste:1" />
+    </unix:symlink_test>
+    <unix:symlink_test id="oval:ssg-test_pam_smartcard_symlinked_to_authselect:tst:1" version="1" check="all" comment="The 'smartcard-auth' PAM config is a symlink to its authselect counterpart" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_pam_smartcard_symlinked_to_authselect:obj:1" />
+      <unix:state state_ref="oval:ssg-state_pam_smartcard_symlinked_to_authselect:ste:1" />
+    </unix:symlink_test>
+    <unix:symlink_test id="oval:ssg-test_pam_system_symlinked_to_authselect:tst:1" version="1" check="all" comment="The 'system-auth' PAM config is a symlink to its authselect counterpart" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_pam_system_symlinked_to_authselect:obj:1" />
+      <unix:state state_ref="oval:ssg-state_pam_system_symlinked_to_authselect:ste:1" />
+    </unix:symlink_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:symlink_object id="oval:ssg-object_pam_fingerprint_symlinked_to_authselect:obj:1" version="1" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/fingerprint-auth</unix:filepath>
+    </unix:symlink_object>
+    <unix:symlink_object id="oval:ssg-object_pam_password_symlinked_to_authselect:obj:1" version="1" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/password-auth</unix:filepath>
+    </unix:symlink_object>
+    <unix:symlink_object id="oval:ssg-object_pam_postlogin_symlinked_to_authselect:obj:1" version="1" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/postlogin</unix:filepath>
+    </unix:symlink_object>
+    <unix:symlink_object id="oval:ssg-object_pam_smartcard_symlinked_to_authselect:obj:1" version="1" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/smartcard-auth</unix:filepath>
+    </unix:symlink_object>
+    <unix:symlink_object id="oval:ssg-object_pam_system_symlinked_to_authselect:obj:1" version="1" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/system-auth</unix:filepath>
+    </unix:symlink_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:symlink_state id="oval:ssg-state_pam_fingerprint_symlinked_to_authselect:ste:1" version="1" operator="AND" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/fingerprint-auth</unix:filepath>
+      <unix:canonical_path>/etc/authselect/fingerprint-auth</unix:canonical_path>
+    </unix:symlink_state>
+    <unix:symlink_state id="oval:ssg-state_pam_password_symlinked_to_authselect:ste:1" version="1" operator="AND" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/password-auth</unix:filepath>
+      <unix:canonical_path>/etc/authselect/password-auth</unix:canonical_path>
+    </unix:symlink_state>
+    <unix:symlink_state id="oval:ssg-state_pam_postlogin_symlinked_to_authselect:ste:1" version="1" operator="AND" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/postlogin</unix:filepath>
+      <unix:canonical_path>/etc/authselect/postlogin</unix:canonical_path>
+    </unix:symlink_state>
+    <unix:symlink_state id="oval:ssg-state_pam_smartcard_symlinked_to_authselect:ste:1" version="1" operator="AND" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/smartcard-auth</unix:filepath>
+      <unix:canonical_path>/etc/authselect/smartcard-auth</unix:canonical_path>
+    </unix:symlink_state>
+    <unix:symlink_state id="oval:ssg-state_pam_system_symlinked_to_authselect:ste:1" version="1" operator="AND" comment="see the test comment">
+      <unix:filepath>/etc/pam.d/system-auth</unix:filepath>
+      <unix:canonical_path>/etc/authselect/system-auth</unix:canonical_path>
+    </unix:symlink_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

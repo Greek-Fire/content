@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Disable the zoneminder_anon_write SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_zoneminder_anon_write)
+- name: "Disable the zoneminder_anon_write SELinux Boolean - Set SELinux Boolean zoneminder_anon_write Accordingly"
+  ansible.posix.seboolean:
+    name: zoneminder_anon_write
+    state: "{{ var_zoneminder_anon_write }}"
+    persistent: yes

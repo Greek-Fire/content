@@ -1,0 +1,70 @@
+# platform = multi_platform_all
+# complexity = low
+# disruption = low
+# reboot = false
+# strategy = restrict
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86759-8
+  - NIST-800-171-3.5.6
+  - NIST-800-53-AC-2(3)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-4(e)
+  - PCI-DSS-Req-8.1.4
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.6
+  - accounts_set_post_pw_existing
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+- (xccdf-var var_account_disable_post_pw_expiration)
+
+- name: Collect users with not correct INACTIVE parameter set
+  ansible.builtin.command:
+    cmd: awk -F':' '(($7 > {{ var_account_disable_post_pw_expiration }} || $7 == "")
+      && $2 ~ /^\$/) {print $1}' /etc/shadow
+  register: user_names
+  changed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86759-8
+  - NIST-800-171-3.5.6
+  - NIST-800-53-AC-2(3)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-4(e)
+  - PCI-DSS-Req-8.1.4
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.6
+  - accounts_set_post_pw_existing
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Change the period of inactivity
+  ansible.builtin.command:
+    cmd: chage --inactive {{ var_account_disable_post_pw_expiration }} {{ item }}
+  with_items: '{{ user_names.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - user_names is not skipped and user_names.stdout_lines | length > 0
+  tags:
+  - CCE-86759-8
+  - NIST-800-171-3.5.6
+  - NIST-800-53-AC-2(3)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-IA-4(e)
+  - PCI-DSS-Req-8.1.4
+  - PCI-DSSv4-8.2
+  - PCI-DSSv4-8.2.6
+  - accounts_set_post_pw_existing
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

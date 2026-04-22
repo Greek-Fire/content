@@ -1,0 +1,130 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90785-7
+  - CJIS-5.5.6
+  - DISA-STIG-RHEL-09-412080
+  - NIST-800-171-3.1.11
+  - NIST-800-53-AC-12
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-2(5)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-10
+  - PCI-DSS-Req-8.1.8
+  - logind_session_timeout
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+- (xccdf-var var_logind_session_timeout)
+
+- name: Remove StopIdleSessionSec from main config
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/logind.conf
+    regexp: ^\s*StopIdleSessionSec\s*=
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( ansible_distribution == 'RedHat' and ansible_distribution_version is version('8.7',
+    '>=') and ansible_distribution == 'RedHat' and ansible_distribution_version is
+    version('9.0', '!=') ) or ansible_distribution == 'OracleLinux' and ansible_distribution_version
+    is version('8.7', '>=') or ansible_distribution == 'SLES' and ansible_distribution_version
+    is version('15', '>=')
+  tags:
+  - CCE-90785-7
+  - CJIS-5.5.6
+  - DISA-STIG-RHEL-09-412080
+  - NIST-800-171-3.1.11
+  - NIST-800-53-AC-12
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-2(5)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-10
+  - PCI-DSS-Req-8.1.8
+  - logind_session_timeout
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+
+- name: Remove StopIdleSessionSec from drop-in files
+  ansible.builtin.lineinfile:
+    path: '{{ item }}'
+    regexp: ^\s*StopIdleSessionSec\s*=
+    state: absent
+  with_fileglob:
+  - /etc/systemd/logind.conf.d/*.conf
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( ansible_distribution == 'RedHat' and ansible_distribution_version is version('8.7',
+    '>=') and ansible_distribution == 'RedHat' and ansible_distribution_version is
+    version('9.0', '!=') ) or ansible_distribution == 'OracleLinux' and ansible_distribution_version
+    is version('8.7', '>=') or ansible_distribution == 'SLES' and ansible_distribution_version
+    is version('15', '>=')
+  tags:
+  - CCE-90785-7
+  - CJIS-5.5.6
+  - DISA-STIG-RHEL-09-412080
+  - NIST-800-171-3.1.11
+  - NIST-800-53-AC-12
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-2(5)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-10
+  - PCI-DSS-Req-8.1.8
+  - logind_session_timeout
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy
+
+- name: Set 'StopIdleSessionSec' to '{{ var_logind_session_timeout }}' in the [Login]
+    section of '/etc/systemd/logind.conf.d/oscap-idle-sessions.conf'
+  community.general.ini_file:
+    path: /etc/systemd/logind.conf.d/oscap-idle-sessions.conf
+    section: Login
+    option: StopIdleSessionSec
+    value: '{{ var_logind_session_timeout }}'
+    create: true
+    mode: 420
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( ansible_distribution == 'RedHat' and ansible_distribution_version is version('8.7',
+    '>=') and ansible_distribution == 'RedHat' and ansible_distribution_version is
+    version('9.0', '!=') ) or ansible_distribution == 'OracleLinux' and ansible_distribution_version
+    is version('8.7', '>=') or ansible_distribution == 'SLES' and ansible_distribution_version
+    is version('15', '>=')
+  tags:
+  - CCE-90785-7
+  - CJIS-5.5.6
+  - DISA-STIG-RHEL-09-412080
+  - NIST-800-171-3.1.11
+  - NIST-800-53-AC-12
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-AC-2(5)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-SC-10
+  - PCI-DSS-Req-8.1.8
+  - logind_session_timeout
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - reboot_required
+  - restrict_strategy

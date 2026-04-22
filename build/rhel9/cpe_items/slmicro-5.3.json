@@ -1,0 +1,1 @@
+{"name": "cpe:/o:suse:sle-micro:5.3", "check_id": "installed_OS_is_slmicro5", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "SLE Micro 5.3", "definition_location": "", "template": null}

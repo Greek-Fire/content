@@ -1,0 +1,1 @@
+{"name": "cpe:/o:centos:centos:10", "check_id": "installed_OS_is_centos10", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "CentOS Stream 10", "definition_location": "/home/greek_fire/.git/content/shared/applicability/cs10.yml", "template": null}

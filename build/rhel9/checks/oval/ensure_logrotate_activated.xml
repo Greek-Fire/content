@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-ensure_logrotate_activated:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure Logrotate Runs Periodically</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83993-6" source="CCE" />
+        <oval-def:reference ref_id="ensure_logrotate_activated" source="ssg" />
+        <oval-def:description>
+      The frequency of automatic log files rotation performed by the logrotate utility should be configured to run daily
+      </oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="/etc/logrotate.conf contains daily setting and /etc/cron.daily/logrotate file exists" operator="AND">
+        <oval-def:extend_definition comment="package logrotate installed" definition_ref="oval:ssg-package_logrotate_installed:def:1" />
+        <oval-def:criterion comment="Check if daily is set in /etc/logrotate.conf" test_ref="oval:ssg-test_logrotate_conf_daily_setting:tst:1" />
+        <oval-def:criterion comment="check that there is no weekly/monthly/yearly keyword in logrotate.conf" test_ref="oval:ssg-test_logrotate_conf_no_other_keyword:tst:1" />
+        <oval-def:criteria comment="Check if either logrotate timer or cron job is enabled" operator="OR">
+          <oval-def:criterion comment="Check if /etc/cron.daily/logrotate file exists (and calls logrotate)" test_ref="oval:ssg-test_cron_daily_logrotate_existence:tst:1" />
+          <oval-def:criterion comment="Check if logrotate timer is enabled" test_ref="oval:ssg-test_logrotate_enabled_systemd_target:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-package_logrotate_installed:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure logrotate is Installed</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86155-9" source="CCE" />
+        <oval-def:reference ref_id="package_logrotate_installed" source="ssg" />
+        <oval-def:description>The RPM package logrotate should be installed.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="package logrotate is installed" test_ref="oval:ssg-test_package_logrotate_installed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_logrotate_conf_daily_setting:tst:1" version="1" check="all" comment="Tests the presence of daily setting in /etc/logrotate.conf file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_logrotate_conf_daily_setting:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_logrotate_conf_no_other_keyword:tst:1" version="1" check="all" comment="Test if there is no weekly/monthly/yearly keyword" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_logrotate_conf_no_other_keyword:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_cron_daily_logrotate_existence:tst:1" version="1" check="all" comment="Tests the existence of /etc/cron.daily/logrotate file (and verify it actually calls logrotate utility)" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_cron_daily_logrotate_existence:obj:1" />
+    </ind:textfilecontent54_test>
+    <unix:file_test id="oval:ssg-test_logrotate_enabled_systemd_target:tst:1" version="1" check="all" comment="look for logrotate.timer in multi-user.target.wants and timers.target.wants" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_logrotate_enabled_systemd_target:obj:1" />
+    </unix:file_test>
+    <linux:rpminfo_test id="oval:ssg-test_package_logrotate_installed:tst:1" version="1" check="all" comment="package logrotate is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_test_package_logrotate_installed:obj:1" />
+    </linux:rpminfo_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_logrotate_conf_daily_setting:obj:1" version="2">
+      <ind:filepath>/etc/logrotate.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*daily[\s#]*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_logrotate_conf_no_other_keyword:obj:1" version="2">
+      <ind:filepath>/etc/logrotate.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^\s*(weekly|monthly|yearly)[\s#]*$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_cron_daily_logrotate_existence:obj:1" version="1">
+      <ind:filepath>/etc/cron.daily/logrotate</ind:filepath>
+      <ind:pattern operation="pattern match">^[\s]*/usr/sbin/logrotate[\s\S]*/etc/logrotate.conf$</ind:pattern>
+      <ind:instance datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_logrotate_enabled_systemd_target:obj:1" version="1" comment="look for logrotate.timer in /etc/systemd/system/multi-user.target.wants and /etc/systemd/system/timers.target.wants">
+      <unix:filepath operation="pattern match">^/etc/systemd/system/(multi-user|timers)\.target\.wants/logrotate\.timer$</unix:filepath>
+      <oval-def:filter action="include">oval:ssg-unit_logrotate_state_symlink:ste:1</oval-def:filter>
+    </unix:file_object>
+    <linux:rpminfo_object id="oval:ssg-obj_test_package_logrotate_installed:obj:1" version="1">
+      <linux:name>logrotate</linux:name>
+    </linux:rpminfo_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <unix:file_state id="oval:ssg-unit_logrotate_state_symlink:ste:1" version="1" operator="AND">
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

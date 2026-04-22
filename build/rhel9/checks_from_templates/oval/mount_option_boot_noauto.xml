@@ -1,0 +1,103 @@
+<def-group><!-- The test will check if correct option is present in both active (/proc/mounts) and
+       configured (/etc/fstab) mount points. It won't fail if the mount point is not currently
+       active, but will consider absence of the mount point configuration as a failure unless
+       MOUNT_HAS_TO_EXIST is set to `true` (the name is a bit controversial: it means that
+       the mount point has to exist in the configuration file to be checked, and we don't care
+       about it if it is not configured). -->
+
+  <definition class="compliance" id="mount_option_boot_noauto" version="2">
+    <metadata>
+        <title>Add noauto Option to /boot</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>/boot should be mounted with mount option noauto.</description>
+    </metadata>
+    <criteria operator="AND">
+      <criteria operator="OR">
+         <criterion comment="noauto on /boot"
+           test_ref="test_boot_partition_noauto_optional"/>
+         <criterion comment="/boot does not exist"
+           test_ref="test_boot_partition_noauto_optional_exist"
+           negate="true" />
+      </criteria>
+      <criteria operator="OR">
+         <criterion comment="noauto on /boot in /etc/fstab"
+           test_ref="test_boot_partition_noauto_optional_in_fstab"/>
+    
+         <criterion comment="/boot does not exist in /etc/fstab"
+           test_ref="test_boot_partition_noauto_optional_exist_in_fstab"
+           negate="true" />
+    
+      </criteria>
+    </criteria>
+  </definition>
+
+
+  <linux:partition_object version="1"
+    id="object_boot_partition_noauto_optional">
+    <linux:mount_point>/boot</linux:mount_point>
+  </linux:partition_object>
+
+  <ind:textfilecontent54_object version="1"
+    id="object_boot_partition_noauto_optional_in_fstab">
+    <ind:filepath>/etc/fstab</ind:filepath>
+
+    <ind:pattern operation="pattern match">^[\s]*(?!#)[\S]+[\s]+/boot[\s]+[\S]+[\s]+([\S]+)</ind:pattern>
+
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+
+  <linux:partition_state version="1"
+    id="state_boot_partition_noauto_optional">
+
+
+    <linux:mount_options datatype="string" entity_check="at least one" operation="equals">noauto</linux:mount_options>
+
+  </linux:partition_state>
+
+
+
+  <ind:textfilecontent54_state version="1"
+    id="state_boot_partition_noauto_optional_in_fstab">
+    <ind:instance datatype="int">1</ind:instance>
+
+    <ind:subexpression entity_check="at least one" operation="pattern match">noauto</ind:subexpression>
+
+  </ind:textfilecontent54_state>
+
+
+
+
+  <linux:partition_test check="all" check_existence="all_exist" version="2"
+    comment="noauto on /boot "
+    id="test_boot_partition_noauto_optional">
+    <linux:object object_ref="object_boot_partition_noauto_optional"/>
+    <linux:state state_ref="state_boot_partition_noauto_optional"/>
+  </linux:partition_test>
+
+  <ind:textfilecontent54_test check="all" check_existence="all_exist" version="1"
+    comment="noauto on /boot  in /etc/fstab"
+    id="test_boot_partition_noauto_optional_in_fstab">
+    <ind:object object_ref="object_boot_partition_noauto_optional_in_fstab" />
+    <ind:state state_ref="state_boot_partition_noauto_optional_in_fstab" />
+  </ind:textfilecontent54_test>
+
+
+  <linux:partition_test check="all" check_existence="all_exist" version="1"
+    comment="/boot exists"
+    id="test_boot_partition_noauto_optional_exist">
+    <linux:object object_ref="object_boot_partition_noauto_optional"/>
+
+  </linux:partition_test>
+
+
+  <ind:textfilecontent54_test check="all" check_existence="all_exist" version="1"
+    comment="/boot exists in /etc/fstab"
+    id="test_boot_partition_noauto_optional_exist_in_fstab">
+    <ind:object object_ref="object_boot_partition_noauto_optional_in_fstab" />
+  </ind:textfilecontent54_test>
+
+</def-group>

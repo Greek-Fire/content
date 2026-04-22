@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-configure_kerberos_crypto_policy:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure Kerberos to use System Crypto Policy</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83449-9" source="CCE" />
+        <oval-def:reference ref_id="configure_kerberos_crypto_policy" source="ssg" />
+        <oval-def:description>Kerberos should be configured to use the system-wide crypto policy setting.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="The config file is always a symlink to the backend, but the backend itself may be either a file, or a symlink. For this reason, we need two tests, if one passes, the other one is expected to either fail, or error." operator="OR">
+        <oval-def:criterion comment="kerberos crypto-policy configuration links to same file as kerberos crypto-policy backend" test_ref="oval:ssg-test_configure_kerberos_crypto_policy_symlink:tst:1" />
+        <oval-def:criterion comment="kerberos crypto-policy configuration links to the crypto-policy backend file" test_ref="oval:ssg-test_configure_kerberos_crypto_policy_nosymlink:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_configure_kerberos_crypto_policy_symlink:tst:1" version="1" check="all" comment="Check if kerberos configuration symlink and crypto policy kerberos backend symlink point to same file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_symlink_kerberos_crypto_policy_configuration:obj:1" />
+      <ind:state state_ref="oval:ssg-state_symlink_kerberos_crypto_policy_backend:ste:1" />
+    </ind:variable_test>
+    <ind:variable_test id="oval:ssg-test_configure_kerberos_crypto_policy_nosymlink:tst:1" version="1" check="all" comment="Check if kerberos configuration symlink links to the crypto-policy backend file" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_symlink_kerberos_crypto_policy_configuration:obj:1" />
+      <ind:state state_ref="oval:ssg-state_location_of_kerberos_crypto_policy_backend:ste:1" />
+    </ind:variable_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:variable_object id="oval:ssg-object_symlink_kerberos_crypto_policy_configuration:obj:1" version="1">
+      <ind:var_ref>oval:ssg-var_symlink_kerberos_crypto_policy_configuration:var:1</ind:var_ref>
+    </ind:variable_object>
+    <unix:symlink_object id="oval:ssg-object_kerberos_crypto_policy_configuration:obj:1" version="1" comment="kerberos crypto-policy configuration softlink">
+      <unix:filepath>/etc/krb5.conf.d/crypto-policies</unix:filepath>
+    </unix:symlink_object>
+    <unix:symlink_object id="oval:ssg-object_kerberos_crypto_policy_backend:obj:1" version="1" comment="kerberos crypto-policy backend softlink">
+      <unix:filepath>/etc/crypto-policies/back-ends/krb5.config</unix:filepath>
+    </unix:symlink_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_symlink_kerberos_crypto_policy_backend:ste:1" version="1" operator="AND">
+      <ind:value datatype="string" operation="equals" var_ref="oval:ssg-var_symlink_kerberos_crypto_policy_backend:var:1" />
+    </ind:variable_state>
+    <ind:variable_state id="oval:ssg-state_location_of_kerberos_crypto_policy_backend:ste:1" version="1" operator="AND">
+      <ind:value datatype="string" operation="equals">/etc/crypto-policies/back-ends/krb5.config</ind:value>
+    </ind:variable_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_symlink_kerberos_crypto_policy_configuration:var:1" version="1" datatype="string" comment="regex variable for canonical path to targeted kerberos policy">
+      <oval-def:object_component item_field="canonical_path" object_ref="oval:ssg-object_kerberos_crypto_policy_configuration:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_symlink_kerberos_crypto_policy_backend:var:1" version="1" datatype="string" comment="regex variable for canonical path to targeted kerberos policy">
+      <oval-def:object_component item_field="canonical_path" object_ref="oval:ssg-object_kerberos_crypto_policy_backend:obj:1" />
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

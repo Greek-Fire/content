@@ -1,0 +1,75 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - file_groupowner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the systemd-journal group is defined
+  ansible.builtin.getent:
+    database: group
+    key: systemd-journal
+  ignore_errors: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_groupowner_system_journal_newgroup is undefined
+  tags:
+  - configure_strategy
+  - file_groupowner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_system_journal_newgroup variable if systemd-journal
+    found
+  ansible.builtin.set_fact:
+    file_groupowner_system_journal_newgroup: systemd-journal
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_facts.getent_group["systemd-journal"] is defined
+  tags:
+  - configure_strategy
+  - file_groupowner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence ^/var/log/journal/.*/system.journal$
+  ansible.builtin.stat:
+    path: ^/var/log/journal/.*/system.journal$
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_groupowner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on ^/var/log/journal/.*/system.journal$
+  ansible.builtin.file:
+    path: ^/var/log/journal/.*/system.journal$
+    follow: false
+    group: '{{ file_groupowner_system_journal_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_groupowner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

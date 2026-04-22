@@ -1,0 +1,98 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-87038-6
+  - accounts_user_dot_user_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Be Owned By the Primary User - Get interactive
+    users from passwd file
+  ansible.builtin.getent:
+    database: passwd
+  register: passwd_entries
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-87038-6
+  - accounts_user_dot_user_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Be Owned By the Primary User - Create list
+    of interactive users with UID and home directory
+  ansible.builtin.set_fact:
+    interactive_users: '{{ interactive_users | default([]) + [{''uid'': item.value[1],
+      ''home'': item.value[4], ''username'': item.key}] }}'
+  loop: '{{ passwd_entries.ansible_facts.getent_passwd | dict2items }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.value[1] | int >= 1000 | int
+  - item.value[1] | int != 65534 | int
+  - item.value[4] != ""
+  tags:
+  - CCE-87038-6
+  - accounts_user_dot_user_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Be Owned By the Primary User - Find dot files
+    in interactive user home directories
+  ansible.builtin.find:
+    paths: '{{ item.home }}'
+    patterns: .*
+    file_type: file
+    hidden: true
+    depth: 1
+    follow: false
+  register: user_dotfiles
+  loop: '{{ interactive_users | default([]) }}'
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.home != ""
+  tags:
+  - CCE-87038-6
+  - accounts_user_dot_user_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: User Initialization Files Must Be Owned By the Primary User - Set correct
+    ownership for user initialization files
+  ansible.builtin.file:
+    path: '{{ item.1.path }}'
+    owner: '{{ item.0.item.username }}'
+    follow: false
+  loop: '{{ user_dotfiles.results | subelements(''files'', skip_missing=True) }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - item.0 is not skipped
+  - item.0 is not failed
+  - item.0.item is defined
+  - item.0.item.username is defined
+  - item.1.path is defined
+  tags:
+  - CCE-87038-6
+  - accounts_user_dot_user_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

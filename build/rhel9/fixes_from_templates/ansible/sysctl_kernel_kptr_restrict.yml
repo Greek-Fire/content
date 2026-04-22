@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_kernel_kptr_restrict_value)
+
+
+- name: Restrict Exposed Kernel Pointer Addresses Access - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Restrict Exposed Kernel Pointer Addresses Access - Find all files that contain kernel.kptr_restrict
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.kptr_restrict\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Restrict Exposed Kernel Pointer Addresses Access - Find all files that set kernel.kptr_restrict to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*kernel.kptr_restrict\s*=\s*{{ sysctl_kernel_kptr_restrict_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Restrict Exposed Kernel Pointer Addresses Access - Comment out any occurrences of kernel.kptr_restrict from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*kernel.kptr_restrict'
+    replace: '#kernel.kptr_restrict'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Restrict Exposed Kernel Pointer Addresses Access - Comment out any occurrences of kernel.kptr_restrict from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*kernel.kptr_restrict'
+    replace: '#kernel.kptr_restrict'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Restrict Exposed Kernel Pointer Addresses Access - Ensure sysctl kernel.kptr_restrict is set
+  ansible.posix.sysctl:
+    name: "kernel.kptr_restrict"
+    value: "{{ sysctl_kernel_kptr_restrict_value }}"
+
+    sysctl_file: "/etc/sysctl.d/kernel_kptr_restrict.conf"
+
+    state: present
+    reload: yes

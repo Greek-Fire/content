@@ -1,0 +1,69 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_almalinux,multi_platform_rhv,multi_platform_ubuntu,multi_platform_sle,multi_platform_slmicro
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89240-6
+  - NIST-800-53-AC-18(3)
+  - NIST-800-53-AC-18(4)
+  - NIST-800-53-AC-18(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - disable_strategy
+  - kernel_module_iwlwifi_disabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Ensure kernel module 'iwlwifi' is disabled
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/iwlwifi.conf
+    regexp: install\s+iwlwifi
+    line: install iwlwifi /bin/false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89240-6
+  - NIST-800-53-AC-18(3)
+  - NIST-800-53-AC-18(4)
+  - NIST-800-53-AC-18(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - disable_strategy
+  - kernel_module_iwlwifi_disabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Ensure kernel module 'iwlwifi' is blacklisted
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/modprobe.d/iwlwifi.conf
+    regexp: ^blacklist iwlwifi$
+    line: blacklist iwlwifi
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89240-6
+  - NIST-800-53-AC-18(3)
+  - NIST-800-53-AC-18(4)
+  - NIST-800-53-AC-18(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - disable_strategy
+  - kernel_module_iwlwifi_disabled
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required

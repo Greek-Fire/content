@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_etc_sysconfig_sshd_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_sysconfig_sshd_newown: "0"
+
+- name: Test for existence /etc/sysconfig/sshd
+  ansible.builtin.stat:
+    path: "/etc/sysconfig/sshd"
+  register: file_exists
+
+- name: Ensure owner on /etc/sysconfig/sshd
+  ansible.builtin.file:
+    path: "/etc/sysconfig/sshd"
+    follow: false
+    owner: "{{ file_owner_etc_sysconfig_sshd_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

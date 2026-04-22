@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall openldap-servers Package: Ensure openldap-servers is removed"
+  ansible.builtin.package:
+    name: "openldap-servers"
+    state: absent

@@ -1,0 +1,47 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83445-7
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-13
+  - PCI-DSS-Req-2.2
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_ssh_crypto_policy
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+
+- name: Configure SSH to use System Crypto Policy
+  ansible.builtin.lineinfile:
+    dest: /etc/sysconfig/sshd
+    state: absent
+    regexp: (?i)^\s*CRYPTO_POLICY.*$
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83445-7
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-13
+  - PCI-DSS-Req-2.2
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_ssh_crypto_policy
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required

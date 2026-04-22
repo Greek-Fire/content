@@ -1,0 +1,42 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84223-7
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_rngd_enabled
+
+- name: Enable the Hardware RNG Entropy Gatherer Service - Enable service rngd
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the Hardware RNG Entropy Gatherer Service - Enable Service rngd
+    ansible.builtin.systemd:
+      name: rngd
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"rng-tools" in ansible_facts.packages'
+  tags:
+  - CCE-84223-7
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_rngd_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

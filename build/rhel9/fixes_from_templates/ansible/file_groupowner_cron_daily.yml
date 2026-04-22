@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_cron_daily_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_cron_daily_newgroup: "0"
+
+- name: Ensure group owner on /etc/cron.daily/
+  ansible.builtin.file:
+    path: "/etc/cron.daily/"
+    follow: false
+    state: directory
+
+    group: "{{ file_groupowner_cron_daily_newgroup }}"
+
+
+

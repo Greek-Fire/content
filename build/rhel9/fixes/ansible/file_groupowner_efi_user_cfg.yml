@@ -1,0 +1,83 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86013-0
+  - CJIS-5.5.2.2
+  - NIST-800-171-3.4.5
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-7.1
+  - configure_strategy
+  - file_groupowner_efi_user_cfg
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupowner_efi_user_cfg_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_efi_user_cfg_newgroup: '0'
+  when: ( "grub2-common" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  tags:
+  - CCE-86013-0
+  - CJIS-5.5.2.2
+  - NIST-800-171-3.4.5
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-7.1
+  - configure_strategy
+  - file_groupowner_efi_user_cfg
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /boot/grub2/user.cfg
+  ansible.builtin.stat:
+    path: /boot/grub2/user.cfg
+  register: file_exists
+  when: ( "grub2-common" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  tags:
+  - CCE-86013-0
+  - CJIS-5.5.2.2
+  - NIST-800-171-3.4.5
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-7.1
+  - configure_strategy
+  - file_groupowner_efi_user_cfg
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /boot/grub2/user.cfg
+  ansible.builtin.file:
+    path: /boot/grub2/user.cfg
+    follow: false
+    group: '{{ file_groupowner_efi_user_cfg_newgroup }}'
+  when:
+  - ( "grub2-common" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86013-0
+  - CJIS-5.5.2.2
+  - NIST-800-171-3.4.5
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-7.1
+  - configure_strategy
+  - file_groupowner_efi_user_cfg
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

@@ -1,0 +1,58 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86001-5
+  - NIST-800-53-AU-2(a)
+  - audit_access_failed_ppc64le
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Put contents into /etc/audit/rules.d/30-ospp-v42-3-access-failed.rules according
+    to policy
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/30-ospp-v42-3-access-failed.rules
+    content: |
+      ## Unsuccessful file access (any other opens) This has to go last.
+      -a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F exit=-EACCES -F auid>=1000 -F auid!=unset -F key=unsuccessful-access
+      -a always,exit -F arch=b64 -S open,openat,openat2,open_by_handle_at -F exit=-EPERM -F auid>=1000 -F auid!=unset -F key=unsuccessful-access
+    force: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture == "ppc64le"
+  tags:
+  - CCE-86001-5
+  - NIST-800-53-AU-2(a)
+  - audit_access_failed_ppc64le
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure auditing of unsuccessful file accesses (ppc64le) - Remove any permissions
+    from group and other
+  ansible.builtin.file:
+    path: /etc/audit/rules.d/30-ospp-v42-3-access-failed.rules
+    mode: g-rwx,o-rwx
+    state: touch
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_architecture == "ppc64le"
+  tags:
+  - CCE-86001-5
+  - NIST-800-53-AU-2(a)
+  - audit_access_failed_ppc64le
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

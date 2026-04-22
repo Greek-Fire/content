@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-grub2_enable_selinux:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure SELinux Not Disabled in /etc/default/grub</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-84078-5" source="CCE" />
+        <oval-def:reference ref_id="grub2_enable_selinux" source="ssg" />
+        <oval-def:description>
+        Check if selinux=0 OR enforcing=0 within the GRUB2 configuration files, fail if found.
+      </oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="check value selinux|enforcing=0 in /etc/default/grub, fail if found" test_ref="oval:ssg-test_selinux_default_grub:tst:1" />
+        <oval-def:criterion comment="check value selinux|enforcing=0 in /etc/grub2.cfg, fail if found" test_ref="oval:ssg-test_selinux_grub2_cfg:tst:1" />
+        <oval-def:criterion comment="check value selinux|enforcing=0 in /etc/grub.d, fail if found" test_ref="oval:ssg-test_selinux_grub_dir:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_selinux_default_grub:tst:1" version="1" check="all" comment="check value selinux|enforcing=0 in /etc/default/grub, fail if found" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_selinux_default_grub:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_selinux_grub2_cfg:tst:1" version="1" check="all" comment="check value selinux|enforcing=0 in /etc/grub2.cfg, fail if found" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_selinux_grub2_cfg:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_selinux_grub_dir:tst:1" version="1" check="all" comment="check value selinux|enforcing=0 in /etc/grub.d fail if found" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_selinux_grub_dir:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_selinux_default_grub:obj:1" version="1" comment="check value selinux|enforcing=0 in /etc/default/grub, fail if found">
+      <ind:filepath>/etc/default/grub</ind:filepath>
+      <ind:pattern operation="pattern match">^[\s]*GRUB_CMDLINE_LINUX.*(selinux|enforcing)=0.*$</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_selinux_grub2_cfg:obj:1" version="1" comment="check value selinux|enforcing=0 in /etc/grub2.cfg, fail if found">
+      <ind:filepath>/etc/grub2.cfg</ind:filepath>
+      <ind:pattern operation="pattern match">^.*(selinux|enforcing)=0.*$</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_selinux_grub_dir:obj:1" version="1" comment="check value selinux|enforcing=0 in /etc/grub.d, fail if found">
+      <ind:path>/etc/grub.d</ind:path>
+      <ind:filename operation="pattern match">^.*$</ind:filename>
+      <ind:pattern operation="pattern match">^.*(selinux|enforcing)=0.*$</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+</oval-def:oval_definitions>

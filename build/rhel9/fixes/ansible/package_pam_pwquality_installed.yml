@@ -1,0 +1,30 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86226-8
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_pam_pwquality_installed
+
+- name: Ensure libpwquality is installed
+  ansible.builtin.package:
+    name: libpwquality
+    state: present
+  when: '"pam" in ansible_facts.packages'
+  tags:
+  - CCE-86226-8
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_pam_pwquality_installed

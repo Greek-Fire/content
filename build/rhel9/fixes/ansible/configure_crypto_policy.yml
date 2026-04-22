@@ -1,0 +1,139 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- (xccdf-var var_system_crypto_policy)
+
+- name: Configure System Cryptography Policy - Check current crypto policy (runtime)
+  ansible.builtin.command: /usr/bin/update-crypto-policies --show
+  register: current_crypto_policy
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-83450-7
+  - DISA-STIG-RHEL-09-215105
+  - DISA-STIG-RHEL-09-672030
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_crypto_policy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure System Cryptography Policy - Get mtime of /etc/crypto-policies/config
+  ansible.builtin.stat:
+    path: /etc/crypto-policies/config
+  register: config_file_stat
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-83450-7
+  - DISA-STIG-RHEL-09-215105
+  - DISA-STIG-RHEL-09-672030
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_crypto_policy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure System Cryptography Policy - Get mtime of /etc/crypto-policies/state/current
+  ansible.builtin.stat:
+    path: /etc/crypto-policies/state/current
+  register: current_file_stat
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-83450-7
+  - DISA-STIG-RHEL-09-215105
+  - DISA-STIG-RHEL-09-672030
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_crypto_policy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure System Cryptography Policy - Check existence of /etc/crypto-policies/back-ends/nss.config
+  ansible.builtin.stat:
+    path: /etc/crypto-policies/back-ends/nss.config
+  register: nss_config_stat
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - CCE-83450-7
+  - DISA-STIG-RHEL-09-215105
+  - DISA-STIG-RHEL-09-672030
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_crypto_policy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Configure System Cryptography Policy - Verify that Crypto Policy is Set (runtime)
+  ansible.builtin.command: /usr/bin/update-crypto-policies --set {{ var_system_crypto_policy
+    }}
+  when: (current_crypto_policy.stdout.strip() != var_system_crypto_policy) or (config_file_stat.stat.exists
+    and current_file_stat.stat.exists and config_file_stat.stat.mtime > current_file_stat.stat.mtime)
+    or (not nss_config_stat.stat.exists)
+  tags:
+  - CCE-83450-7
+  - DISA-STIG-RHEL-09-215105
+  - DISA-STIG-RHEL-09-672030
+  - NIST-800-53-AC-17(2)
+  - NIST-800-53-AC-17(a)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MA-4(6)
+  - NIST-800-53-SC-12(2)
+  - NIST-800-53-SC-12(3)
+  - NIST-800-53-SC-13
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.7
+  - configure_crypto_policy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - restrict_strategy

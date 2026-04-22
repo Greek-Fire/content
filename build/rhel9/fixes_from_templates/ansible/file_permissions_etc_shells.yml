@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/shells
+  ansible.builtin.stat:
+    path: "/etc/shells"
+  register: file_exists
+
+- name: Ensure permission u-xs,g-xws,o-xwt on /etc/shells
+  ansible.builtin.file:
+    path: "/etc/shells"
+    mode: "u-xs,g-xws,o-xwt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

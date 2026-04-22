@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Enable the selinuxuser_ping SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_selinuxuser_ping)
+- name: "Enable the selinuxuser_ping SELinux Boolean - Set SELinux Boolean selinuxuser_ping Accordingly"
+  ansible.posix.seboolean:
+    name: selinuxuser_ping
+    state: "{{ var_selinuxuser_ping }}"
+    persistent: yes

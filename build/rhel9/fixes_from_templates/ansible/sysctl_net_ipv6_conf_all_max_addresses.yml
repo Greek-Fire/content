@@ -1,0 +1,62 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- (xccdf-var sysctl_net_ipv6_conf_all_max_addresses_value)
+
+
+- name: Configure Maximum Number of Autoconfigured Addresses on All IPv6 Interfaces - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+
+    sysctl_paths:
+      - "/etc/sysctl.d/"
+      - "/run/sysctl.d/"
+      - "/usr/local/lib/sysctl.d/"
+
+
+
+- name: Configure Maximum Number of Autoconfigured Addresses on All IPv6 Interfaces - Find all files that contain net.ipv6.conf.all.max_addresses
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.all.max_addresses\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Maximum Number of Autoconfigured Addresses on All IPv6 Interfaces - Find all files that set net.ipv6.conf.all.max_addresses to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep -HP '^\s*net.ipv6.conf.all.max_addresses\s*=\s*{{ sysctl_net_ipv6_conf_all_max_addresses_value }}$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+
+- name: Configure Maximum Number of Autoconfigured Addresses on All IPv6 Interfaces - Comment out any occurrences of net.ipv6.conf.all.max_addresses from config files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: '^[\s]*net.ipv6.conf.all.max_addresses'
+    replace: '#net.ipv6.conf.all.max_addresses'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when: find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines | length > find_correct_value.stdout_lines | length
+
+
+
+
+- name: Configure Maximum Number of Autoconfigured Addresses on All IPv6 Interfaces - Comment out any occurrences of net.ipv6.conf.all.max_addresses from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: "{{ item }}"
+    regexp: '^[\s]*net.ipv6.conf.all.max_addresses'
+    replace: '#net.ipv6.conf.all.max_addresses'
+  with_fileglob:
+    - "/etc/sysctl.conf"
+
+- name: Configure Maximum Number of Autoconfigured Addresses on All IPv6 Interfaces - Ensure sysctl net.ipv6.conf.all.max_addresses is set
+  ansible.posix.sysctl:
+    name: "net.ipv6.conf.all.max_addresses"
+    value: "{{ sysctl_net_ipv6_conf_all_max_addresses_value }}"
+
+    sysctl_file: "/etc/sysctl.d/net_ipv6_conf_all_max_addresses.conf"
+
+    state: present
+    reload: yes

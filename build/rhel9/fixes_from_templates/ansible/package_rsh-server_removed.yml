@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall rsh-server Package: Ensure rsh-server is removed"
+  ansible.builtin.package:
+    name: "rsh-server"
+    state: absent

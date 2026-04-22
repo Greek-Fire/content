@@ -1,0 +1,153 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = high
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83873-0
+  - DISA-STIG-RHEL-09-231200
+  - NIST-800-53-AC-6
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_nodev_nonroot_local_partitions
+  - no_reboot_needed
+
+- name: 'Add nodev Option to Non-Root Local Partitions: Refresh facts'
+  ansible.builtin.setup:
+    gather_subset: mounts
+  when: ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  tags:
+  - CCE-83873-0
+  - DISA-STIG-RHEL-09-231200
+  - NIST-800-53-AC-6
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_nodev_nonroot_local_partitions
+  - no_reboot_needed
+
+- name: 'Add nodev Option to Non-Root Local Partitions: Define excluded (non-local)
+    file systems'
+  ansible.builtin.set_fact:
+    excluded_fstypes:
+    - afs
+    - autofs
+    - ceph
+    - cifs
+    - smb3
+    - smbfs
+    - sshfs
+    - ncpfs
+    - ncp
+    - nfs
+    - nfs4
+    - gfs
+    - gfs2
+    - glusterfs
+    - gpfs
+    - pvfs2
+    - ocfs2
+    - lustre
+    - davfs
+    - fuse.sshfs
+  when: ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  tags:
+  - CCE-83873-0
+  - DISA-STIG-RHEL-09-231200
+  - NIST-800-53-AC-6
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_nodev_nonroot_local_partitions
+  - no_reboot_needed
+
+- name: 'Add nodev Option to Non-Root Local Partitions: Ensure non-root local partitions
+    are mounted with nodev option'
+  ansible.posix.mount:
+    path: '{{ item.mount }}'
+    src: '{{ item.device }}'
+    opts: '{{ item.options }},nodev'
+    state: mounted
+    fstype: '{{ item.fstype }}'
+  when:
+  - ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  - item.mount is match('/\w')
+  - item.mount is not match('/(boot|efi)')
+  - item.options is not search('nodev')
+  - item.fstype not in excluded_fstypes
+  - (not accounts_polyinstantiated_var_tmp | default(false)) or item.mount != '/var/tmp/tmp-inst'
+  - (not accounts_polyinstantiated_tmp | default(false)) or item.mount != '/tmp/tmp-inst'
+  with_items:
+  - '{{ ansible_facts.mounts }}'
+  tags:
+  - CCE-83873-0
+  - DISA-STIG-RHEL-09-231200
+  - NIST-800-53-AC-6
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_nodev_nonroot_local_partitions
+  - no_reboot_needed
+
+- name: 'Add nodev Option to Non-Root Local Partitions: Ensure nodev option in /etc/fstab
+    for non-root local partitions'
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: ^\s*(?!#)(/dev/\S+|UUID=\S+)\s+(/(?!boot|efi)\w\S*)\s+(\S+)\s+(?!.*\bnodev\b)(\S+)(.*)$
+    replace: \1 \2 \3 \4,nodev \5
+  when: ( not ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline ) and not ( ansible_virtualization_type in
+    ["docker", "lxc", "openvz", "podman", "container"] ) )
+  tags:
+  - CCE-83873-0
+  - DISA-STIG-RHEL-09-231200
+  - NIST-800-53-AC-6
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MP-7
+  - configure_strategy
+  - high_disruption
+  - low_complexity
+  - medium_severity
+  - mount_option_nodev_nonroot_local_partitions
+  - no_reboot_needed

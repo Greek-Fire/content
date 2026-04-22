@@ -1,0 +1,310 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+- (xccdf-var var_multiple_time_servers)
+
+- name: Check if chrony main config has active server/pool entries
+  ansible.builtin.command:
+    cmd: grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' /etc/chrony.conf
+  register: chrony_conf_has_servers
+  changed_when: false
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Extract sourcedir paths from chrony configuration
+  ansible.builtin.shell:
+    cmd: grep '^[[:space:]]*sourcedir[[:space:]]\+' /etc/chrony.conf | awk '{print
+      $2}'
+  register: chrony_sourcedir_paths
+  changed_when: false
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check for server/pool entries in sourcedir .sources files
+  ansible.builtin.shell:
+    cmd: |
+      for dir in {{ chrony_sourcedir_paths.stdout_lines | join(' ') }}; do
+        if [ -d "$dir" ]; then
+          grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$dir"/*.sources 2>/dev/null && exit 0
+        fi
+      done
+      exit 1
+  register: chrony_sourcedir_has_servers
+  changed_when: false
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - chrony_sourcedir_paths.stdout_lines | length > 0
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Extract confdir paths from chrony configuration
+  ansible.builtin.shell:
+    cmd: grep '^[[:space:]]*confdir[[:space:]]\+' /etc/chrony.conf | awk '{print $2}'
+  register: chrony_confdir_paths
+  changed_when: false
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - (chrony_sourcedir_paths.stdout_lines | default([]) | length == 0 or chrony_sourcedir_has_servers.rc
+    != 0)
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check for server/pool entries in confdir .conf files
+  ansible.builtin.shell:
+    cmd: |
+      for dir in {{ chrony_confdir_paths.stdout_lines | join(' ') }}; do
+        if [ -d "$dir" ]; then
+          grep -q '^[[:space:]]*\(server\|pool\)[[:space:]]\+[[:graph:]]\+' "$dir"/*.conf 2>/dev/null && exit 0
+        fi
+      done
+      exit 1
+  register: chrony_confdir_has_servers
+  changed_when: false
+  failed_when: false
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - chrony_confdir_paths.stdout_lines | default([]) | length > 0
+  - (chrony_sourcedir_paths.stdout_lines | default([]) | length == 0 or chrony_sourcedir_has_servers.rc
+    != 0)
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Create sourcedir directory if needed
+  ansible.builtin.file:
+    path: '{{ chrony_sourcedir_paths.stdout_lines[0] }}'
+    state: directory
+    mode: '0755'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - chrony_sourcedir_paths.stdout_lines | default([]) | length > 0
+  - chrony_sourcedir_has_servers.rc != 0
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Add remote time servers to sourcedir .sources file
+  ansible.builtin.lineinfile:
+    path: '{{ chrony_sourcedir_paths.stdout_lines[0] }}/ntp-servers.sources'
+    line: server {{ item }}
+    state: present
+    create: true
+    mode: '0644'
+  loop: '{{ var_multiple_time_servers.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - chrony_sourcedir_paths.stdout_lines | default([]) | length > 0
+  - chrony_sourcedir_has_servers.rc != 0
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Create confdir directory if needed
+  ansible.builtin.file:
+    path: '{{ chrony_confdir_paths.stdout_lines[0] }}'
+    state: directory
+    mode: '0755'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - (chrony_sourcedir_paths.stdout_lines | default([]) | length == 0 or chrony_sourcedir_has_servers.rc
+    != 0)
+  - chrony_confdir_paths.stdout_lines | default([]) | length > 0
+  - chrony_confdir_has_servers.rc != 0
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Add remote time servers to confdir .conf file
+  ansible.builtin.lineinfile:
+    path: '{{ chrony_confdir_paths.stdout_lines[0] }}/ntp-servers.conf'
+    line: server {{ item }}
+    state: present
+    create: true
+    mode: '0644'
+  loop: '{{ var_multiple_time_servers.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - (chrony_sourcedir_paths.stdout_lines | default([]) | length == 0 or chrony_sourcedir_has_servers.rc
+    != 0)
+  - chrony_confdir_paths.stdout_lines | default([]) | length > 0
+  - chrony_confdir_has_servers.rc != 0
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Add remote time servers to main chrony configuration
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    line: server {{ item }}
+    state: present
+    create: true
+  loop: '{{ var_multiple_time_servers.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"chrony" in ansible_facts.packages'
+  - chrony_conf_has_servers.rc != 0
+  - (chrony_sourcedir_paths.stdout_lines | default([]) | length == 0 or chrony_sourcedir_has_servers.rc
+    != 0)
+  - (chrony_confdir_paths.stdout_lines | default([]) | length == 0 or chrony_confdir_has_servers.rc
+    != 0)
+  tags:
+  - CCE-84218-7
+  - DISA-STIG-RHEL-09-252020
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.2
+  - chronyd_specify_remote_server
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

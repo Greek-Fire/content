@@ -1,0 +1,1 @@
+{"description": "Specify port the SSH server is listening.", "type": "number", "operator": "equals", "interactive": false, "options": {"default": 22}, "warnings": [], "title": "SSH Server Listening Port", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/services/ssh/sshd_listening_port.var"}

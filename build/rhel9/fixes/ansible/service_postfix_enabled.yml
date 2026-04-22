@@ -1,0 +1,40 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_postfix_enabled
+  - unknown_severity
+
+- name: Enable Postfix Service - Enable service postfix
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable Postfix Service - Enable Service postfix
+    ansible.builtin.systemd:
+      name: postfix
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"postfix" in ansible_facts.packages'
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_postfix_enabled
+  - special_service_block
+  - unknown_severity
+  when: '"kernel-core" in ansible_facts.packages'

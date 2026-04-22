@@ -1,0 +1,34 @@
+# platform = multi_platform_all
+# reboot = false
+# complexity = low
+# strategy = configure
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-85990-0
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - usbguard_allow_hid
+
+- name: Allow HID devices
+  ansible.builtin.lineinfile:
+    path: /etc/usbguard/rules.conf
+    create: true
+    regexp: ''
+    line: allow with-interface match-all { 03:*:* }
+    state: present
+  when: ( ansible_architecture != "s390x" and "kernel-core" in ansible_facts.packages
+    )
+  tags:
+  - CCE-85990-0
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - usbguard_allow_hid

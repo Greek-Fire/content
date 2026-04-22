@@ -1,0 +1,59 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - dir_owner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the dir_owner_system_journal_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    dir_owner_system_journal_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - dir_owner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /run/log/journal/ recursively
+  ansible.builtin.file:
+    path: /run/log/journal/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_owner_system_journal_newown }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - dir_owner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /var/log/journal/ recursively
+  ansible.builtin.file:
+    path: /var/log/journal/
+    follow: false
+    state: directory
+    recurse: true
+    owner: '{{ dir_owner_system_journal_newown }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - dir_owner_system_journal
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

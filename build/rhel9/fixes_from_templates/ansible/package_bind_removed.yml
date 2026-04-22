@@ -1,0 +1,16 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall bind Package: Ensure bind is removed"
+  ansible.builtin.package:
+    name: "bind"
+    state: absent
+
+- name: "Uninstall bind Package: Ensure bind9.18 is removed"
+  ansible.builtin.package:
+    name: "bind9.18"
+    state: absent

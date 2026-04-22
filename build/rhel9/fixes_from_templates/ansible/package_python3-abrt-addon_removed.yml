@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall python3-abrt-addon Package: Ensure python3-abrt-addon is removed"
+  ansible.builtin.package:
+    name: "python3-abrt-addon"
+    state: absent

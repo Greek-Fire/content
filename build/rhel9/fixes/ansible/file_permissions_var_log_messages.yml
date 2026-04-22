@@ -1,0 +1,33 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Test for existence /var/log/messages
+  ansible.builtin.stat:
+    path: /var/log/messages
+  register: file_exists
+  tags:
+  - CCE-83913-4
+  - DISA-STIG-RHEL-09-232030
+  - configure_strategy
+  - file_permissions_var_log_messages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure permission u-xs,g-xwrs,o-xwrt on /var/log/messages
+  ansible.builtin.file:
+    path: /var/log/messages
+    mode: u-xs,g-xwrs,o-xwrt
+  when: file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-83913-4
+  - DISA-STIG-RHEL-09-232030
+  - configure_strategy
+  - file_permissions_var_log_messages
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

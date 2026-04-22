@@ -1,0 +1,59 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84201-3
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_smb_disabled
+
+- name: Disable Samba - Disable service smb
+  block:
+
+  - name: Disable Samba - Collect systemd Services Present in the System
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable Samba - Ensure smb.service is Masked
+    ansible.builtin.systemd:
+      name: smb.service
+      state: stopped
+      enabled: false
+      masked: true
+    when: service_exists.stdout_lines is search("smb.service", multiline=True)
+
+  - name: Unit Socket Exists - smb.socket
+    ansible.builtin.command: systemctl -q list-unit-files smb.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: Disable Samba - Disable Socket smb
+    ansible.builtin.systemd:
+      name: smb.socket
+      enabled: false
+      state: stopped
+      masked: true
+    when: socket_file_exists.stdout_lines is search("smb.socket", multiline=True)
+  tags:
+  - CCE-84201-3
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - service_smb_disabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

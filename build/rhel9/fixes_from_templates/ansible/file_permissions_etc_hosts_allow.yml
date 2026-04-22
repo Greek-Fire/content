@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/hosts.allow
+  ansible.builtin.stat:
+    path: "/etc/hosts.allow"
+  register: file_exists
+
+- name: Ensure permission u-xs,g-xws,o-xwt on /etc/hosts.allow
+  ansible.builtin.file:
+    path: "/etc/hosts.allow"
+    mode: "u-xs,g-xws,o-xwt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

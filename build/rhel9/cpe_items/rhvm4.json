@@ -1,0 +1,1 @@
+{"name": "cpe:/a:redhat:enterprise_virtualization_manager:4", "check_id": "installed_app_is_rhv4", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Red Hat Virtualization 4 Manager", "definition_location": "", "template": null}

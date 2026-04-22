@@ -1,0 +1,29 @@
+<def-group>
+<definition class="compliance" id="package_python3-abrt-addon_removed" version="1">
+  <metadata>
+        <title>Uninstall python3-abrt-addon Package</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package python3-abrt-addon should be removed.</description>
+    </metadata>
+  <criteria>
+  
+    <criterion comment="package python3-abrt-addon is removed" test_ref="test_package_python3-abrt-addon_removed" />
+  
+  </criteria>
+</definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="none_exist"
+  id="test_package_python3-abrt-addon_removed" version="1"
+  comment="package python3-abrt-addon is removed">
+    <linux:object object_ref="obj_test_package_python3-abrt-addon_removed" />
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_test_package_python3-abrt-addon_removed" version="1">
+    <linux:name>python3-abrt-addon</linux:name>
+  </linux:rpminfo_object>
+
+
+
+</def-group>

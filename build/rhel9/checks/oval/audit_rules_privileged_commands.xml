@@ -1,0 +1,333 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:linux="http://oval.mitre.org/XMLSchema/oval-definitions-5#linux" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-audit_rules_privileged_commands:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure auditd Collects Information on the Use of Privileged Commands</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83759-1" source="CCE" />
+        <oval-def:reference ref_id="audit_rules_privileged_commands" source="ssg" />
+        <oval-def:description>Audit rules about the information on the use of privileged commands are enabled.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="audit augenrules format is used" definition_ref="oval:ssg-audit_rules_augenrules:def:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:criteria comment="Audit rules are configured for Image Mode" operator="AND">
+              <oval-def:extend_definition comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+              <oval-def:criterion comment="augenrules cover all privileged commands on the system" test_ref="oval:ssg-test_augenrules_all_priv_cmds_covered_bootc:tst:1" />
+              <oval-def:criterion comment="count of augenrules for priv cmds matches count of priv cmds in the system" test_ref="oval:ssg-test_augenrules_count_matches_system_priv_cmds_bootc:tst:1" />
+            </oval-def:criteria>
+            <oval-def:criteria comment="Audit rules are configured for Package Mode" operator="AND">
+              <oval-def:extend_definition negate="true" comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+              <oval-def:criterion comment="augenrules cover all privileged commands on the system" test_ref="oval:ssg-test_augenrules_all_priv_cmds_covered:tst:1" />
+              <oval-def:criterion comment="count of augenrules for priv cmds matches count of priv cmds in the system" test_ref="oval:ssg-test_augenrules_count_matches_system_priv_cmds:tst:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+        </oval-def:criteria>
+        <oval-def:criteria operator="AND">
+          <oval-def:extend_definition comment="audit auditctl format is used" definition_ref="oval:ssg-audit_rules_auditctl:def:1" />
+          <oval-def:criteria operator="OR">
+            <oval-def:criteria comment="Audit rules are configured for Image Mode" operator="AND">
+              <oval-def:extend_definition comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+              <oval-def:criterion comment="auditctl cover all privileged commands on the system" test_ref="oval:ssg-test_auditctl_all_priv_cmds_covered_bootc:tst:1" />
+              <oval-def:criterion comment="count of auditctl for priv cmds matches count of priv cmds in the system" test_ref="oval:ssg-test_auditctl_count_matches_system_priv_cmds_bootc:tst:1" />
+            </oval-def:criteria>
+            <oval-def:criteria comment="Audit rules are configured for Package Mode" operator="AND">
+              <oval-def:extend_definition negate="true" comment="The system is RHEL Image Mode" definition_ref="oval:ssg-bootc:def:1" />
+              <oval-def:criterion comment="auditctl cover all privileged commands on the system" test_ref="oval:ssg-test_auditctl_all_priv_cmds_covered:tst:1" />
+              <oval-def:criterion comment="count of auditctl for priv cmds matches count of priv cmds in the system" test_ref="oval:ssg-test_auditctl_count_matches_system_priv_cmds:tst:1" />
+            </oval-def:criteria>
+          </oval-def:criteria>
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-audit_rules_auditctl:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test if auditctl is in use for audit rules</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="audit_rules_auditctl" source="ssg" />
+        <oval-def:description>Test if auditctl is in use for audit rules.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="audit auditctl" test_ref="oval:ssg-test_audit_rules_auditctl:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-audit_rules_augenrules:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Test if augenrules is enabled for audit rules</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="audit_rules_augenrules" source="ssg" />
+        <oval-def:description>Test if augenrules is enabled for audit rules.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="audit augenrules" test_ref="oval:ssg-test_audit_rules_augenrules:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+    <oval-def:definition id="oval:ssg-bootc:def:1" version="1" class="inventory">
+      <oval-def:metadata>
+        <oval-def:title />
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="bootc" source="ssg" />
+        <oval-def:description>Bootable container or bootc system</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="kernel is installed" test_ref="oval:ssg-bootc_platform_test_kernel_installed:tst:1" />
+        <oval-def:criterion comment="rpm-ostree is installed" test_ref="oval:ssg-bootc_platform_test_rpm_ostree_installed:tst:1" />
+        <oval-def:criterion comment="bootc is installed" test_ref="oval:ssg-bootc_platform_test_bootc_installed:tst:1" />
+        <oval-def:criteria operator="OR">
+          <oval-def:criterion comment="/run/ostree-booted exists, suggesting that we are in a running bootc environment" test_ref="oval:ssg-bootc_platform_test_run_ostree_booted_exists:tst:1" />
+          <oval-def:criterion comment="/ostree symlink exists, suggesting that we are in a bootc environment being built and hardened" test_ref="oval:ssg-bootc_platform_test_ostree_symlink_exists:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criterion comment="openshift-kubelet is not installed" test_ref="oval:ssg-bootc_platform_test_openshift_kubelet_removed:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_augenrules_all_priv_cmds_covered:tst:1" version="1" check="all" comment="There is one augenrules rule for each privileged command on the system." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_priv_cmds_from_augenrules:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_system:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_augenrules_count_matches_system_priv_cmds:tst:1" version="1" check="all" comment="Count of augenrules for priv cmds matches the count of priv cmds in the system" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_privileged_commands_priv_cmds_count:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_augenrules_count:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_auditctl_all_priv_cmds_covered:tst:1" version="1" check="all" comment="There is one auditctl rule for each privileged command on the system." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_priv_cmds_from_auditctl:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_system:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_auditctl_count_matches_system_priv_cmds:tst:1" version="1" check="all" comment="Count of auditctl for priv cmds matches the count of priv cmds in the system" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_privileged_commands_priv_cmds_count:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_auditctl_count:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_augenrules_all_priv_cmds_covered_bootc:tst:1" version="1" check="all" comment="There is one augenrules rule for each privileged command on the system." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_priv_cmds_from_augenrules_bootc:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_system_bootc:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_augenrules_count_matches_system_priv_cmds_bootc:tst:1" version="1" check="all" comment="Count of augenrules for priv cmds matches the count of priv cmds in the system" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_privileged_commands_priv_cmds_count_bootc:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_augenrules_count_bootc:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_auditctl_all_priv_cmds_covered_bootc:tst:1" version="1" check="all" comment="There is one auditctl rule for each privileged command on the system." check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_priv_cmds_from_auditctl_bootc:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_system_bootc:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:variable_test id="oval:ssg-test_auditctl_count_matches_system_priv_cmds_bootc:tst:1" version="1" check="all" comment="Count of auditctl for priv cmds matches the count of priv cmds in the system" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_privileged_commands_priv_cmds_count_bootc:obj:1" />
+      <ind:state state_ref="oval:ssg-state_priv_cmds_from_auditctl_count_bootc:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_audit_rules_auditctl:tst:1" version="1" check="all" comment="audit auditctl" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_auditctl:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_audit_rules_augenrules:tst:1" version="1" check="all" comment="audit augenrules" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_audit_rules_augenrules:obj:1" />
+    </ind:textfilecontent54_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_kernel_installed:tst:1" version="1" check="all" comment="package kernel-core is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_kernel_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_rpm_ostree_installed:tst:1" version="1" check="all" comment="package rpm-ostree is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_rpm_ostree_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_bootc_installed:tst:1" version="1" check="all" comment="package bootc is installed" check_existence="all_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_bootc_installed:obj:1" />
+    </linux:rpminfo_test>
+    <linux:rpminfo_test id="oval:ssg-bootc_platform_test_openshift_kubelet_removed:tst:1" version="1" check="all" comment="package openshift-kubelet is removed" check_existence="none_exist" state_operator="AND">
+      <linux:object object_ref="oval:ssg-obj_bootc_platform_test_openshift_kubelet_removed:obj:1" />
+    </linux:rpminfo_test>
+    <unix:file_test id="oval:ssg-bootc_platform_test_run_ostree_booted_exists:tst:1" version="1" check="all" comment="The file /run/ostree-booted exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-bootc_platform_obj_run_ostree_booted_exists:obj:1" />
+    </unix:file_test>
+    <unix:file_test id="oval:ssg-bootc_platform_test_ostree_symlink_exists:tst:1" version="1" check="all" comment="The file /ostree is a symlink" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-bootc_platform_obj_ostree_symlink_exists:obj:1" />
+      <unix:state state_ref="oval:ssg-bootc_platform_ste_ostree_symlink_exists:ste:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <linux:partition_object id="oval:ssg-object_audit_rules_privileged_commands_exec_partitions:obj:1" version="1">
+      <linux:mount_point operation="pattern match">^(?!/proc(/.*|$)).*$</linux:mount_point>
+      <oval-def:filter action="include">oval:ssg-state_audit_rules_privileged_commands_dev_partitons:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_audit_rules_privileged_commands_nosuid_partitons:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_audit_rules_privileged_commands_noexec_partitons:ste:1</oval-def:filter>
+    </linux:partition_object>
+    <unix:file_object id="oval:ssg-object_audit_rules_privileged_commands:obj:1" version="1" comment="Files with setuid or setgid permission in file systems that allow their execution">
+      <unix:behaviors recurse="directories" recurse_direction="down" recurse_file_system="defined" max_depth="-1" />
+      <unix:path operation="equals" var_check="at least one" var_ref="oval:ssg-var_audit_rules_privileged_commands_exec_mountpoints:var:1" />
+      <unix:filename operation="pattern match">^\w+</unix:filename>
+      <oval-def:filter action="include">oval:ssg-state_setuid_or_setgid_set:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_dracut_tmp_files:ste:1</oval-def:filter>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-object_audit_rules_privileged_commands_bootc:obj:1" version="1" comment="Files with setuid or setgid permission in file systems that allow their execution">
+      <unix:behaviors recurse="directories" recurse_direction="down" recurse_file_system="defined" max_depth="-1" />
+      <unix:path operation="equals">/</unix:path>
+      <unix:filename operation="pattern match">^\w+</unix:filename>
+      <oval-def:filter action="include">oval:ssg-state_setuid_or_setgid_set:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_dracut_tmp_files:ste:1</oval-def:filter>
+      <oval-def:filter action="exclude">oval:ssg-state_audit_rules_privileged_commands_sysroot:ste:1</oval-def:filter>
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_audit_rules_privileged_commands_priv_cmds_count:obj:1" version="1" comment="Number of all privileged commands in the system, regardless of audit rules.">
+      <ind:var_ref>oval:ssg-var_audit_rules_privileged_commands_priv_cmds_count:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_priv_cmds_from_augenrules:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rules_privileged_commands_rule_regex:var:1" />
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_unprivileged_commands:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_priv_cmds_from_auditctl:obj:1" version="1">
+      <ind:filepath>/etc/audit/audit.rules</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rules_privileged_commands_rule_regex:var:1" />
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_unprivileged_commands:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-object_audit_rules_privileged_commands_priv_cmds_count_bootc:obj:1" version="1" comment="Number of all privileged commands in the system, regardless of audit rules.">
+      <ind:var_ref>oval:ssg-var_audit_rules_privileged_commands_priv_cmds_count_bootc:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_priv_cmds_from_augenrules_bootc:obj:1" version="1">
+      <ind:filepath operation="pattern match">^/etc/audit/rules\.d/.*\.rules$</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rules_privileged_commands_rule_regex:var:1" />
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_unprivileged_commands_bootc:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_priv_cmds_from_auditctl_bootc:obj:1" version="1">
+      <ind:filepath>/etc/audit/audit.rules</ind:filepath>
+      <ind:pattern operation="pattern match" var_ref="oval:ssg-var_audit_rules_privileged_commands_rule_regex:var:1" />
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_unprivileged_commands_bootc:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_audit_rules_auditctl:obj:1" version="1">
+      <ind:filepath>/usr/lib/systemd/system/auditd.service</ind:filepath>
+      <ind:pattern operation="pattern match">^ExecStartPost=\-\/sbin\/auditctl.*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_audit_rules_augenrules:obj:1" version="1">
+      <ind:filepath>/usr/lib/systemd/system/auditd.service</ind:filepath>
+      <ind:pattern operation="pattern match">^(ExecStartPost=\-\/sbin\/augenrules.*$|Requires=augenrules.service)</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_kernel_installed:obj:1" version="1">
+      <linux:name>kernel-core</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_rpm_ostree_installed:obj:1" version="1">
+      <linux:name>rpm-ostree</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_bootc_installed:obj:1" version="1">
+      <linux:name>bootc</linux:name>
+    </linux:rpminfo_object>
+    <linux:rpminfo_object id="oval:ssg-obj_bootc_platform_test_openshift_kubelet_removed:obj:1" version="1">
+      <linux:name>openshift-kubelet</linux:name>
+    </linux:rpminfo_object>
+    <unix:file_object id="oval:ssg-bootc_platform_obj_run_ostree_booted_exists:obj:1" version="1" comment="The file /run/ostree-booted exists">
+      <unix:filepath operation="equals">/run/ostree-booted</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-bootc_platform_obj_ostree_symlink_exists:obj:1" version="1" comment="The file /ostree exists">
+      <unix:filepath operation="equals">/ostree</unix:filepath>
+    </unix:file_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <linux:partition_state id="oval:ssg-state_audit_rules_privileged_commands_dev_partitons:ste:1" version="1" operator="AND">
+      <linux:device operation="pattern match">^(/dev/.*|composefs)$</linux:device>
+    </linux:partition_state>
+    <linux:partition_state id="oval:ssg-state_audit_rules_privileged_commands_nosuid_partitons:ste:1" version="1" operator="AND">
+      <linux:mount_options datatype="string" entity_check="at least one" operation="equals">nosuid</linux:mount_options>
+    </linux:partition_state>
+    <linux:partition_state id="oval:ssg-state_audit_rules_privileged_commands_noexec_partitons:ste:1" version="1" operator="AND">
+      <linux:mount_options datatype="string" entity_check="at least one" operation="equals">noexec</linux:mount_options>
+    </linux:partition_state>
+    <unix:file_state id="oval:ssg-state_setuid_or_setgid_set:ste:1" version="1" operator="OR">
+      <unix:suid datatype="boolean">true</unix:suid>
+      <unix:sgid datatype="boolean">true</unix:sgid>
+    </unix:file_state>
+    <unix:file_state id="oval:ssg-state_dracut_tmp_files:ste:1" version="1" operator="AND">
+      <unix:filepath operation="pattern match">^/var/tmp/dracut.*</unix:filepath>
+    </unix:file_state>
+    <unix:file_state id="oval:ssg-state_audit_rules_privileged_commands_sysroot:ste:1" version="1" operator="AND" comment="Used to filter out all files in the /sysroot directory">
+      <unix:filepath operation="pattern match">^/sysroot/.*$</unix:filepath>
+    </unix:file_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_unprivileged_commands:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="not equal" var_check="all" var_ref="oval:ssg-var_audit_rules_privileged_commands_priv_cmds:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_priv_cmds_from_system:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match" var_check="at least one" var_ref="oval:ssg-var_audit_rules_privileged_commands_priv_cmds:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:variable_state id="oval:ssg-state_priv_cmds_from_augenrules_count:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="equals" var_check="at least one" var_ref="oval:ssg-var_priv_cmds_from_augenrules_count:var:1" />
+    </ind:variable_state>
+    <ind:variable_state id="oval:ssg-state_priv_cmds_from_auditctl_count:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="equals" var_check="at least one" var_ref="oval:ssg-var_priv_cmds_from_auditctl_count:var:1" />
+    </ind:variable_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_unprivileged_commands_bootc:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="not equal" var_check="all" var_ref="oval:ssg-var_audit_rules_privileged_commands_priv_cmds_bootc:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_priv_cmds_from_system_bootc:ste:1" version="1" operator="AND">
+      <ind:subexpression datatype="string" operation="pattern match" var_check="at least one" var_ref="oval:ssg-var_audit_rules_privileged_commands_priv_cmds_bootc:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:variable_state id="oval:ssg-state_priv_cmds_from_augenrules_count_bootc:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="equals" var_check="at least one" var_ref="oval:ssg-var_priv_cmds_from_augenrules_count_bootc:var:1" />
+    </ind:variable_state>
+    <ind:variable_state id="oval:ssg-state_priv_cmds_from_auditctl_count_bootc:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="equals" var_check="at least one" var_ref="oval:ssg-var_priv_cmds_from_auditctl_count_bootc:var:1" />
+    </ind:variable_state>
+    <unix:file_state id="oval:ssg-bootc_platform_ste_ostree_symlink_exists:ste:1" version="1" operator="AND" comment="The file /ostree is a symlink">
+      <unix:filepath operation="equals">/ostree</unix:filepath>
+      <unix:type operation="equals">symbolic link</unix:type>
+    </unix:file_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_audit_rules_privileged_commands_exec_mountpoints:var:1" version="1" datatype="string" comment="Mount points where suid or sgid files can be executed">
+      <oval-def:object_component item_field="mount_point" object_ref="oval:ssg-object_audit_rules_privileged_commands_exec_partitions:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rules_privileged_commands_rule_regex:var:1" version="1" datatype="string" comment="Regex for auditd rule">
+      <oval-def:literal_component>^[\s]*-a always,exit (?:-F path=([\S]+))+(?: -F perm=x)? -F auid&gt;=1000 -F auid!=(?:4294967295|unset)[\s]+(?:-k[\s]+|-F[\s]+key=)[\S]+[\s]*$</oval-def:literal_component>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rules_privileged_commands_priv_cmds:var:1" version="1" datatype="string" comment="Filepath of all privileged commands found in the system">
+      <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_audit_rules_privileged_commands:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rules_privileged_commands_priv_cmds_count:var:1" version="1" datatype="int" comment="Count all privileged commands present in the system">
+      <oval-def:count>
+        <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_audit_rules_privileged_commands:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_priv_cmds_from_augenrules_count:var:1" version="1" datatype="int" comment="Count privileged commands found in audit rules in augenrules format">
+      <oval-def:count>
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_priv_cmds_from_augenrules:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_priv_cmds_from_auditctl_count:var:1" version="1" datatype="int" comment="Count privileged commands found in audit rules in auditctl format">
+      <oval-def:count>
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_priv_cmds_from_auditctl:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rules_privileged_commands_priv_cmds_bootc:var:1" version="1" datatype="string" comment="Filepath of all privileged commands found in the system">
+      <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_audit_rules_privileged_commands_bootc:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_audit_rules_privileged_commands_priv_cmds_count_bootc:var:1" version="1" datatype="int" comment="Count all privileged commands present in the system">
+      <oval-def:count>
+        <oval-def:object_component item_field="filepath" object_ref="oval:ssg-object_audit_rules_privileged_commands_bootc:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_priv_cmds_from_augenrules_count_bootc:var:1" version="1" datatype="int" comment="Count privileged commands found in audit rules in augenrules format">
+      <oval-def:count>
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_priv_cmds_from_augenrules_bootc:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_priv_cmds_from_auditctl_count_bootc:var:1" version="1" datatype="int" comment="Count privileged commands found in audit rules in auditctl format">
+      <oval-def:count>
+        <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_priv_cmds_from_auditctl_bootc:obj:1" />
+      </oval-def:count>
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

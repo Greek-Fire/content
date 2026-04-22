@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable At Service (atd) - Disable service atd"
+  block:
+  - name: "Disable At Service (atd) - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable At Service (atd) - Ensure atd.service is Masked"
+    ansible.builtin.systemd:
+      name: "atd.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("atd.service", multiline=True)'
+
+  - name: "Unit Socket Exists - atd.socket"
+    ansible.builtin.command: systemctl -q list-unit-files atd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable At Service (atd) - Disable Socket atd"
+    ansible.builtin.systemd:
+      name: "atd.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("atd.socket", multiline=True)'
+  tags:
+  - special_service_block

@@ -1,0 +1,1 @@
+{"description": "Maximum number of autoconfigured IPv6 addresses", "type": "number", "operator": "equals", "interactive": false, "options": {"default": 1}, "warnings": [], "title": "net.ipv6.conf.all.max_addresses", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/system/network/network-ipv6/configuring_ipv6/sysctl_net_ipv6_conf_all_max_addresses_value.var"}

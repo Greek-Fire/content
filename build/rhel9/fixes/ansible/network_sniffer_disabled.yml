@@ -1,0 +1,51 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Ensure System is Not Acting as a Network Sniffer - Gather network interfaces
+  ansible.builtin.command:
+    cmd: ip -o link show
+  register: network_interfaces
+  when: ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman", "container"]
+  tags:
+  - CCE-83996-9
+  - DISA-STIG-RHEL-09-251040
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(2)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MA-3
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - network_sniffer_disabled
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Ensure System is Not Acting as a Network Sniffer - Disable promiscuous mode
+  ansible.builtin.command:
+    cmd: ip link set dev {{ (item.split(':')[1] | trim).split('@')[0] }} multicast
+      off promisc off
+  loop: '{{ network_interfaces.stdout_lines }}'
+  when:
+  - ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman", "container"]
+  - network_interfaces.stdout_lines is defined and item.split(':') | length >= 3
+  tags:
+  - CCE-83996-9
+  - DISA-STIG-RHEL-09-251040
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(2)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-MA-3
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - network_sniffer_disabled
+  - no_reboot_needed
+  - restrict_strategy

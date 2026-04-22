@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall CUPS Package: Ensure cups is removed"
+  ansible.builtin.package:
+    name: "cups"
+    state: absent

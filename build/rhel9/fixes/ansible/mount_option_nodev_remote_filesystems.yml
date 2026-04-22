@@ -1,0 +1,61 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90838-4
+  - DISA-STIG-RHEL-09-231065
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MP-2
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - mount_option_nodev_remote_filesystems
+  - no_reboot_needed
+
+- name: Get nfs and nfs4 mount points, that don't have nodev
+  ansible.builtin.command: findmnt --fstab --types nfs,nfs4 -O nonodev -n -P
+  register: points_register
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-90838-4
+  - DISA-STIG-RHEL-09-231065
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MP-2
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - mount_option_nodev_remote_filesystems
+  - no_reboot_needed
+
+- name: Add nodev to nfs and nfs4 mount points
+  ansible.posix.mount:
+    path: '{{ item | regex_search(''TARGET="([^"]+)"'',''\1'') | first }}'
+    src: '{{ item | regex_search(''SOURCE="([^"]+)"'',''\1'') | first }}'
+    fstype: '{{ item | regex_search(''FSTYPE="([^"]+)"'',''\1'') | first }}'
+    state: present
+    opts: '{{ item | regex_search(''OPTIONS="([^"]+)"'',''\1'') | first }},nodev'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - (points_register.stdout | length > 0) and '\\x09' not in item
+  with_items: '{{ points_register.stdout_lines }}'
+  tags:
+  - CCE-90838-4
+  - DISA-STIG-RHEL-09-231065
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-MP-2
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - mount_option_nodev_remote_filesystems
+  - no_reboot_needed

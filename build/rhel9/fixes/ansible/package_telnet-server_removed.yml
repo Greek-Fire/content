@@ -1,0 +1,24 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall telnet-server Package: Ensure telnet-server is removed'
+  ansible.builtin.package:
+    name: telnet-server
+    state: absent
+  tags:
+  - CCE-84149-4
+  - DISA-STIG-RHEL-09-215040
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - PCI-DSS-Req-2.2.2
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - package_telnet-server_removed

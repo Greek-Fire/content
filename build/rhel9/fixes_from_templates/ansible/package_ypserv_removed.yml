@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall ypserv Package: Ensure ypserv is removed"
+  ansible.builtin.package:
+    name: "ypserv"
+    state: absent

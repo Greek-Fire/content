@@ -1,0 +1,87 @@
+# platform = multi_platform_rhel,multi_platform_fedora,multi_platform_ol,multi_platform_rhv,multi_platform_sle,multi_platform_almalinux
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - DISA-STIG-RHEL-09-654270
+  - audit_rules_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: 'Configure immutable Audit login UIDs: Determine if rules are loaded by auditctl'
+  ansible.builtin.find:
+    paths: /usr/lib/systemd/system
+    patterns: auditd.service
+    contains: ^\s*ExecStartPost=-/sbin/auditctl
+  register: auditctl_used
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - DISA-STIG-RHEL-09-654270
+  - audit_rules_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: 'Configure immutable Audit login UIDs: Configure immutable login UIDs in /etc/audit/audit.rules'
+  ansible.builtin.lineinfile:
+    path: /etc/audit/audit.rules
+    line: --loginuid-immutable
+    regexp: ^\s*--loginuid-immutable\s*$
+    mode: '0600'
+    create: true
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - auditctl_used is defined and auditctl_used.matched >= 1
+  tags:
+  - DISA-STIG-RHEL-09-654270
+  - audit_rules_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: 'Configure immutable Audit login UIDs: In case Augen-rules is used'
+  block:
+
+  - name: 'Configure immutable Audit login UIDs: Detect if immutable login UIDs are
+      already defined in /etc/audit/rules.d/*.rules'
+    ansible.builtin.find:
+      paths: /etc/audit/rules.d
+      patterns: '*.rules'
+      contains: ^\s*--loginuid-immutable\s*$
+    register: immutable_found_in_rules_d
+
+  - name: 'Configure immutable Audit login UIDs: set immutable login UIDS in /etc/audit/rules.d/immutable.rules'
+    ansible.builtin.lineinfile:
+      path: /etc/audit/rules.d/immutable.rules
+      line: --loginuid-immutable
+      regexp: ^\s*--loginuid-immutable\s*$
+      mode: '0600'
+      create: true
+    when: immutable_found_in_rules_d is defined and immutable_found_in_rules_d.matched
+      == 0
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - auditctl_used is defined and auditctl_used.matched == 0
+  tags:
+  - DISA-STIG-RHEL-09-654270
+  - audit_rules_immutable_login_uids
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

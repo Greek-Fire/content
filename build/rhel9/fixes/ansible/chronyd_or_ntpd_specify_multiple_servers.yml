@@ -1,0 +1,111 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-AU-12(1)
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-AU-8(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_or_ntpd_specify_multiple_servers
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+- (xccdf-var var_multiple_time_servers)
+
+- name: Detect if chrony configuration file is present
+  ansible.builtin.find:
+    path: /etc
+    patterns: chrony.conf
+  register: chrony_server_config
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "chrony" in ansible_facts.packages or "ntp" in ansible_facts.packages )
+  tags:
+  - NIST-800-53-AU-12(1)
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-AU-8(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_or_ntpd_specify_multiple_servers
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Configure multiple time servers in chrony config
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    line: server {{ item }}
+    state: present
+    create: true
+  loop: '{{ var_multiple_time_servers.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "chrony" in ansible_facts.packages or "ntp" in ansible_facts.packages )
+  - chrony_server_config.matched == 1
+  tags:
+  - NIST-800-53-AU-12(1)
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-AU-8(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_or_ntpd_specify_multiple_servers
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Detect if NTP configuration file is present
+  ansible.builtin.find:
+    path: /etc
+    patterns: ntp.conf
+  register: ntp_server_config
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "chrony" in ansible_facts.packages or "ntp" in ansible_facts.packages )
+  tags:
+  - NIST-800-53-AU-12(1)
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-AU-8(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_or_ntpd_specify_multiple_servers
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Configure multiple time servers in NTP config
+  ansible.builtin.lineinfile:
+    path: /etc/chrony.conf
+    line: pool {{ item }}
+    state: present
+    create: true
+  loop: '{{ var_multiple_time_servers.split(",") }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "chrony" in ansible_facts.packages or "ntp" in ansible_facts.packages )
+  - ntp_server_config.matched == 1
+  tags:
+  - NIST-800-53-AU-12(1)
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-AU-8(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4.3
+  - chronyd_or_ntpd_specify_multiple_servers
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

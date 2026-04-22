@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove autofs Package: Ensure autofs is removed"
+  ansible.builtin.package:
+    name: "autofs"
+    state: absent

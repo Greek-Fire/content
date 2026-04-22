@@ -1,0 +1,19 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Uninstall talk-server Package: Ensure talk-server is removed'
+  ansible.builtin.package:
+    name: talk-server
+    state: absent
+  tags:
+  - CCE-84158-5
+  - PCI-DSSv4-2.2
+  - PCI-DSSv4-2.2.4
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_talk-server_removed

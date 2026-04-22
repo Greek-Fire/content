@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall the nis package: Ensure nis is removed"
+  ansible.builtin.package:
+    name: "nis"
+    state: absent

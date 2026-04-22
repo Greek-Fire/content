@@ -1,0 +1,83 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-root_path_no_dot:def:1" version="2" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure that Root's Path Does Not Include Relative Paths or Null Directories</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-88059-1" source="CCE" />
+        <oval-def:reference ref_id="root_path_no_dot" source="ssg" />
+        <oval-def:description>The environment variable PATH should be set correctly for
+      the root user.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria comment="environment variable PATH contains dangerous path" operator="AND">
+        <oval-def:criterion comment="environment variable PATH starts with : or ." test_ref="oval:ssg-test_env_var_begins:tst:1" />
+        <oval-def:criterion comment="environment variable PATH contains : twice in a row" test_ref="oval:ssg-test_env_var_contains_doublecolon:tst:1" />
+        <oval-def:criterion comment="environment variable PATH contains . twice in a row" test_ref="oval:ssg-test_env_var_contains_doubleperiod:tst:1" />
+        <oval-def:criterion comment="environment variable PATH ends with : or ." test_ref="oval:ssg-test_env_var_ends:tst:1" />
+        <oval-def:criterion comment="environment variable PATH doesn't begin with a /" test_ref="oval:ssg-test_env_var_begins_slash:tst:1" />
+        <oval-def:criterion comment="environment variable PATH doesn't contain relative paths" test_ref="oval:ssg-test_env_var_contains_relative_path:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:environmentvariable58_test id="oval:ssg-test_env_var_begins:tst:1" version="1" check="none satisfy" comment="environment variable PATH starts with : or ." state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_root_path_no_dot:obj:1" />
+      <ind:state state_ref="oval:ssg-state_begins_colon_period:ste:1" />
+    </ind:environmentvariable58_test>
+    <ind:environmentvariable58_test id="oval:ssg-test_env_var_contains_doublecolon:tst:1" version="1" check="none satisfy" comment="environment variable PATH doesn't contain : twice in a row" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_root_path_no_dot:obj:1" />
+      <ind:state state_ref="oval:ssg-state_contains_double_colon:ste:1" />
+    </ind:environmentvariable58_test>
+    <ind:environmentvariable58_test id="oval:ssg-test_env_var_contains_doubleperiod:tst:1" version="1" check="none satisfy" comment="environment variable PATH doesn't contain . twice in a row" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_root_path_no_dot:obj:1" />
+      <ind:state state_ref="oval:ssg-state_contains_double_period:ste:1" />
+    </ind:environmentvariable58_test>
+    <ind:environmentvariable58_test id="oval:ssg-test_env_var_ends:tst:1" version="1" check="none satisfy" comment="environment variable PATH ends with : or ." state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_root_path_no_dot:obj:1" />
+      <ind:state state_ref="oval:ssg-state_ends_colon_period:ste:1" />
+    </ind:environmentvariable58_test>
+    <ind:environmentvariable58_test id="oval:ssg-test_env_var_begins_slash:tst:1" version="1" check="none satisfy" comment="environment variable PATH starts with an absolute path /" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_root_path_no_dot:obj:1" />
+      <ind:state state_ref="oval:ssg-state_begins_slash:ste:1" />
+    </ind:environmentvariable58_test>
+    <ind:environmentvariable58_test id="oval:ssg-test_env_var_contains_relative_path:tst:1" version="1" check="none satisfy" comment="environment variable PATH contains relative paths" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_root_path_no_dot:obj:1" />
+      <ind:state state_ref="oval:ssg-state_contains_relative_path:ste:1" />
+    </ind:environmentvariable58_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:environmentvariable58_object id="oval:ssg-object_root_path_no_dot:obj:1" version="1">
+      <ind:pid xsi:nil="true" datatype="int" />
+      <ind:name>PATH</ind:name>
+    </ind:environmentvariable58_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:environmentvariable58_state id="oval:ssg-state_begins_colon_period:ste:1" version="1" operator="AND" comment="starts with colon or period">
+      <ind:value operation="pattern match">^[:\.]</ind:value>
+    </ind:environmentvariable58_state>
+    <ind:environmentvariable58_state id="oval:ssg-state_contains_double_colon:ste:1" version="1" operator="AND" comment="colon twice in a row">
+      <ind:value operation="pattern match">::</ind:value>
+    </ind:environmentvariable58_state>
+    <ind:environmentvariable58_state id="oval:ssg-state_contains_double_period:ste:1" version="1" operator="AND" comment="period twice in a row">
+      <ind:value operation="pattern match">\.\.</ind:value>
+    </ind:environmentvariable58_state>
+    <ind:environmentvariable58_state id="oval:ssg-state_ends_colon_period:ste:1" version="1" operator="AND" comment="ends with colon or period">
+      <ind:value operation="pattern match">[:\.]$</ind:value>
+    </ind:environmentvariable58_state>
+    <ind:environmentvariable58_state id="oval:ssg-state_begins_slash:ste:1" version="1" operator="AND" comment="begins with a slash">
+      <ind:value operation="pattern match">^[^/]</ind:value>
+    </ind:environmentvariable58_state>
+    <ind:environmentvariable58_state id="oval:ssg-state_contains_relative_path:ste:1" version="1" operator="AND" comment="elements begin with a slash">
+      <ind:value operation="pattern match">[^\\]:[^/]</ind:value>
+    </ind:environmentvariable58_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

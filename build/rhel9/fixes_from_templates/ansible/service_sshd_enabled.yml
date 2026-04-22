@@ -1,0 +1,20 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: "Enable the OpenSSH Service - Enable service sshd"
+  block:
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+  - name: "Enable the OpenSSH Service - Enable Service sshd"
+    ansible.builtin.systemd:
+      name: "sshd"
+      enabled: true
+      state: "started"
+      masked: false
+    when:
+    - '"openssh-server" in ansible_facts.packages'
+  tags:
+  - special_service_block

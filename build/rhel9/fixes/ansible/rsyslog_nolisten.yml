@@ -1,0 +1,249 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Define Rsyslog Config Lines Regex in Legacy Syntax
+  ansible.builtin.set_fact:
+    rsyslog_listen_legacy_regex: ^\s*\$(((Input(TCP|RELP)|UDP)ServerRun)|ModLoad\s+(imtcp|imudp|imrelp))
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Search for Legacy Config Lines in Rsyslog Main Config File
+  ansible.builtin.find:
+    paths: /etc
+    pattern: rsyslog.conf
+    contains: '{{ rsyslog_listen_legacy_regex }}'
+  register: rsyslog_listen_legacy_main_file
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Search for Legacy Config Lines in Rsyslog Include Files
+  ansible.builtin.find:
+    paths: /etc/rsyslog.d/
+    pattern: '*.conf'
+    contains: '{{ rsyslog_listen_legacy_regex }}'
+  register: rsyslog_listen_legacy_include_files
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Assemble List of Config Files With Listen Lines in Legacy Syntax
+  ansible.builtin.set_fact:
+    rsyslog_legacy_remote_listen_files: '{{ rsyslog_listen_legacy_main_file.files
+      | map(attribute=''path'') | list + rsyslog_listen_legacy_include_files.files
+      | map(attribute=''path'') | list }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Comment Listen Config Lines Wherever Defined Using Legacy Syntax
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: '{{ rsyslog_listen_legacy_regex }}'
+    replace: '# \1'
+  loop: '{{ rsyslog_legacy_remote_listen_files }}'
+  register: rsyslog_listen_legacy_comment
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - rsyslog_legacy_remote_listen_files | length > 0
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Define Rsyslog Config Lines Regex in RainerScript Syntax
+  ansible.builtin.set_fact:
+    rsyslog_listen_rainer_regex: ^\s*(module|input)\((load|type)="(imtcp|imudp)".*$
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Search for RainerScript Config Lines in Rsyslog Main Config File
+  ansible.builtin.find:
+    paths: /etc
+    pattern: rsyslog.conf
+    contains: '{{ rsyslog_listen_rainer_regex }}'
+  register: rsyslog_rainer_remote_main_file
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Search for RainerScript Config Lines in Rsyslog Include Files
+  ansible.builtin.find:
+    paths: /etc/rsyslog.d/
+    pattern: '*.conf'
+    contains: '{{ rsyslog_listen_rainer_regex }}'
+  register: rsyslog_rainer_remote_include_files
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Assemble List of Config Files With Listen Lines in RainerScript
+  ansible.builtin.set_fact:
+    rsyslog_rainer_remote_listen_files: '{{ rsyslog_rainer_remote_main_file.files
+      | map(attribute=''path'') | list + rsyslog_rainer_remote_include_files.files
+      | map(attribute=''path'') | list }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Comment Listen Config Lines Wherever Defined Using RainerScript
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: '{{ rsyslog_listen_rainer_regex }}'
+    replace: '# \1'
+  loop: '{{ rsyslog_rainer_remote_listen_files }}'
+  register: rsyslog_listen_rainer_comment
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - rsyslog_rainer_remote_listen_files | length > 0
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten
+
+- name: Ensure rsyslog Does Not Accept Remote Messages Unless Acting As Log Server
+    - Restart Rsyslog if Any Line Were Commented Out
+  ansible.builtin.service:
+    name: rsyslog
+    state: restarted
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - rsyslog_listen_legacy_comment is changed or rsyslog_listen_rainer_comment is changed
+  tags:
+  - CCE-83995-1
+  - DISA-STIG-RHEL-09-652025
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_nolisten

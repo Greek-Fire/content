@@ -1,0 +1,133 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83984-5
+  - DISA-STIG-RHEL-09-213085
+  - NIST-800-53-CM-6
+  - PCI-DSS-Req-3.2
+  - PCI-DSSv4-3.3
+  - PCI-DSSv4-3.3.1
+  - PCI-DSSv4-3.3.1.1
+  - coredump_disable_backtraces
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Disable core dump backtraces - Search for a section in files
+  ansible.builtin.find:
+    paths: '{{item.path}}'
+    patterns: '{{item.pattern}}'
+    contains: ^\s*\[Coredump\]
+    read_whole_file: true
+    use_regex: true
+  register: systemd_dropin_files_with_section
+  loop:
+  - path: '{{ ''/etc/systemd/coredump.conf'' | dirname }}'
+    pattern: '{{ ''/etc/systemd/coredump.conf'' | basename | regex_escape }}'
+  - path: /etc/systemd/coredump.conf.d
+    pattern: .*\.conf
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"systemd" in ansible_facts.packages'
+  tags:
+  - CCE-83984-5
+  - DISA-STIG-RHEL-09-213085
+  - NIST-800-53-CM-6
+  - PCI-DSS-Req-3.2
+  - PCI-DSSv4-3.3
+  - PCI-DSSv4-3.3.1
+  - PCI-DSSv4-3.3.1.1
+  - coredump_disable_backtraces
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Disable core dump backtraces - Count number of files which contain the correct
+    section
+  ansible.builtin.set_fact:
+    count_of_systemd_dropin_files_with_section: '{{systemd_dropin_files_with_section.results
+      | map(attribute=''matched'') | list | map(''int'') | sum}}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"systemd" in ansible_facts.packages'
+  tags:
+  - CCE-83984-5
+  - DISA-STIG-RHEL-09-213085
+  - NIST-800-53-CM-6
+  - PCI-DSS-Req-3.2
+  - PCI-DSSv4-3.3
+  - PCI-DSSv4-3.3.1
+  - PCI-DSSv4-3.3.1.1
+  - coredump_disable_backtraces
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Disable core dump backtraces - Add missing configuration to correct section
+  community.general.ini_file:
+    path: '{{item}}'
+    section: Coredump
+    option: ProcessSizeMax
+    value: '0'
+    state: present
+    no_extra_spaces: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"systemd" in ansible_facts.packages'
+  - count_of_systemd_dropin_files_with_section | int > 0
+  loop: '{{systemd_dropin_files_with_section.results | sum(attribute=''files'', start=[])
+    | map(attribute=''path'') | list }}'
+  tags:
+  - CCE-83984-5
+  - DISA-STIG-RHEL-09-213085
+  - NIST-800-53-CM-6
+  - PCI-DSS-Req-3.2
+  - PCI-DSSv4-3.3
+  - PCI-DSSv4-3.3.1
+  - PCI-DSSv4-3.3.1.1
+  - coredump_disable_backtraces
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Disable core dump backtraces - Add configuration to new remediation file
+  community.general.ini_file:
+    path: /etc/systemd/coredump.conf.d/complianceascode_hardening.conf
+    section: Coredump
+    option: ProcessSizeMax
+    value: '0'
+    state: present
+    no_extra_spaces: true
+    create: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"systemd" in ansible_facts.packages'
+  - count_of_systemd_dropin_files_with_section | int == 0
+  tags:
+  - CCE-83984-5
+  - DISA-STIG-RHEL-09-213085
+  - NIST-800-53-CM-6
+  - PCI-DSS-Req-3.2
+  - PCI-DSSv4-3.3
+  - PCI-DSSv4-3.3.1
+  - PCI-DSSv4-3.3.1.1
+  - coredump_disable_backtraces
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

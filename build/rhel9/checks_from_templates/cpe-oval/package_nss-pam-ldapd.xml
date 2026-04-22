@@ -1,0 +1,31 @@
+<def-group>
+  <definition class="inventory" id="package_nss-pam-ldapd"
+  version="1"><metadata>
+        <title>Package nss-pam-ldapd is installed</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package nss-pam-ldapd should be installed.</description>
+    </metadata>
+    <criteria>
+    
+      <criterion comment="Platform package nss-pam-ldapd is installed"
+      test_ref="inventory_test_package_nss-pam-ldapd_installed" />
+    
+    </criteria>
+  </definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="all_exist"
+  id="inventory_test_package_nss-pam-ldapd_installed" version="1"
+  comment="package nss-pam-ldapd is installed">
+    <linux:object object_ref="obj_inventory_test_package_nss-pam-ldapd_installed" />
+    
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_inventory_test_package_nss-pam-ldapd_installed" version="1">
+    <linux:name>nss-pam-ldapd</linux:name>
+  </linux:rpminfo_object>
+  
+
+
+</def-group>

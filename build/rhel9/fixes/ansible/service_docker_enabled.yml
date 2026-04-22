@@ -1,0 +1,29 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Enable the Docker service - Enable service docker
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the Docker service - Enable Service docker
+    ansible.builtin.systemd:
+      name: docker
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"docker" in ansible_facts.packages'
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_docker_enabled
+  - special_service_block
+  when: ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman", "container"]

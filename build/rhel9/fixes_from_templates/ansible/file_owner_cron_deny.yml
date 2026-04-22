@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_cron_deny_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_cron_deny_newown: "0"
+
+- name: Test for existence /etc/cron.deny
+  ansible.builtin.stat:
+    path: "/etc/cron.deny"
+  register: file_exists
+
+- name: Ensure owner on /etc/cron.deny
+  ansible.builtin.file:
+    path: "/etc/cron.deny"
+    follow: false
+    owner: "{{ file_owner_cron_deny_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

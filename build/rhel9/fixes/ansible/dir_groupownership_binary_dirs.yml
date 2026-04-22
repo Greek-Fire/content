@@ -1,0 +1,106 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the dir_groupownership_binary_dirs_newgroup variable if represented by
+    gid
+  ansible.builtin.set_fact:
+    dir_groupownership_binary_dirs_newgroup: '0'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /bin/ recursively
+  ansible.builtin.file:
+    path: /bin/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_groupownership_binary_dirs_newgroup }}'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/ recursively
+  ansible.builtin.file:
+    path: /sbin/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_groupownership_binary_dirs_newgroup }}'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/bin/ recursively
+  ansible.builtin.file:
+    path: /usr/bin/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_groupownership_binary_dirs_newgroup }}'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/sbin/ recursively
+  ansible.builtin.file:
+    path: /usr/sbin/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_groupownership_binary_dirs_newgroup }}'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/local/bin/ recursively
+  ansible.builtin.file:
+    path: /usr/local/bin/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_groupownership_binary_dirs_newgroup }}'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /usr/local/sbin/ recursively
+  ansible.builtin.file:
+    path: /usr/local/sbin/
+    follow: false
+    state: directory
+    recurse: true
+    group: '{{ dir_groupownership_binary_dirs_newgroup }}'
+  tags:
+  - configure_strategy
+  - dir_groupownership_binary_dirs
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

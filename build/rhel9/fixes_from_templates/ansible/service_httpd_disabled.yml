@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable httpd Service - Disable service httpd"
+  block:
+  - name: "Disable httpd Service - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable httpd Service - Ensure httpd.service is Masked"
+    ansible.builtin.systemd:
+      name: "httpd.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("httpd.service", multiline=True)'
+
+  - name: "Unit Socket Exists - httpd.socket"
+    ansible.builtin.command: systemctl -q list-unit-files httpd.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable httpd Service - Disable Socket httpd"
+    ansible.builtin.systemd:
+      name: "httpd.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("httpd.socket", multiline=True)'
+  tags:
+  - special_service_block

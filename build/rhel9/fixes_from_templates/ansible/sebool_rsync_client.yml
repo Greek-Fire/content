@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Disable the rsync_client SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_rsync_client)
+- name: "Disable the rsync_client SELinux Boolean - Set SELinux Boolean rsync_client Accordingly"
+  ansible.posix.seboolean:
+    name: rsync_client
+    state: "{{ var_rsync_client }}"
+    persistent: yes

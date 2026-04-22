@@ -1,0 +1,21 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+- name: Test for existence /etc/sudoers
+  ansible.builtin.stat:
+    path: "/etc/sudoers"
+  register: file_exists
+
+- name: Ensure permission u-xws,g-xws,o-xwrt on /etc/sudoers
+  ansible.builtin.file:
+    path: "/etc/sudoers"
+    mode: "u-xws,g-xws,o-xwrt"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

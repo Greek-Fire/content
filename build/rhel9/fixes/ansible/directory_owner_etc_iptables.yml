@@ -1,0 +1,45 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86430-6
+  - configure_strategy
+  - directory_owner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the directory_owner_etc_iptables_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    directory_owner_etc_iptables_newown: '0'
+  when: '"iptables" in ansible_facts.packages'
+  tags:
+  - CCE-86430-6
+  - configure_strategy
+  - directory_owner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on directory /etc/iptables/
+  ansible.builtin.file:
+    path: /etc/iptables/
+    follow: false
+    state: directory
+    owner: '{{ directory_owner_etc_iptables_newown }}'
+  when: '"iptables" in ansible_facts.packages'
+  tags:
+  - CCE-86430-6
+  - configure_strategy
+  - directory_owner_etc_iptables
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

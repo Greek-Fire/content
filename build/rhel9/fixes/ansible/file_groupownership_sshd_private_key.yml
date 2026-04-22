@@ -1,0 +1,84 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86127-8
+  - configure_strategy
+  - file_groupownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Check that the ssh_keys group is defined
+  ansible.builtin.getent:
+    database: group
+    key: ssh_keys
+  ignore_errors: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_groupownership_sshd_private_key_newgroup is undefined
+  tags:
+  - CCE-86127-8
+  - configure_strategy
+  - file_groupownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_groupownership_sshd_private_key_newgroup variable if ssh_keys
+    found
+  ansible.builtin.set_fact:
+    file_groupownership_sshd_private_key_newgroup: ssh_keys
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ansible_facts.getent_group["ssh_keys"] is defined
+  tags:
+  - CCE-86127-8
+  - configure_strategy
+  - file_groupownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /etc/ssh/ file(s) matching ^.*_key$
+  ansible.builtin.command: find -P /etc/ssh/ -maxdepth 1 -type f  ! -group ssh_keys
+    -regextype posix-extended -regex "^.*_key$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86127-8
+  - configure_strategy
+  - file_groupownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /etc/ssh/ file(s) matching ^.*_key$
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    group: '{{ file_groupownership_sshd_private_key_newgroup }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86127-8
+  - configure_strategy
+  - file_groupownership_sshd_private_key
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

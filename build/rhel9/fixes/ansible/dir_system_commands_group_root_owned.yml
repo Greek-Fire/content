@@ -1,0 +1,30 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = medium
+# disruption = medium
+- name: Verify that system commands directories have root as a group owner - Set group
+    ownership of directories that contain system commands to root
+  ansible.builtin.file:
+    path: '{{ item }}'
+    group: root
+    recurse: 'yes'
+    state: directory
+    follow: 'yes'
+  with_items:
+  - /bin
+  - /sbin
+  - /usr/bin
+  - /usr/sbin
+  - /usr/local/bin
+  - /usr/local/sbin
+  tags:
+  - CCE-87025-3
+  - NIST-800-53-CM-5(6)
+  - NIST-800-53-CM-5(6).1
+  - dir_system_commands_group_root_owned
+  - medium_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

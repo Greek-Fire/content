@@ -1,0 +1,1 @@
+{"name": "cpe:/a:nfs_mount_defined", "check_id": "nfs_mount_defined", "bash_conditional": "", "ansible_conditional": "", "is_product_cpe": false, "versioned": false, "args": {}, "content_id": "ssg", "title": "Remote NFS file system mount is defined", "definition_location": "/home/greek_fire/.git/content/shared/applicability/nfs_mount_defined.yml", "template": null}

@@ -1,0 +1,1 @@
+{"description": "Specify the maximum number of open sessions permitted.", "type": "number", "operator": "equals", "interactive": false, "options": {"10": 10, "4": 4, "3": 3, "2": 2, "1": 1, "0": 0, "default": 10}, "warnings": [], "title": "SSH Max Sessions Count", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/services/ssh/var_sshd_max_sessions.var"}

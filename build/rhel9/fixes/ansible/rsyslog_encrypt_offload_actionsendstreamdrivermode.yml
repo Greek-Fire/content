@@ -1,0 +1,241 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Ensure /etc/rsyslog.conf
+    exists
+  ansible.builtin.file:
+    path: /etc/rsyslog.conf
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Ensure /etc/rsyslog.d directory
+    exists
+  ansible.builtin.file:
+    path: /etc/rsyslog.d
+    state: directory
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Remove RainerScript action()
+    entries with StreamDriverMode from rsyslog.conf
+  ansible.builtin.shell: |
+    sed -i '/^[[:space:]]*action(/ { :a; N; /)/!ba; /StreamDriverMode/d }' /etc/rsyslog.conf
+  changed_when: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Remove RainerScript action()
+    entries with StreamDriverMode from rsyslog.d/*.conf
+  ansible.builtin.shell: |
+    find /etc/rsyslog.d -type f -name "*.conf" -exec sed -i '/^[[:space:]]*action(/ { :a; N; /)/!ba; /StreamDriverMode/d }' {} +
+  changed_when: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Check if the parameter
+    $ActionSendStreamDriverMode is configured in /etc/rsyslog.conf
+  ansible.builtin.lineinfile:
+    path: /etc/rsyslog.conf
+    regexp: ^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }}
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: _config_file_has_parameter
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Check if the parameter
+    $ActionSendStreamDriverMode is configured in /etc/rsyslog.d
+  ansible.builtin.find:
+    paths:
+    - /etc/rsyslog.d
+    contains: ^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }}
+  register: _config_dir_has_parameter
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Check if the parameter
+    $ActionSendStreamDriverMode is configured correctly in /etc/rsyslog.conf
+  ansible.builtin.lineinfile:
+    path: /etc/rsyslog.conf
+    regexp: ^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }} 1$
+    state: absent
+  check_mode: true
+  changed_when: false
+  register: _config_file_correctly
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records - Check if the parameter
+    $ActionSendStreamDriverMode is configured correctly in /etc/rsyslog.d
+  ansible.builtin.find:
+    paths:
+    - /etc/rsyslog.d
+    contains: ^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }} 1$
+  register: _config_dir_correctly
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode
+
+- name: Ensure Rsyslog Encrypts Off-Loaded Audit Records
+  block:
+
+  - name: Deduplicate values from /etc/rsyslog.conf
+    ansible.builtin.lineinfile:
+      path: /etc/rsyslog.conf
+      create: false
+      regexp: '(?i)^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }} '
+      state: absent
+
+  - name: Check if /etc/rsyslog.d exists
+    ansible.builtin.stat:
+      path: /etc/rsyslog.d
+    register: _etc_rsyslog_d_exists
+
+  - name: Check if the parameter $ActionSendStreamDriverMode is present in /etc/rsyslog.d
+    ansible.builtin.find:
+      paths: /etc/rsyslog.d
+      recurse: 'yes'
+      follow: 'no'
+      contains: '^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }} '
+    register: _etc_rsyslog_d_has_parameter
+    when: _etc_rsyslog_d_exists.stat.isdir is defined and _etc_rsyslog_d_exists.stat.isdir
+
+  - name: Remove parameter from files in /etc/rsyslog.d
+    ansible.builtin.lineinfile:
+      path: '{{ item.path }}'
+      create: false
+      regexp: '(?i)^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }} '
+      state: absent
+    with_items: '{{ _etc_rsyslog_d_has_parameter.files | default([]) }}'
+    when: _etc_rsyslog_d_has_parameter.matched > 0
+
+  - name: Insert correct line to /etc/rsyslog.conf
+    ansible.builtin.lineinfile:
+      path: /etc/rsyslog.conf
+      create: true
+      regexp: '(?i)^\s*{{ "$ActionSendStreamDriverMode"| regex_escape }} '
+      line: $ActionSendStreamDriverMode 1
+      state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"rsyslog" in ansible_facts.packages'
+  - (_config_file_correctly.found == 0 and _config_dir_correctly.matched == 0) or
+    ((_config_file_has_parameter.found | int) + (_config_dir_has_parameter.matched
+    | int)) != 1
+  tags:
+  - CCE-90191-8
+  - DISA-STIG-RHEL-09-652045
+  - NIST-800-53-AU-4(1)
+  - configure_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - rsyslog_encrypt_offload_actionsendstreamdrivermode

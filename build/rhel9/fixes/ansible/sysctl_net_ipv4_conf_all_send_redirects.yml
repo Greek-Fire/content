@@ -1,0 +1,198 @@
+# platform = multi_platform_all
+# reboot = true
+# strategy = disable
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects
+
+- name: Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces
+    - Set fact for sysctl paths
+  ansible.builtin.set_fact:
+    sysctl_paths:
+    - /etc/sysctl.d/
+    - /run/sysctl.d/
+    - /usr/local/lib/sysctl.d/
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects
+
+- name: Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces
+    - Find all files that contain net.ipv4.conf.all.send_redirects
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv4.conf.all.send_redirects\s*=\s*.*$'
+  register: find_all_values
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects
+
+- name: Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces
+    - Find all files that set net.ipv4.conf.all.send_redirects to correct value
+  ansible.builtin.shell:
+    cmd: find -L {{ sysctl_paths | join(" ") }} -type f -name '*.conf' | xargs grep
+      -HP '^\s*net.ipv4.conf.all.send_redirects\s*=\s*0$'
+  register: find_correct_value
+  check_mode: false
+  changed_when: false
+  failed_when: false
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects
+
+- name: Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces
+    - Comment out any occurrences of net.ipv4.conf.all.send_redirects from config
+    files
+  ansible.builtin.replace:
+    path: '{{ item | split(":") | first }}'
+    regexp: ^[\s]*net.ipv4.conf.all.send_redirects
+    replace: '#net.ipv4.conf.all.send_redirects'
+  loop: '{{ find_all_values.stdout_lines }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - find_correct_value.stdout_lines | length == 0 or find_all_values.stdout_lines
+    | length > find_correct_value.stdout_lines | length
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects
+
+- name: Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces
+    - Comment out any occurrences of net.ipv4.conf.all.send_redirects from /etc/sysctl.conf
+  ansible.builtin.replace:
+    path: '{{ item }}'
+    regexp: ^[\s]*net.ipv4.conf.all.send_redirects
+    replace: '#net.ipv4.conf.all.send_redirects'
+  with_fileglob:
+  - /etc/sysctl.conf
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects
+
+- name: Disable Kernel Parameter for Sending ICMP Redirects on all IPv4 Interfaces
+    - Ensure sysctl net.ipv4.conf.all.send_redirects is set to 0
+  ansible.posix.sysctl:
+    name: net.ipv4.conf.all.send_redirects
+    value: '0'
+    sysctl_file: /etc/sysctl.d/net_ipv4_conf_all_send_redirects.conf
+    state: present
+    reload: true
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-83997-7
+  - CJIS-5.10.1.1
+  - DISA-STIG-RHEL-09-253065
+  - NIST-800-171-3.1.20
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-5
+  - NIST-800-53-SC-7(a)
+  - PCI-DSSv4-1.4
+  - PCI-DSSv4-1.4.5
+  - disable_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - reboot_required
+  - sysctl_net_ipv4_conf_all_send_redirects

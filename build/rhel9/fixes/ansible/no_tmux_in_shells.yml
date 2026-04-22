@@ -1,0 +1,33 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89538-3
+  - NIST-800-53-CM-6
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - no_tmux_in_shells
+  - restrict_strategy
+
+- name: Prevent user from disabling the screen lock - Ensure tmux line not exists
+  ansible.builtin.lineinfile:
+    path: /etc/shells
+    regex: tmux\s*$
+    state: absent
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-89538-3
+  - NIST-800-53-CM-6
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - no_tmux_in_shells
+  - restrict_strategy

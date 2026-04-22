@@ -1,0 +1,51 @@
+<def-group>
+  <definition class="inventory" id="os_linux_ol_gt_or_eq_9_0" version="1"><metadata>
+        <title>Operating System is ol</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The installed operating system is Oracle Linux</description>
+    </metadata>
+    <criteria operator="AND">
+      <criterion comment="The operating system installed on the system is Oracle Linux"
+      test_ref="test_os_id_is_os_linux_ol_gt_or_eq_9_0" />
+      
+        <criterion comment="The operating system Oracle Linux of version greater than or equal 9.0 is installed"
+        test_ref="test_os_linux_ol_gt_or_eq_9_0_gt_or_eq_9_0" />
+      
+    </criteria>
+  </definition>
+
+  <ind:textfilecontent54_test check="all" comment="ID in os-release is ol" id="test_os_id_is_os_linux_ol_gt_or_eq_9_0" version="1">
+    <ind:object object_ref="obj_os_id_is_os_linux_ol_gt_or_eq_9_0" />
+    <ind:state state_ref="state_os_id_is_os_linux_ol_gt_or_eq_9_0" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="obj_os_id_is_os_linux_ol_gt_or_eq_9_0" version="1">
+    <ind:filepath>/etc/os-release</ind:filepath>
+    <ind:pattern operation="pattern match">^ID=[&quot;&apos;]?(\w+)[&quot;&apos;]?$</ind:pattern>
+    <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_state id="state_os_id_is_os_linux_ol_gt_or_eq_9_0" version="1">
+    <ind:subexpression operation="pattern match">ol</ind:subexpression>
+  </ind:textfilecontent54_state>
+
+
+  <ind:textfilecontent54_test check="all" comment="VERSION_ID in os-release is greater than or equal 9.0" id="test_os_linux_ol_gt_or_eq_9_0_gt_or_eq_9_0" version="1">
+    <ind:object object_ref="obj_os_linux_ol_gt_or_eq_9_0_gt_or_eq_9_0" />
+    <ind:state state_ref="state_os_linux_ol_gt_or_eq_9_0_gt_or_eq_9_0" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="obj_os_linux_ol_gt_or_eq_9_0_gt_or_eq_9_0" version="1">
+    <ind:filepath>/etc/os-release</ind:filepath>
+    <ind:pattern operation="pattern match">^VERSION_ID=[&quot;&apos;]?([\w.]+)[&quot;&apos;]?$</ind:pattern>
+    <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_state id="state_os_linux_ol_gt_or_eq_9_0_gt_or_eq_9_0" version="1">
+    <ind:subexpression operation="greater than or equal" datatype="version">9.0</ind:subexpression>
+  </ind:textfilecontent54_state>
+
+
+</def-group>

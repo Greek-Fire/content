@@ -1,0 +1,25 @@
+<def-group>
+        <definition class="compliance" id="file_cron_allow_exists" version="1">
+
+        <metadata>
+        <title>Ensure that /etc/cron.allow exists</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>This test makes sure that/etc/cron.allow does exist.</description>
+    </metadata>
+        <criteria>
+            <criterion comment="Ensure that /etc/cron.allow does exist." test_ref="test_file_cron_allow_exists" />
+        </criteria>
+    </definition>
+
+    <unix:file_test id="test_file_cron_allow_exists" check="all" check_existence="all_exist"
+                    version="1" comment="Test that that /etc/cron.allow does exist">
+        <unix:object object_ref="object_file_cron_allow_exists" />
+    </unix:file_test>
+
+    <unix:file_object comment="/etc/cron.allow" id="object_file_cron_allow_exists" version="1">
+        <unix:filepath>/etc/cron.allow</unix:filepath>
+    </unix:file_object>
+</def-group>

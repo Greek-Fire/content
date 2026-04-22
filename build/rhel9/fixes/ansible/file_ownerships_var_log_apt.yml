@@ -1,0 +1,46 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_ownerships_var_log_apt_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_ownerships_var_log_apt_newown: '0'
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_apt
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Find /var/log/apt/ file(s) matching ^.*$
+  ansible.builtin.command: find -P /var/log/apt/ -maxdepth 1 -type f  ! -user 0 -regextype
+    posix-extended -regex "^.*$"
+  register: files_found
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_apt
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /var/log/apt/ file(s) matching ^.*$
+  ansible.builtin.file:
+    path: '{{ item }}'
+    follow: false
+    owner: '{{ file_ownerships_var_log_apt_newown }}'
+    state: file
+  with_items:
+  - '{{ files_found.stdout_lines }}'
+  tags:
+  - configure_strategy
+  - file_ownerships_var_log_apt
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

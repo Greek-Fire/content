@@ -1,0 +1,45 @@
+<def-group>
+  <definition class="inventory" id="installed_env_mount_var-tmp" version="1">
+    <metadata>
+        <title>Mountpoint /var/tmp is active (mounted) or configured in /etc/fstab</title>
+            <affected family="unix">
+                <platform>Red Hat Enterprise Linux 9</platform>
+            </affected>
+        <description></description>
+    </metadata>
+    <criteria operator="OR">
+      <criteria>
+        
+   <criterion comment="The path /var/tmp is an active (mounted) mount point"
+     test_ref="test_mount_active_var_tmp_exists" />
+      </criteria>
+      <criteria>
+        
+   <criterion comment="The path /var/tmp is a mount point configured in /etc/fstab"
+     test_ref="test_mount_configured_fstab_var_tmp_exists" />
+      </criteria>
+    </criteria>
+  </definition>
+  
+  <linux:partition_test check="all" check_existence="all_exist" version="1"
+      comment="Mountpoint /var/tmp exists"
+      id="test_mount_active_var_tmp_exists">
+    <linux:object object_ref="object_mount_active_var_tmp_exists" />
+  </linux:partition_test>
+
+  <linux:partition_object id="object_mount_active_var_tmp_exists" version="1">
+    <linux:mount_point>/var/tmp</linux:mount_point>
+  </linux:partition_object>
+  
+  <ind:textfilecontent54_test check="all" check_existence="all_exist" version="1"
+      comment="Mountpoint /var/tmp is configured"
+      id="test_mount_configured_fstab_var_tmp_exists">
+    <ind:object object_ref="object_mount_configured_fstab_var_tmp_exists" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_mount_configured_fstab_var_tmp_exists" version="1">
+    <ind:filepath>/etc/fstab</ind:filepath>
+    <ind:pattern operation="pattern match">^[\s]*[\S]+[\s]+/var/tmp[\s]+[\S]+[\s]+([\S]+)</ind:pattern>
+    <ind:instance datatype="int">1</ind:instance>
+  </ind:textfilecontent54_object>
+</def-group>

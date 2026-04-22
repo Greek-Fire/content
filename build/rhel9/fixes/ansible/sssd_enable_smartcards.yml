@@ -1,0 +1,396 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = medium
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Test for domain group
+  ansible.builtin.command: grep '^\s*\[domain\/[^]]*]' /etc/sssd/sssd.conf
+  register: test_grep_domain
+  failed_when: false
+  changed_when: false
+  check_mode: false
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Add default domain group (if no domain there)
+  community.general.ini_file:
+    path: /etc/sssd/sssd.conf
+    section: '{{ item.section }}'
+    option: '{{ item.option }}'
+    value: '{{ item.value }}'
+    create: true
+    mode: 384
+  with_items:
+  - section: sssd
+    option: domains
+    value: default
+  - section: domain/default
+    option: id_provider
+    value: files
+  when:
+  - '"sssd-common" in ansible_facts.packages'
+  - test_grep_domain.stdout is defined
+  - test_grep_domain.stdout | length < 1
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Enable Smartcards in SSSD
+  community.general.ini_file:
+    dest: /etc/sssd/sssd.conf
+    section: pam
+    option: pam_cert_auth
+    value: 'True'
+    create: true
+    mode: 384
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Find all the conf files inside /etc/sssd/conf.d/
+  ansible.builtin.find:
+    paths: /etc/sssd/conf.d/
+    patterns: '*.conf'
+  register: sssd_conf_d_files
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Fix pam_cert_auth configuration in /etc/sssd/conf.d/
+  ansible.builtin.replace:
+    path: '{{ item.path }}'
+    regexp: '[^#]*pam_cert_auth.*'
+    replace: pam_cert_auth = True
+  with_items: '{{ sssd_conf_d_files.files }}'
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Enable Smartcards in SSSD - Check if system relies on authselect
+  ansible.builtin.stat:
+    path: /usr/bin/authselect
+  register: result_authselect_present
+  when: '"sssd-common" in ansible_facts.packages'
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Enable Smartcards in SSSD - Remediate using authselect
+  block:
+
+  - name: Enable Smartcards in SSSD - Check integrity of authselect current profile
+    ansible.builtin.command:
+      cmd: authselect check
+    register: result_authselect_check_cmd
+    changed_when: false
+    check_mode: false
+    failed_when: false
+
+  - name: Enable Smartcards in SSSD - Informative message based on the authselect
+      integrity check result
+    ansible.builtin.assert:
+      that:
+      - ansible_check_mode or result_authselect_check_cmd.rc == 0
+      fail_msg:
+      - authselect integrity check failed. Remediation aborted!
+      - This remediation could not be applied because an authselect profile was not
+        selected or the selected profile is not intact.
+      - It is not recommended to manually edit the PAM files when authselect tool
+        is available.
+      - In cases where the default authselect profile does not cover a specific demand,
+        a custom authselect profile is recommended.
+      success_msg:
+      - authselect integrity check passed
+
+  - name: Enable Smartcards in SSSD - Get authselect current features
+    ansible.builtin.shell:
+      cmd: authselect current | tail -n+3 | awk '{ print $2 }'
+    register: result_authselect_features
+    changed_when: false
+    check_mode: false
+    when:
+    - result_authselect_check_cmd is success
+
+  - name: Enable Smartcards in SSSD - Ensure "with-smartcard" feature is enabled using
+      authselect tool
+    ansible.builtin.command:
+      cmd: authselect enable-feature with-smartcard
+    register: result_authselect_enable_feature_cmd
+    when:
+    - result_authselect_check_cmd is success
+    - result_authselect_features.stdout is not search("with-smartcard")
+
+  - name: Enable Smartcards in SSSD - Ensure authselect changes are applied
+    ansible.builtin.command:
+      cmd: authselect apply-changes -b
+    when:
+    - result_authselect_enable_feature_cmd is not skipped
+    - result_authselect_enable_feature_cmd is success
+  when:
+  - '"sssd-common" in ansible_facts.packages'
+  - result_authselect_present.stat.exists
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards
+
+- name: Enable Smartcards in SSSD - Remediate by directly editing PAM files
+  block:
+
+  - name: Enable Smartcards in SSSD - Define a fact for control already filtered in
+      case filters are used
+    ansible.builtin.set_fact:
+      pam_module_control: sufficient
+
+  - name: Enable Smartcards in SSSD - Check if expected PAM module line is present
+      in /etc/pam.d/smartcard-auth
+    ansible.builtin.lineinfile:
+      path: /etc/pam.d/smartcard-auth
+      regexp: ^\s*auth\s+{{ pam_module_control | regex_escape() }}\s+pam_sss.so\s*.*
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: result_pam_line_present
+
+  - name: Enable Smartcards in SSSD - Include or update the PAM module line in /etc/pam.d/smartcard-auth
+    block:
+
+    - name: Enable Smartcards in SSSD - Check if required PAM module line is present
+        in /etc/pam.d/smartcard-auth with different control
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/smartcard-auth
+        regexp: ^\s*auth\s+.*\s+pam_sss.so\s*
+        state: absent
+      check_mode: true
+      changed_when: false
+      register: result_pam_line_other_control_present
+
+    - name: Enable Smartcards in SSSD - Ensure the correct control for the required
+        PAM module line in /etc/pam.d/smartcard-auth
+      ansible.builtin.replace:
+        dest: /etc/pam.d/smartcard-auth
+        regexp: ^(\s*auth\s+).*(\bpam_sss.so.*)
+        replace: \1{{ pam_module_control }} \2
+      register: result_pam_module_edit
+      when:
+      - result_pam_line_other_control_present.found == 1
+
+    - name: Enable Smartcards in SSSD - Ensure the required PAM module line is included
+        in /etc/pam.d/smartcard-auth
+      ansible.builtin.lineinfile:
+        dest: /etc/pam.d/smartcard-auth
+        line: auth    {{ pam_module_control }}    pam_sss.so
+      register: result_pam_module_add
+      when:
+      - result_pam_line_other_control_present.found == 0 or result_pam_line_other_control_present.found
+        > 1
+
+    - name: Enable Smartcards in SSSD - Ensure authselect changes are applied
+      ansible.builtin.command:
+        cmd: authselect apply-changes -b
+      when:
+      - result_authselect_present is defined
+      - result_authselect_present.stat.exists
+      - |-
+        (result_pam_module_add is defined and result_pam_module_add.changed)
+         or (result_pam_module_edit is defined and result_pam_module_edit.changed)
+    when:
+    - result_pam_line_present.found is defined
+    - result_pam_line_present.found == 0
+
+  - name: Enable Smartcards in SSSD - Define a fact for control already filtered in
+      case filters are used
+    ansible.builtin.set_fact:
+      pam_module_control: sufficient
+
+  - name: Enable Smartcards in SSSD - Check if the required PAM module option is present
+      in /etc/pam.d/smartcard-auth
+    ansible.builtin.lineinfile:
+      path: /etc/pam.d/smartcard-auth
+      regexp: ^\s*auth\s+{{ pam_module_control | regex_escape() }}\s+pam_sss.so\s*.*\sallow_missing_name\b
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: result_pam_module_sssd_enable_smartcards_option_present
+
+  - name: Enable Smartcards in SSSD - Ensure the "allow_missing_name" PAM option for
+      "pam_sss.so" is included in /etc/pam.d/smartcard-auth
+    ansible.builtin.lineinfile:
+      path: /etc/pam.d/smartcard-auth
+      backrefs: true
+      regexp: ^(\s*auth\s+{{ pam_module_control | regex_escape() }}\s+pam_sss.so.*)
+      line: \1 allow_missing_name
+      state: present
+    register: result_pam_sssd_enable_smartcards_add
+    when:
+    - result_pam_module_sssd_enable_smartcards_option_present.found is defined
+    - result_pam_module_sssd_enable_smartcards_option_present.found == 0
+
+  - name: Enable Smartcards in SSSD - Define a fact for control already filtered in
+      case filters are used
+    ansible.builtin.set_fact:
+      pam_module_control: '[success=done authinfo_unavail=ignore ignore=ignore default=die]'
+
+  - name: Enable Smartcards in SSSD - Check if expected PAM module line is present
+      in /etc/pam.d/system-auth
+    ansible.builtin.lineinfile:
+      path: /etc/pam.d/system-auth
+      regexp: ^\s*auth\s+{{ pam_module_control | regex_escape() }}\s+pam_sss.so\s*.*
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: result_pam_line_present
+
+  - name: Enable Smartcards in SSSD - Include or update the PAM module line in /etc/pam.d/system-auth
+    block:
+
+    - name: Enable Smartcards in SSSD - Check if required PAM module line is present
+        in /etc/pam.d/system-auth with different control
+      ansible.builtin.lineinfile:
+        path: /etc/pam.d/system-auth
+        regexp: ^\s*auth\s+.*\s+pam_sss.so\s*
+        state: absent
+      check_mode: true
+      changed_when: false
+      register: result_pam_line_other_control_present
+
+    - name: Enable Smartcards in SSSD - Ensure the correct control for the required
+        PAM module line in /etc/pam.d/system-auth
+      ansible.builtin.replace:
+        dest: /etc/pam.d/system-auth
+        regexp: ^(\s*auth\s+).*(\bpam_sss.so.*)
+        replace: \1{{ pam_module_control }} \2
+      register: result_pam_module_edit
+      when:
+      - result_pam_line_other_control_present.found == 1
+
+    - name: Enable Smartcards in SSSD - Ensure the required PAM module line is included
+        in /etc/pam.d/system-auth
+      ansible.builtin.lineinfile:
+        dest: /etc/pam.d/system-auth
+        line: auth    {{ pam_module_control }}    pam_sss.so
+      register: result_pam_module_add
+      when:
+      - result_pam_line_other_control_present.found == 0 or result_pam_line_other_control_present.found
+        > 1
+
+    - name: Enable Smartcards in SSSD - Ensure authselect changes are applied
+      ansible.builtin.command:
+        cmd: authselect apply-changes -b
+      when:
+      - result_authselect_present is defined
+      - result_authselect_present.stat.exists
+      - |-
+        (result_pam_module_add is defined and result_pam_module_add.changed)
+         or (result_pam_module_edit is defined and result_pam_module_edit.changed)
+    when:
+    - result_pam_line_present.found is defined
+    - result_pam_line_present.found == 0
+
+  - name: Enable Smartcards in SSSD - Define a fact for control already filtered in
+      case filters are used
+    ansible.builtin.set_fact:
+      pam_module_control: '[success=done authinfo_unavail=ignore ignore=ignore default=die]'
+
+  - name: Enable Smartcards in SSSD - Check if the required PAM module option is present
+      in /etc/pam.d/system-auth
+    ansible.builtin.lineinfile:
+      path: /etc/pam.d/system-auth
+      regexp: ^\s*auth\s+{{ pam_module_control | regex_escape() }}\s+pam_sss.so\s*.*\stry_cert_auth\b
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: result_pam_module_sssd_enable_smartcards_option_present
+
+  - name: Enable Smartcards in SSSD - Ensure the "try_cert_auth" PAM option for "pam_sss.so"
+      is included in /etc/pam.d/system-auth
+    ansible.builtin.lineinfile:
+      path: /etc/pam.d/system-auth
+      backrefs: true
+      regexp: ^(\s*auth\s+{{ pam_module_control | regex_escape() }}\s+pam_sss.so.*)
+      line: \1 try_cert_auth
+      state: present
+    register: result_pam_sssd_enable_smartcards_add
+    when:
+    - result_pam_module_sssd_enable_smartcards_option_present.found is defined
+    - result_pam_module_sssd_enable_smartcards_option_present.found == 0
+  when:
+  - '"sssd-common" in ansible_facts.packages'
+  - not result_authselect_present.stat.exists
+  tags:
+  - CCE-89155-6
+  - DISA-STIG-RHEL-09-611165
+  - PCI-DSS-Req-8.3
+  - configure_strategy
+  - low_complexity
+  - medium_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sssd_enable_smartcards

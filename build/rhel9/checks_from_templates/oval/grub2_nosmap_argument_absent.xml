@@ -1,0 +1,95 @@
+<def-group>
+  <definition class="compliance" id="grub2_nosmap_argument_absent" version="2">
+    <metadata>
+        <title>Ensure SMAP is not disabled during boot</title>
+        
+    <affected family="unix">
+    <platform>Red Hat Enterprise Linux 9</platform>
+    </affected>
+        <description>Ensure nosmap is not set in the kernel line in /etc/default/grub.</description>
+    </metadata>
+    <criteria operator="OR">
+    <criteria operator="AND">
+      
+        <extend_definition comment="The system is RHEL Image Mode" definition_ref="bootc" negate="true" />
+      
+      
+      
+      <criterion test_ref="test_grub2_nosmap_entries"
+                     comment="Check if nosmap is absent in the boot parameters in the /boot/loader/entries/*.conf" />
+      
+      <criteria operator="OR">
+          <criterion test_ref="test_grub2_nosmap_argument_absent"
+          comment="check for absence of nosmap in /etc/default/grub on GRUB_CMDLINE_LINUX" />
+          <criteria operator="AND">
+            <criterion test_ref="test_grub2_nosmap_argument_absent_default"
+            comment="check for absence ofnosmap in /etc/default/grub on GRUB_CMDLINE_LINUX_DEFAULT" />
+            <extend_definition definition_ref="bootloader_disable_recovery_set_to_true"
+            comment="Check GRUB_DISABLE_RECOVERY=true in /etc/default/grub" />
+          </criteria>
+        </criteria>
+    </criteria>
+    
+      <criteria operator="AND">
+        <extend_definition comment="The system is RHEL Image Mode" definition_ref="bootc" />
+        <criterion comment="The nosmap is not present in the /usr/lib/bootc/kargs.d/*.toml files"  test_ref="test_grub2_nosmap_usr_lib_bootc_kargs_d_absent" />
+      </criteria>
+    
+    </criteria>
+  </definition>
+  <ind:textfilecontent54_test id="test_grub2_nosmap_argument_absent"
+  comment="check for absence nosmap in /etc/default/grub via GRUB_CMDLINE_LINUX"
+  check="all" check_existence="all_exist" version="1">
+    <ind:object object_ref="object_grub2_nosmap_argument_absent" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_grub2_nosmap_argument_absent" version="1">
+    <ind:filepath>/etc/default/grub</ind:filepath>
+    <ind:pattern operation="pattern match">^\s*GRUB_CMDLINE_LINUX="(?!.*\bnosmap\b.*).*"$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_test id="test_grub2_nosmap_argument_absent_default"
+  comment="check for absence nosmap in /etc/default/grub via GRUB_CMDLINE_LINUX_DEFAULT"
+  check="all" check_existence="all_exist" version="1">
+    <ind:object object_ref="object_grub2_nosmap_argument_absent_default" />
+  </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="object_grub2_nosmap_argument_absent_default"
+  version="1">
+    <ind:filepath>/etc/default/grub</ind:filepath>
+    <ind:pattern operation="pattern match">^\s*GRUB_CMDLINE_LINUX_DEFAULT="(?!.*\bnosmap\b).*"$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+    <ind:textfilecontent54_test id="test_grub2_nosmap_entries"
+                                comment="check absence of kernel command line parameters nosmap on all boot entries."
+                                check="all" check_existence="all_exist" version="1">
+      <ind:object object_ref="obj_grub2_nosmap_entries" />
+    </ind:textfilecontent54_test>
+
+  <ind:textfilecontent54_object id="obj_grub2_nosmap_entries" version="1">
+    <ind:path>/boot/loader/entries/</ind:path>
+    <ind:filename operation="pattern match">^.*\.conf$</ind:filename>
+    <ind:pattern operation="pattern match">^options (.*)$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    <filter action="exclude">state_grub2_rescue_entry_for_grub2_nosmap_argument_absent</filter>
+  </ind:textfilecontent54_object>
+
+  <ind:textfilecontent54_state id="state_grub2_rescue_entry_for_grub2_nosmap_argument_absent" version="1">
+    <ind:filename operation="pattern match">.*rescue\.conf$</ind:filename>
+  </ind:textfilecontent54_state>
+
+
+  <ind:textfilecontent54_test id="test_grub2_nosmap_usr_lib_bootc_kargs_d_absent"
+                              comment="check kernel command line parameters for nosmap"
+                              check="at least one" check_existence="none_exist" version="1">
+    <ind:object object_ref="object_grub2_nosmap_usr_lib_bootc_kargs_d_absent" />
+  </ind:textfilecontent54_test>
+  <ind:textfilecontent54_object id="object_grub2_nosmap_usr_lib_bootc_kargs_d_absent" version="1">
+    <ind:path>/usr/lib/bootc/kargs.d/</ind:path>
+    <ind:filename operation="pattern match">^.*\.toml$</ind:filename>
+    <ind:pattern operation="pattern match">^kargs = \["nosmap.*"\]$</ind:pattern>
+    <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+  </ind:textfilecontent54_object>
+
+</def-group>

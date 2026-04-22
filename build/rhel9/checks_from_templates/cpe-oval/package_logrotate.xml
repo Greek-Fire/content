@@ -1,0 +1,31 @@
+<def-group>
+  <definition class="inventory" id="package_logrotate"
+  version="1"><metadata>
+        <title>Package logrotate is installed</title>
+            <affected family="unix">
+                <platform>multi_platform_all</platform>
+            </affected>
+        <description>The RPM package logrotate should be installed.</description>
+    </metadata>
+    <criteria>
+    
+      <criterion comment="Platform package logrotate is installed"
+      test_ref="inventory_test_package_logrotate_installed" />
+    
+    </criteria>
+  </definition>
+
+
+  <linux:rpminfo_test check="all" check_existence="all_exist"
+  id="inventory_test_package_logrotate_installed" version="1"
+  comment="package logrotate is installed">
+    <linux:object object_ref="obj_inventory_test_package_logrotate_installed" />
+    
+  </linux:rpminfo_test>
+  <linux:rpminfo_object id="obj_inventory_test_package_logrotate_installed" version="1">
+    <linux:name>logrotate</linux:name>
+  </linux:rpminfo_object>
+  
+
+
+</def-group>

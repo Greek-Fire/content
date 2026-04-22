@@ -1,0 +1,56 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - configure_strategy
+  - file_owner_journalctl
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_owner_journalctl_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_journalctl_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_owner_journalctl
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /usr/bin/journalctl
+  ansible.builtin.stat:
+    path: /usr/bin/journalctl
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - configure_strategy
+  - file_owner_journalctl
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /usr/bin/journalctl
+  ansible.builtin.file:
+    path: /usr/bin/journalctl
+    follow: false
+    owner: '{{ file_owner_journalctl_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - configure_strategy
+  - file_owner_journalctl
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

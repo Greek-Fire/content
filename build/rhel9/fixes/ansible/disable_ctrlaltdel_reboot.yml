@@ -1,0 +1,40 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86667-3
+  - DISA-STIG-RHEL-09-211050
+  - NIST-800-171-3.4.5
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - disable_ctrlaltdel_reboot
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+
+- name: Disable Ctrl-Alt-Del Reboot Activation
+  ansible.builtin.systemd:
+    name: ctrl-alt-del.target
+    force: true
+    masked: true
+    state: stopped
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86667-3
+  - DISA-STIG-RHEL-09-211050
+  - NIST-800-171-3.4.5
+  - NIST-800-53-AC-6(1)
+  - NIST-800-53-CM-6(a)
+  - disable_ctrlaltdel_reboot
+  - disable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed

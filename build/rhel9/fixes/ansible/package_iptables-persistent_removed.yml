@@ -1,0 +1,28 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_iptables-persistent_removed
+
+- name: 'Remove iptables-persistent Package: Ensure iptables-persistent is removed'
+  ansible.builtin.package:
+    name: iptables-persistent
+    state: absent
+  when: '"ufw" in ansible_facts.packages'
+  tags:
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_iptables-persistent_removed

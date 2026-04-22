@@ -1,0 +1,53 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-85962-9
+  - NIST-800-53-AC-4
+  - NIST-800-53-CA-3(5)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-7(21)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_iptables_enabled
+
+- name: Verify iptables Enabled - Enable service iptables
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Verify iptables Enabled - Enable Service iptables
+    ansible.builtin.systemd:
+      name: iptables
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"iptables" in ansible_facts.packages'
+  tags:
+  - CCE-85962-9
+  - NIST-800-53-AC-4
+  - NIST-800-53-CA-3(5)
+  - NIST-800-53-CM-6(a)
+  - NIST-800-53-CM-7(b)
+  - NIST-800-53-SC-7(21)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_iptables_enabled
+  - special_service_block
+  when: ( "iptables" in ansible_facts.packages and "kernel-core" in ansible_facts.packages
+    )

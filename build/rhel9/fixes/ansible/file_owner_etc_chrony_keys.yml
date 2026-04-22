@@ -1,0 +1,60 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86380-3
+  - configure_strategy
+  - file_owner_etc_chrony_keys
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_owner_etc_chrony_keys_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_chrony_keys_newown: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86380-3
+  - configure_strategy
+  - file_owner_etc_chrony_keys
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /etc/chrony.keys
+  ansible.builtin.stat:
+    path: /etc/chrony.keys
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86380-3
+  - configure_strategy
+  - file_owner_etc_chrony_keys
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure owner on /etc/chrony.keys
+  ansible.builtin.file:
+    path: /etc/chrony.keys
+    follow: false
+    owner: '{{ file_owner_etc_chrony_keys_newown }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86380-3
+  - configure_strategy
+  - file_owner_etc_chrony_keys
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

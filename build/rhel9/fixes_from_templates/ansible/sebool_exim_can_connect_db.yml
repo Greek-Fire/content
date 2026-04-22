@@ -1,0 +1,24 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+
+
+
+
+
+- name: "Disable the exim_can_connect_db SELinux Boolean - Ensure python3-libsemanage Installed"
+  ansible.builtin.package:
+    name: "python3-libsemanage"
+    state: present
+
+
+
+
+- (xccdf-var var_exim_can_connect_db)
+- name: "Disable the exim_can_connect_db SELinux Boolean - Set SELinux Boolean exim_can_connect_db Accordingly"
+  ansible.posix.seboolean:
+    name: exim_can_connect_db
+    state: "{{ var_exim_can_connect_db }}"
+    persistent: yes

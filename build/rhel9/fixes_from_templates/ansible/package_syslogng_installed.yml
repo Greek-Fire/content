@@ -1,0 +1,9 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Ensure syslog-ng is installed
+  ansible.builtin.package:
+    name: "syslog-ng"
+    state: present

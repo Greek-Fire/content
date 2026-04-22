@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall tcpd Package: Ensure tcpd is removed"
+  ansible.builtin.package:
+    name: "tcpd"
+    state: absent

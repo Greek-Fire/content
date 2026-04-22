@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-configure_crypto_policy:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Configure System Cryptography Policy</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83450-7" source="CCE" />
+        <oval-def:reference ref_id="configure_crypto_policy" source="ssg" />
+        <oval-def:description>Ensure crypto policy is correctly configured in /etc/crypto-policies/config, and the policy is current.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="check for crypto policy correctly configured in /etc/crypto-policy/config" test_ref="oval:ssg-test_configure_crypto_policy:tst:1" />
+        <oval-def:criterion comment="check for crypto policy correctly configured in /etc/crypto-policy/state/current" test_ref="oval:ssg-test_configure_crypto_policy_current:tst:1" />
+        <oval-def:criterion comment="Check if update-crypto-policies has been run after config update" test_ref="oval:ssg-test_crypto_policies_updated:tst:1" />
+        <oval-def:criterion comment="Check if /etc/crypto-policies/back-ends/nss.config exists" test_ref="oval:ssg-test_crypto_policy_nss_config:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:variable_test id="oval:ssg-test_crypto_policies_updated:tst:1" version="1" check="all" comment="Check if update-crypto-policies has been run" check_existence="all_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_crypto_policies_config_file_modified_time:obj:1" />
+      <ind:state state_ref="oval:ssg-state_crypto_current_file_newer_than_config_file:ste:1" />
+    </ind:variable_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_crypto_policy:tst:1" version="1" check="all" comment="check for crypto policy correctly configured in /etc/crypto-policies/config" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_configure_crypto_policy:obj:1" />
+      <ind:state state_ref="oval:ssg-state_configure_crypto_policy:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_configure_crypto_policy_current:tst:1" version="1" check="all" comment="check for crypto policy correctly configured in /etc/crypto-policies/state/current" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_configure_crypto_policy_current:obj:1" />
+      <ind:state state_ref="oval:ssg-state_configure_crypto_policy_current:ste:1" />
+    </ind:textfilecontent54_test>
+    <unix:file_test id="oval:ssg-test_crypto_policy_nss_config:tst:1" version="1" check="all" comment="Check if /etc/crypto-policies/back-ends/nss.config exists" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_crypto_policy_nss_config:obj:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <unix:file_object id="oval:ssg-crypto_policies_current_file:obj:1" version="1" comment="crypto-policies current state">
+      <unix:filepath>/etc/crypto-policies/state/current</unix:filepath>
+    </unix:file_object>
+    <unix:file_object id="oval:ssg-crypto_policies_config_file:obj:1" version="1" comment="crypto-policies config state">
+      <unix:filepath datatype="string">/etc/crypto-policies/config</unix:filepath>
+    </unix:file_object>
+    <ind:variable_object id="oval:ssg-object_crypto_policies_config_file_modified_time:obj:1" version="1" comment="Crypto policy current file timestamp">
+      <ind:var_ref>oval:ssg-variable_crypto_policies_config_file_timestamp:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_configure_crypto_policy:obj:1" version="1">
+      <ind:filepath>/etc/crypto-policies/config</ind:filepath>
+      <ind:pattern operation="pattern match">^(?!#)(\S+)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_configure_crypto_policy_current:obj:1" version="1">
+      <ind:filepath>/etc/crypto-policies/state/current</ind:filepath>
+      <ind:pattern operation="pattern match">^(?!#)(\S+)$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_crypto_policy_nss_config:obj:1" version="1">
+      <unix:filepath>/etc/crypto-policies/back-ends/nss.config</unix:filepath>
+    </unix:file_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:variable_state id="oval:ssg-state_crypto_current_file_newer_than_config_file:ste:1" version="1" operator="AND">
+      <ind:value datatype="int" operation="less than or equal" var_check="all" var_ref="oval:ssg-variable_crypto_policies_current_file_timestamp:var:1" />
+    </ind:variable_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_configure_crypto_policy:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals" var_check="all" var_ref="oval:ssg-var_system_crypto_policy:var:1" />
+    </ind:textfilecontent54_state>
+    <ind:textfilecontent54_state id="oval:ssg-state_configure_crypto_policy_current:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals" var_check="all" var_ref="oval:ssg-var_system_crypto_policy:var:1" />
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-variable_crypto_policies_current_file_timestamp:var:1" version="1" datatype="int" comment="Age of /etc/crypto-policies/state/current">
+      <oval-def:object_component object_ref="oval:ssg-crypto_policies_current_file:obj:1" item_field="m_time" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-variable_crypto_policies_config_file_timestamp:var:1" version="1" datatype="int" comment="Age of /etc/crypto-policies/config">
+      <oval-def:object_component object_ref="oval:ssg-crypto_policies_config_file:obj:1" item_field="m_time" />
+    </oval-def:local_variable>
+    <oval-def:external_variable id="oval:ssg-var_system_crypto_policy:var:1" version="1" datatype="string" comment="defined crypto policy" />
+  </oval-def:variables>
+</oval-def:oval_definitions>

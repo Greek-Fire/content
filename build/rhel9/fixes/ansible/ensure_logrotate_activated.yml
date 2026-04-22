@@ -1,0 +1,90 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-83993-6
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.7
+  - configure_strategy
+  - ensure_logrotate_activated
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Configure daily log rotation in /etc/logrotate.conf
+  ansible.builtin.lineinfile:
+    create: true
+    dest: /etc/logrotate.conf
+    regexp: ^\s*(weekly|monthly|yearly)$
+    line: daily
+    state: present
+    insertbefore: BOF
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"logrotate" in ansible_facts.packages'
+  tags:
+  - CCE-83993-6
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.7
+  - configure_strategy
+  - ensure_logrotate_activated
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Make sure daily log rotation setting is not overridden in /etc/logrotate.conf
+  ansible.builtin.lineinfile:
+    create: false
+    dest: /etc/logrotate.conf
+    regexp: ^[\s]*(weekly|monthly|yearly)$
+    state: absent
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"logrotate" in ansible_facts.packages'
+  tags:
+  - CCE-83993-6
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.7
+  - configure_strategy
+  - ensure_logrotate_activated
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Configure cron.daily if not already
+  block:
+
+  - name: Add shebang
+    ansible.builtin.lineinfile:
+      path: /etc/cron.daily/logrotate
+      line: '#!/bin/sh'
+      insertbefore: BOF
+      create: true
+
+  - name: Add logrotate call
+    ansible.builtin.lineinfile:
+      path: /etc/cron.daily/logrotate
+      line: /usr/sbin/logrotate /etc/logrotate.conf
+      regexp: ^[\s]*/usr/sbin/logrotate[\s\S]*/etc/logrotate.conf$
+      create: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - '"logrotate" in ansible_facts.packages'
+  tags:
+  - CCE-83993-6
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.7
+  - configure_strategy
+  - ensure_logrotate_activated
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

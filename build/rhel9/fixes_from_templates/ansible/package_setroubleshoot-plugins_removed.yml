@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall setroubleshoot-plugins Package: Ensure setroubleshoot-plugins is removed"
+  ansible.builtin.package:
+    name: "setroubleshoot-plugins"
+    state: absent

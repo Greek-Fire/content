@@ -1,0 +1,126 @@
+# platform = multi_platform_rhel,multi_platform_ubuntu
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Service facts
+  ansible.builtin.service_facts: null
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Check the rules script being used
+  ansible.builtin.command: grep '^ExecStartPost' /usr/lib/systemd/system/auditd.service
+  register: check_rules_scripts_result
+  changed_when: false
+  failed_when: false
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Set suid_audit_rules fact
+  ansible.builtin.set_fact:
+    suid_audit_rules:
+    - rule: -a always,exit -F arch=b32 -S execve -C euid!=uid -F auid!=unset -k user_emulation
+      regex: ^[\s]*-a[\s]+always,exit[\s]+-F[\s]+arch=b32[\s]+-C[\s]+euid!=uid[\s]+-F[\s]+auid!=unset[\s]+-S[\s]+execve[\s]+(?:-k[\s]+|-F[\s]+key=)[\S]+[\s]*$
+    - rule: -a always,exit -F arch=b64 -S execve -C euid!=uid -F auid!=unset -k user_emulation
+      regex: ^[\s]*-a[\s]+always,exit[\s]+-F[\s]+arch=b64[\s]+-C[\s]+euid!=uid[\s]+-F[\s]+auid!=unset[\s]+-S[\s]+execve[\s]+(?:-k[\s]+|-F[\s]+key=)[\S]+[\s]*$
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Update /etc/audit/rules.d/user_emulation.rules to audit privileged functions
+  ansible.builtin.lineinfile:
+    path: /etc/audit/rules.d/user_emulation.rules
+    line: '{{  item.rule  }}'
+    regexp: '{{ item.regex }}'
+    create: true
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - '"auditd.service" in ansible_facts.services'
+  - '"augenrules" in check_rules_scripts_result.stdout'
+  register: augenrules_audit_rules_privilege_function_update_result
+  with_items: '{{ suid_audit_rules }}'
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Update Update /etc/audit/audit.rules to audit privileged functions
+  ansible.builtin.lineinfile:
+    path: /etc/audit/audit.rules
+    line: '{{  item.rule  }}'
+    regexp: '{{ item.regex }}'
+    create: true
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - '"auditd.service" in ansible_facts.services'
+  - '"auditctl" in check_rules_scripts_result.stdout'
+  register: auditctl_audit_rules_privilege_function_update_result
+  with_items: '{{ suid_audit_rules }}'
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: Restart Auditd
+  ansible.builtin.command: /usr/sbin/service auditd restart
+  when:
+  - '"audit" in ansible_facts.packages'
+  - '"kernel-core" in ansible_facts.packages'
+  - (augenrules_audit_rules_privilege_function_update_result.changed or auditctl_audit_rules_privilege_function_update_result.changed)
+  - ansible_facts.services["auditd.service"].state == "running"
+  tags:
+  - CCE-86368-8
+  - audit_rules_suid_auid_privilege_function
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - restrict_strategy

@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall Automatic Bug Reporting Tool (abrt): Ensure abrt is removed"
+  ansible.builtin.package:
+    name: "abrt"
+    state: absent

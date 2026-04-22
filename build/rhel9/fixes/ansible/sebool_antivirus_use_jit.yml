@@ -1,0 +1,58 @@
+# platform = multi_platform_almalinux,multi_platform_fedora,multi_platform_ol,multi_platform_rhel,multi_platform_rhv,SUSE Linux Enterprise 15,SUSE Linux Enterprise 16
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-171-3.7.2
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sebool_antivirus_use_jit
+
+- name: Disable the antivirus_use_jit SELinux Boolean - Ensure python3-libsemanage
+    Installed
+  ansible.builtin.package:
+    name: python3-libsemanage
+    state: present
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline or lookup("env", "container") == "bwrap-osbuild"
+    or ansible_facts.selinux.status != "disabled" )
+  tags:
+  - NIST-800-171-3.7.2
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sebool_antivirus_use_jit
+- (xccdf-var var_antivirus_use_jit)
+
+- name: Disable the antivirus_use_jit SELinux Boolean - Set SELinux Boolean antivirus_use_jit
+    Accordingly
+  ansible.posix.seboolean:
+    name: antivirus_use_jit
+    state: '{{ var_antivirus_use_jit }}'
+    persistent: true
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( "kernel-core" in ansible_facts.packages and "rpm-ostree" in ansible_facts.packages
+    and "bootc" in ansible_facts.packages and not "openshift-kubelet" in ansible_facts.packages
+    and "ostree" in ansible_proc_cmdline or lookup("env", "container") == "bwrap-osbuild"
+    or ansible_facts.selinux.status != "disabled" )
+  tags:
+  - NIST-800-171-3.7.2
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - sebool_antivirus_use_jit

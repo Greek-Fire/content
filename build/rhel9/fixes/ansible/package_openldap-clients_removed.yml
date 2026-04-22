@@ -1,0 +1,17 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+- name: 'Ensure LDAP client is not installed: Ensure openldap-clients is removed'
+  ansible.builtin.package:
+    name: openldap-clients
+    state: absent
+  tags:
+  - CCE-90831-9
+  - disable_strategy
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+  - package_openldap-clients_removed

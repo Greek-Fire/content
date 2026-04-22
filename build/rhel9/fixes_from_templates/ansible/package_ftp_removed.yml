@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Remove ftp Package: Ensure ftp is removed"
+  ansible.builtin.package:
+    name: "ftp"
+    state: absent

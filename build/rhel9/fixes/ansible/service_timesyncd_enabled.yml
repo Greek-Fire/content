@@ -1,0 +1,53 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.1
+  - enable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_timesyncd_enabled
+
+- name: Enable systemd_timesyncd Service - Enable service systemd-timesyncd
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable systemd_timesyncd Service - Enable Service systemd-timesyncd
+    ansible.builtin.systemd:
+      name: systemd-timesyncd
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"systemd" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-AU-8(1)(a)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.4
+  - PCI-DSSv4-10.6
+  - PCI-DSSv4-10.6.1
+  - enable_strategy
+  - high_severity
+  - low_complexity
+  - low_disruption
+  - no_reboot_needed
+  - service_timesyncd_enabled
+  - special_service_block
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( not ( "chrony" in ansible_facts.packages ) and not ( "ntp" in ansible_facts.packages
+    ) )

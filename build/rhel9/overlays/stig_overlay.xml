@@ -1,0 +1,1787 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<overlays xmlns="http://checklists.nist.gov/xccdf/1.1">
+  <overlay owner="disastig" ruleid="dconf_gnome_login_banner_text" ownerid="RHEL-09-171011" severity="medium">
+    <VMSinfo VKey="270174" SVKey="270174" VRelease="1044831"/>
+    <title text="RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="installed_OS_is_vendor_supported" ownerid="RHEL-09-211010" severity="high">
+    <VMSinfo VKey="257777" SVKey="257777" VRelease="1155676"/>
+    <title text="RHEL 9 must be a vendor-supported release."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="security_patches_up_to_date" ownerid="RHEL-09-211015" severity="medium">
+    <VMSinfo VKey="257778" SVKey="257778" VRelease="1134892"/>
+    <title text="RHEL 9 vendor packaged system security patches and updates must be installed and up to date."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="banner_etc_issue" ownerid="RHEL-09-211020" severity="medium">
+    <VMSinfo VKey="257779" SVKey="257779" VRelease="958390"/>
+    <title text="RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a command line user logon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="xwindows_runlevel_target" ownerid="RHEL-09-211030" severity="medium">
+    <VMSinfo VKey="257781" SVKey="257781" VRelease="991589"/>
+    <title text="The graphical display manager must not be the default target on RHEL 9 unless approved."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="XXXX" ownerid="RHEL-09-211035" severity="low">
+    <VMSinfo VKey="257782" SVKey="257782" VRelease="991589"/>
+    <title text="RHEL 9 must enable the hardware random number generator entropy gatherer service."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_systemd-journald_enabled" ownerid="RHEL-09-211040" severity="medium">
+    <VMSinfo VKey="257783" SVKey="257783" VRelease="991562"/>
+    <title text="RHEL 9 systemd-journald service must be enabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="disable_ctrlaltdel_burstaction" ownerid="RHEL-09-211045" severity="high">
+    <VMSinfo VKey="257784" SVKey="257784" VRelease="1155651"/>
+    <title text="The systemd Ctrl-Alt-Delete burst key sequence in RHEL 9 must be disabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="disable_ctrlaltdel_reboot" ownerid="RHEL-09-211050" severity="high">
+    <VMSinfo VKey="257785" SVKey="257785" VRelease="1044833"/>
+    <title text="The x86 Ctrl-Alt-Delete key sequence must be disabled on RHEL 9."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_debug-shell_disabled" ownerid="RHEL-09-211055" severity="medium">
+    <VMSinfo VKey="257786" SVKey="257786" VRelease="1044834"/>
+    <title text="RHEL 9 debug-shell systemd service must be disabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_password" ownerid="RHEL-09-212010" severity="medium">
+    <VMSinfo VKey="257787" SVKey="257787" VRelease="1184288"/>
+    <title text="RHEL 9 must require a boot loader superuser password."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_disable_interactive_boot" ownerid="RHEL-09-212015" severity="medium">
+    <VMSinfo VKey="257788" SVKey="257788" VRelease="1044838"/>
+    <title text="RHEL 9 must disable the ability of systemd to spawn an interactive boot process."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_admin_username" ownerid="RHEL-09-212020" severity="high">
+    <VMSinfo VKey="257789" SVKey="257789" VRelease="1137691"/>
+    <title text="RHEL 9 must require a unique superusers name upon booting into single-user and maintenance modes."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_grub2_cfg" ownerid="RHEL-09-212025" severity="medium">
+    <VMSinfo VKey="257790" SVKey="257790" VRelease="991589"/>
+    <title text="RHEL 9 /boot/grub2/grub.cfg file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_grub2_cfg" ownerid="RHEL-09-212030" severity="medium">
+    <VMSinfo VKey="257791" SVKey="257791" VRelease="991589"/>
+    <title text="RHEL 9 /boot/grub2/grub.cfg file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_vsyscall_argument" ownerid="RHEL-09-212035" severity="medium">
+    <VMSinfo VKey="257792" SVKey="257792" VRelease="1184289"/>
+    <title text="RHEL 9 must disable virtual system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_page_poison_argument" ownerid="RHEL-09-212040" severity="medium">
+    <VMSinfo VKey="257793" SVKey="257793" VRelease="1044843"/>
+    <title text="RHEL 9 must clear the page allocator to prevent use-after-free attacks."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_init_on_free" ownerid="RHEL-09-212045" severity="medium">
+    <VMSinfo VKey="257794" SVKey="257794" VRelease="1069362"/>
+    <title text="RHEL 9 must clear memory when it is freed to prevent use-after-free attacks."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_pti_argument" ownerid="RHEL-09-212050" severity="low">
+    <VMSinfo VKey="257795" SVKey="257795" VRelease="1044845"/>
+    <title text="RHEL 9 must enable mitigations against processor-based vulnerabilities."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_audit_argument" ownerid="RHEL-09-212055" severity="low">
+    <VMSinfo VKey="257796" SVKey="257796" VRelease="1044847"/>
+    <title text="RHEL 9 must enable auditing of processes that start prior to the audit daemon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_dmesg_restrict" ownerid="RHEL-09-213010" severity="medium">
+    <VMSinfo VKey="257797" SVKey="257797" VRelease="1155691"/>
+    <title text="RHEL 9 must restrict access to the kernel message buffer."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_perf_event_paranoid" ownerid="RHEL-09-213015" severity="medium">
+    <VMSinfo VKey="257798" SVKey="257798" VRelease="1155694"/>
+    <title text="RHEL 9 must prevent kernel profiling by nonprivileged users."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_kexec_load_disabled" ownerid="RHEL-09-213020" severity="medium">
+    <VMSinfo VKey="257799" SVKey="257799" VRelease="1155697"/>
+    <title text="RHEL 9 must prevent the loading of a new kernel for later execution."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_kptr_restrict" ownerid="RHEL-09-213025" severity="medium">
+    <VMSinfo VKey="257800" SVKey="257800" VRelease="1155700"/>
+    <title text="RHEL 9 must restrict exposed kernel pointer addresses access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_fs_protected_hardlinks" ownerid="RHEL-09-213030" severity="medium">
+    <VMSinfo VKey="257801" SVKey="257801" VRelease="1155703"/>
+    <title text="RHEL 9 must enable kernel parameters to enforce discretionary access control (DAC) on hardlinks."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_fs_protected_symlinks" ownerid="RHEL-09-213035" severity="medium">
+    <VMSinfo VKey="257802" SVKey="257802" VRelease="1155706"/>
+    <title text="RHEL 9 must enable kernel parameters to enforce discretionary access (DAC) control on symlinks."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_core_pattern" ownerid="RHEL-09-213040" severity="medium">
+    <VMSinfo VKey="257803" SVKey="257803" VRelease="1155668"/>
+    <title text="RHEL 9 must disable the kernel.core_pattern."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_atm_disabled" ownerid="RHEL-09-213045" severity="medium">
+    <VMSinfo VKey="257804" SVKey="257804" VRelease="1044853"/>
+    <title text="RHEL 9 must be configured to disable the Asynchronous Transfer Mode kernel module."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_can_disabled" ownerid="RHEL-09-213050" severity="medium">
+    <VMSinfo VKey="257805" SVKey="257805" VRelease="1044856"/>
+    <title text="RHEL 9 must be configured to disable the Controller Area Network kernel module."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_firewire-core_disabled" ownerid="RHEL-09-213055" severity="medium">
+    <VMSinfo VKey="257806" SVKey="257806" VRelease="1044859"/>
+    <title text="RHEL 9 must be configured to disable the FireWire kernel module."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_sctp_disabled" ownerid="RHEL-09-213060" severity="medium">
+    <VMSinfo VKey="257807" SVKey="257807" VRelease="1044862"/>
+    <title text="RHEL 9 must disable the Stream Control Transmission Protocol (SCTP) kernel module."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_tipc_disabled" ownerid="RHEL-09-213065" severity="medium">
+    <VMSinfo VKey="257808" SVKey="257808" VRelease="1044865"/>
+    <title text="RHEL 9 must disable the Transparent Inter Process Communication (TIPC) kernel module."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_randomize_va_space" ownerid="RHEL-09-213070" severity="medium">
+    <VMSinfo VKey="257809" SVKey="257809" VRelease="1155709"/>
+    <title text="RHEL 9 must implement address space layout randomization (ASLR) to protect its memory from unauthorized code execution."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_unprivileged_bpf_disabled" ownerid="RHEL-09-213075" severity="medium">
+    <VMSinfo VKey="257810" SVKey="257810" VRelease="1155712"/>
+    <title text="RHEL 9 must disable access to network bpf system call from nonprivileged processes."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_yama_ptrace_scope" ownerid="RHEL-09-213080" severity="medium">
+    <VMSinfo VKey="257811" SVKey="257811" VRelease="1155674"/>
+    <title text="RHEL 9 must restrict usage of ptrace to descendant processes."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="coredump_disable_backtraces" ownerid="RHEL-09-213085" severity="medium">
+    <VMSinfo VKey="257812" SVKey="257812" VRelease="1134897"/>
+    <title text="RHEL 9 must disable core dump backtraces."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="coredump_disable_storage" ownerid="RHEL-09-213090" severity="medium">
+    <VMSinfo VKey="257813" SVKey="257813" VRelease="1134899"/>
+    <title text="RHEL 9 must disable storing core dumps."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="disable_users_coredumps" ownerid="RHEL-09-213095" severity="medium">
+    <VMSinfo VKey="257814" SVKey="257814" VRelease="1156057"/>
+    <title text="RHEL 9 must disable core dumps for all users."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_systemd-coredump_disabled" ownerid="RHEL-09-213100" severity="medium">
+    <VMSinfo VKey="257815" SVKey="257815" VRelease="1134903"/>
+    <title text="RHEL 9 must disable acquiring, saving, and processing core dumps."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_user_max_user_namespaces_no_remediation" ownerid="RHEL-09-213105" severity="medium">
+    <VMSinfo VKey="257816" SVKey="257816" VRelease="1155715"/>
+    <title text="RHEL 9 must disable the use of user namespaces."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_kernel_exec_shield" ownerid="RHEL-09-213110" severity="medium">
+    <VMSinfo VKey="257817" SVKey="257817" VRelease="1069383"/>
+    <title text="RHEL 9 must implement nonexecutable data to protect its memory from unauthorized code execution."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_kdump_disabled" ownerid="RHEL-09-213115" severity="medium">
+    <VMSinfo VKey="257818" SVKey="257818" VRelease="1044876"/>
+    <title text="The kdump service on RHEL 9 must be disabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="ensure_redhat_gpgkey_installed" ownerid="RHEL-09-214010" severity="medium">
+    <VMSinfo VKey="257819" SVKey="257819" VRelease="1015075"/>
+    <title text="RHEL 9 must ensure cryptographic verification of vendor software packages."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="ensure_gpgcheck_globally_activated" ownerid="RHEL-09-214015" severity="high">
+    <VMSinfo VKey="257820" SVKey="257820" VRelease="1044878"/>
+    <title text="RHEL 9 must check the GPG signature of software packages originating from external software repositories before installation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="ensure_gpgcheck_local_packages" ownerid="RHEL-09-214020" severity="high">
+    <VMSinfo VKey="257821" SVKey="257821" VRelease="1015077"/>
+    <title text="RHEL 9 must check the GPG signature of locally installed software packages before installation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="ensure_gpgcheck_never_disabled" ownerid="RHEL-09-214025" severity="high">
+    <VMSinfo VKey="257822" SVKey="257822" VRelease="1155615"/>
+    <title text="RHEL 9 must have GPG signature verification enabled for all software repositories."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="XXXX" ownerid="RHEL-09-214030" severity="medium">
+    <VMSinfo VKey="257823" SVKey="257823" VRelease="1155641"/>
+    <title text="RHEL 9 must be configured so that the cryptographic hashes of system files match vendor values."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="clean_components_post_updating" ownerid="RHEL-09-214035" severity="low">
+    <VMSinfo VKey="257824" SVKey="257824" VRelease="1044886"/>
+    <title text="RHEL 9 must remove all software components after updated versions have been installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_subscription-manager_installed" ownerid="RHEL-09-215010" severity="medium">
+    <VMSinfo VKey="257825" SVKey="257825" VRelease="1184291"/>
+    <title text="RHEL 9 subscription-manager package must be installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_vsftpd_removed" ownerid="RHEL-09-215015" severity="high">
+    <VMSinfo VKey="257826" SVKey="257826" VRelease="1106299"/>
+    <title text="RHEL 9 must not have a File Transfer Protocol (FTP) server package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_sendmail_removed" ownerid="RHEL-09-215020" severity="medium">
+    <VMSinfo VKey="257827" SVKey="257827" VRelease="1044892"/>
+    <title text="RHEL 9 must not have the sendmail package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_nfs-utils_removed" ownerid="RHEL-09-215025" severity="medium">
+    <VMSinfo VKey="257828" SVKey="257828" VRelease="1044894"/>
+    <title text="RHEL 9 must not have the nfs-utils package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="XXXX" ownerid="RHEL-09-215030" severity="medium">
+    <VMSinfo VKey="257829" SVKey="257829" VRelease="1044896"/>
+    <title text="RHEL 9 must not have the ypserv package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="ensure_epel_repos_disabled" ownerid="RHEL-09-215035" severity="medium">
+    <VMSinfo VKey="257830" SVKey="257830" VRelease="1134906"/>
+    <title text="RHEL 9 must not install packages from the Extra Packages for Enterprise Linux (EPEL) repository."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_telnet-server_removed" ownerid="RHEL-09-215040" severity="medium">
+    <VMSinfo VKey="257831" SVKey="257831" VRelease="1044898"/>
+    <title text="RHEL 9 must not have the telnet-server package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_gssproxy_removed" ownerid="RHEL-09-215045" severity="medium">
+    <VMSinfo VKey="257832" SVKey="257832" VRelease="1155653"/>
+    <title text="RHEL 9 must not have the gssproxy package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_iprutils_removed" ownerid="RHEL-09-215050" severity="medium">
+    <VMSinfo VKey="257833" SVKey="257833" VRelease="1044902"/>
+    <title text="RHEL 9 must not have the iprutils package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_tuned_removed" ownerid="RHEL-09-215055" severity="medium">
+    <VMSinfo VKey="257834" SVKey="257834" VRelease="1044904"/>
+    <title text="RHEL 9 must not have the tuned package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_tftp-server_removed" ownerid="RHEL-09-215060" severity="high">
+    <VMSinfo VKey="257835" SVKey="257835" VRelease="1155679"/>
+    <title text="The Trivial File Transfer Protocol (TFTP) server must not be installed unless it is required, and if required, the RHEL 9 TFTP daemon must be configured to operate in secure mode."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="XXXX" ownerid="RHEL-09-215065" severity="medium">
+    <VMSinfo VKey="257836" SVKey="257836" VRelease="1044908"/>
+    <title text="RHEL 9 must not have the quagga package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="xwindows_remove_packages" ownerid="RHEL-09-215070" severity="medium">
+    <VMSinfo VKey="257837" SVKey="257837" VRelease="1044910"/>
+    <title text="A graphical display manager must not be installed on RHEL 9 unless approved."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="install_smartcard_packages" ownerid="RHEL-09-215075" severity="medium">
+    <VMSinfo VKey="257838" SVKey="257838" VRelease="1044912"/>
+    <title text="RHEL 9 must have the openssl-pkcs11 package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_gnutls-utils_installed" ownerid="RHEL-09-215080" severity="medium">
+    <VMSinfo VKey="257839" SVKey="257839" VRelease="991589"/>
+    <title text="RHEL 9 must have the gnutls-utils package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_nss-tools_installed" ownerid="RHEL-09-215085" severity="medium">
+    <VMSinfo VKey="257840" SVKey="257840" VRelease="991589"/>
+    <title text="RHEL 9 must have the nss-tools package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_rng-tools_installed" ownerid="RHEL-09-215090" severity="medium">
+    <VMSinfo VKey="257841" SVKey="257841" VRelease="1044914"/>
+    <title text="RHEL 9 must have the rng-tools package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_s-nail_installed" ownerid="RHEL-09-215095" severity="medium">
+    <VMSinfo VKey="257842" SVKey="257842" VRelease="1044916"/>
+    <title text="RHEL 9 must have the s-nail package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_crypto-policies_installed" ownerid="RHEL-09-215100" severity="high">
+    <VMSinfo VKey="258234" SVKey="258234" VRelease="1184292"/>
+    <title text="RHEL 9 must have the crypto-policies package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_postfix_installed" ownerid="RHEL-09-215101" severity="medium">
+    <VMSinfo VKey="272488" SVKey="272488" VRelease="1155665"/>
+    <title text="RHEL 9 must have the Postfix package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="configure_crypto_policy" ownerid="RHEL-09-215105" severity="high">
+    <VMSinfo VKey="258241" SVKey="258241" VRelease="1184293"/>
+    <title text="RHEL 9 must implement a FIPS 140-3-compliant systemwide cryptographic policy."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="partition_for_home" ownerid="RHEL-09-231010" severity="medium">
+    <VMSinfo VKey="257843" SVKey="257843" VRelease="991589"/>
+    <title text="A separate RHEL 9 file system must be used for user home directories (such as /home or an equivalent)."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="partition_for_tmp" ownerid="RHEL-09-231015" severity="medium">
+    <VMSinfo VKey="257844" SVKey="257844" VRelease="1044918"/>
+    <title text="RHEL 9 must use a separate file system for /tmp."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="partition_for_var" ownerid="RHEL-09-231020" severity="low">
+    <VMSinfo VKey="257845" SVKey="257845" VRelease="1044920"/>
+    <title text="RHEL 9 must use a separate file system for /var."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="partition_for_var_log" ownerid="RHEL-09-231025" severity="low">
+    <VMSinfo VKey="257846" SVKey="257846" VRelease="1044922"/>
+    <title text="RHEL 9 must use a separate file system for /var/log."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="partition_for_var_log_audit" ownerid="RHEL-09-231030" severity="low">
+    <VMSinfo VKey="257847" SVKey="257847" VRelease="1044924"/>
+    <title text="RHEL 9 must use a separate file system for the system audit data path."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="partition_for_var_tmp" ownerid="RHEL-09-231035" severity="medium">
+    <VMSinfo VKey="257848" SVKey="257848" VRelease="1044926"/>
+    <title text="RHEL 9 must use a separate file system for /var/tmp."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_autofs_disabled" ownerid="RHEL-09-231040" severity="medium">
+    <VMSinfo VKey="257849" SVKey="257849" VRelease="1044928"/>
+    <title text="RHEL 9 file system automount function must be disabled unless required."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_home_nodev" ownerid="RHEL-09-231045" severity="medium">
+    <VMSinfo VKey="257850" SVKey="257850" VRelease="1044930"/>
+    <title text="RHEL 9 must prevent device files from being interpreted on file systems that contain user home directories."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_home_nosuid" ownerid="RHEL-09-231050" severity="medium">
+    <VMSinfo VKey="257851" SVKey="257851" VRelease="1044932"/>
+    <title text="RHEL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that contain user home directories."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_home_noexec" ownerid="RHEL-09-231055" severity="medium">
+    <VMSinfo VKey="257852" SVKey="257852" VRelease="991589"/>
+    <title text="RHEL 9 must prevent code from being executed on file systems that contain user home directories."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_nodev_remote_filesystems" ownerid="RHEL-09-231065" severity="medium">
+    <VMSinfo VKey="257854" SVKey="257854" VRelease="1044934"/>
+    <title text="RHEL 9 must prevent special devices on file systems that are imported via Network File System (NFS)."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_noexec_remote_filesystems" ownerid="RHEL-09-231070" severity="medium">
+    <VMSinfo VKey="257855" SVKey="257855" VRelease="1044936"/>
+    <title text="RHEL 9  must prevent code from being executed on file systems that are imported via Network File System (NFS)."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_nosuid_remote_filesystems" ownerid="RHEL-09-231075" severity="medium">
+    <VMSinfo VKey="257856" SVKey="257856" VRelease="1044938"/>
+    <title text="RHEL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that are imported via Network File System (NFS)."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_noexec_removable_partitions" ownerid="RHEL-09-231080" severity="medium">
+    <VMSinfo VKey="257857" SVKey="257857" VRelease="991589"/>
+    <title text="RHEL 9 must prevent code from being executed on file systems that are used with removable media."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_nodev_removable_partitions" ownerid="RHEL-09-231085" severity="medium">
+    <VMSinfo VKey="257858" SVKey="257858" VRelease="991589"/>
+    <title text="RHEL 9 must prevent special devices on file systems that are used with removable media."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_nosuid_removable_partitions" ownerid="RHEL-09-231090" severity="medium">
+    <VMSinfo VKey="257859" SVKey="257859" VRelease="991589"/>
+    <title text="RHEL 9 must prevent files with the setuid and setgid bit set from being executed on file systems that are used with removable media."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_boot_nodev" ownerid="RHEL-09-231095" severity="medium">
+    <VMSinfo VKey="257860" SVKey="257860" VRelease="1044940"/>
+    <title text="RHEL 9 must mount /boot with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_boot_nosuid" ownerid="RHEL-09-231100" severity="medium">
+    <VMSinfo VKey="257861" SVKey="257861" VRelease="1044941"/>
+    <title text="RHEL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot directory."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_boot_efi_nosuid" ownerid="RHEL-09-231105" severity="medium">
+    <VMSinfo VKey="257862" SVKey="257862" VRelease="1184295"/>
+    <title text="RHEL 9 must prevent files with the setuid and setgid bit set from being executed on the /boot/efi directory."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_dev_shm_nodev" ownerid="RHEL-09-231110" severity="medium">
+    <VMSinfo VKey="257863" SVKey="257863" VRelease="1155633"/>
+    <title text="RHEL 9 must mount /dev/shm with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_dev_shm_noexec" ownerid="RHEL-09-231115" severity="medium">
+    <VMSinfo VKey="257864" SVKey="257864" VRelease="1155639"/>
+    <title text="RHEL 9 must mount /dev/shm with the noexec option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_dev_shm_nosuid" ownerid="RHEL-09-231120" severity="medium">
+    <VMSinfo VKey="257865" SVKey="257865" VRelease="1184297"/>
+    <title text="RHEL 9 must mount /dev/shm with the nosuid option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_tmp_nodev" ownerid="RHEL-09-231125" severity="medium">
+    <VMSinfo VKey="257866" SVKey="257866" VRelease="958804"/>
+    <title text="RHEL 9 must mount /tmp with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_tmp_noexec" ownerid="RHEL-09-231130" severity="medium">
+    <VMSinfo VKey="257867" SVKey="257867" VRelease="958804"/>
+    <title text="RHEL 9 must mount /tmp with the noexec option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_tmp_nosuid" ownerid="RHEL-09-231135" severity="medium">
+    <VMSinfo VKey="257868" SVKey="257868" VRelease="958804"/>
+    <title text="RHEL 9 must mount /tmp with the nosuid option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_nodev" ownerid="RHEL-09-231140" severity="medium">
+    <VMSinfo VKey="257869" SVKey="257869" VRelease="1102009"/>
+    <title text="RHEL 9 must mount /var with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_log_nodev" ownerid="RHEL-09-231145" severity="medium">
+    <VMSinfo VKey="257870" SVKey="257870" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/log with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_log_noexec" ownerid="RHEL-09-231150" severity="medium">
+    <VMSinfo VKey="257871" SVKey="257871" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/log with the noexec option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_log_nosuid" ownerid="RHEL-09-231155" severity="medium">
+    <VMSinfo VKey="257872" SVKey="257872" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/log with the nosuid option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_log_audit_nodev" ownerid="RHEL-09-231160" severity="medium">
+    <VMSinfo VKey="257873" SVKey="257873" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/log/audit with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_log_audit_noexec" ownerid="RHEL-09-231165" severity="medium">
+    <VMSinfo VKey="257874" SVKey="257874" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/log/audit with the noexec option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_log_audit_nosuid" ownerid="RHEL-09-231170" severity="medium">
+    <VMSinfo VKey="257875" SVKey="257875" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/log/audit with the nosuid option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_tmp_nodev" ownerid="RHEL-09-231175" severity="medium">
+    <VMSinfo VKey="257876" SVKey="257876" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/tmp with the nodev option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_tmp_noexec" ownerid="RHEL-09-231180" severity="medium">
+    <VMSinfo VKey="257877" SVKey="257877" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/tmp with the noexec option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_var_tmp_nosuid" ownerid="RHEL-09-231185" severity="medium">
+    <VMSinfo VKey="257878" SVKey="257878" VRelease="958804"/>
+    <title text="RHEL 9 must mount /var/tmp with the nosuid option."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="encrypt_partitions" ownerid="RHEL-09-231190" severity="high">
+    <VMSinfo VKey="257879" SVKey="257879" VRelease="1045454"/>
+    <title text="RHEL 9 local disk partitions must implement cryptographic mechanisms to prevent unauthorized disclosure or modification of all information that requires at rest protection."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_cramfs_disabled" ownerid="RHEL-09-231195" severity="low">
+    <VMSinfo VKey="257880" SVKey="257880" VRelease="1044951"/>
+    <title text="RHEL 9 must disable mounting of cramfs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="mount_option_nodev_nonroot_local_partitions" ownerid="RHEL-09-231200" severity="medium">
+    <VMSinfo VKey="257881" SVKey="257881" VRelease="1184299"/>
+    <title text="RHEL 9 must prevent special devices on non-root local partitions."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_binary_dirs" ownerid="RHEL-09-232010" severity="medium">
+    <VMSinfo VKey="257882" SVKey="257882" VRelease="991560"/>
+    <title text="RHEL 9 system commands must have mode 755 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dir_permissions_library_dirs" ownerid="RHEL-09-232015" severity="medium">
+    <VMSinfo VKey="257883" SVKey="257883" VRelease="991560"/>
+    <title text="RHEL 9 library directories must have mode 755 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_library_dirs" ownerid="RHEL-09-232020" severity="medium">
+    <VMSinfo VKey="257884" SVKey="257884" VRelease="1106306"/>
+    <title text="RHEL 9 library files must have mode 755 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_var_log" ownerid="RHEL-09-232025" severity="medium">
+    <VMSinfo VKey="257885" SVKey="257885" VRelease="1044953"/>
+    <title text="RHEL 9 /var/log directory must have mode 0755 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_var_log_messages" ownerid="RHEL-09-232030" severity="medium">
+    <VMSinfo VKey="257886" SVKey="257886" VRelease="1044955"/>
+    <title text="RHEL 9 /var/log/messages file must have mode 0640 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_audit_tools_permissions" ownerid="RHEL-09-232035" severity="medium">
+    <VMSinfo VKey="257887" SVKey="257887" VRelease="991557"/>
+    <title text="RHEL 9 audit tools must have a mode of 0755 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_cron_weekly" ownerid="RHEL-09-232040" severity="medium">
+    <VMSinfo VKey="257888" SVKey="257888" VRelease="1134910"/>
+    <title text="RHEL 9 permissions of cron configuration files and directories must not be modified from the operating system defaults."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rootfiles_configured" ownerid="RHEL-09-232045" severity="medium">
+    <VMSinfo VKey="257889" SVKey="257889" VRelease="1184302"/>
+    <title text="All RHEL 9 local initialization files must have mode 0740 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_home_directories" ownerid="RHEL-09-232050" severity="medium">
+    <VMSinfo VKey="257890" SVKey="257890" VRelease="1184305"/>
+    <title text="All RHEL 9 local interactive user home directories must have mode 0750 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_etc_group" ownerid="RHEL-09-232055" severity="medium">
+    <VMSinfo VKey="257891" SVKey="257891" VRelease="991589"/>
+    <title text="RHEL 9 /etc/group file must have mode 0644 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_backup_etc_group" ownerid="RHEL-09-232060" severity="medium">
+    <VMSinfo VKey="257892" SVKey="257892" VRelease="991589"/>
+    <title text="RHEL 9 /etc/group- file must have mode 0644 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_etc_gshadow" ownerid="RHEL-09-232065" severity="medium">
+    <VMSinfo VKey="257893" SVKey="257893" VRelease="991589"/>
+    <title text="RHEL 9 /etc/gshadow file must have mode 0000 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_backup_etc_gshadow" ownerid="RHEL-09-232070" severity="medium">
+    <VMSinfo VKey="257894" SVKey="257894" VRelease="991589"/>
+    <title text="RHEL 9 /etc/gshadow- file must have mode 0000 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_etc_passwd" ownerid="RHEL-09-232075" severity="medium">
+    <VMSinfo VKey="257895" SVKey="257895" VRelease="991589"/>
+    <title text="RHEL 9 /etc/passwd file must have mode 0644 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_backup_etc_passwd" ownerid="RHEL-09-232080" severity="medium">
+    <VMSinfo VKey="257896" SVKey="257896" VRelease="991589"/>
+    <title text="RHEL 9 /etc/passwd- file must have mode 0644 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_backup_etc_shadow" ownerid="RHEL-09-232085" severity="medium">
+    <VMSinfo VKey="257897" SVKey="257897" VRelease="991589"/>
+    <title text="RHEL 9 /etc/shadow- file must have mode 0000 or less permissive to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_etc_group" ownerid="RHEL-09-232090" severity="medium">
+    <VMSinfo VKey="257898" SVKey="257898" VRelease="991589"/>
+    <title text="RHEL 9 /etc/group file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_etc_group" ownerid="RHEL-09-232095" severity="medium">
+    <VMSinfo VKey="257899" SVKey="257899" VRelease="991589"/>
+    <title text="RHEL 9 /etc/group file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_backup_etc_group" ownerid="RHEL-09-232100" severity="medium">
+    <VMSinfo VKey="257900" SVKey="257900" VRelease="991589"/>
+    <title text="RHEL 9 /etc/group- file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_ownership_audit_configuration" ownerid="RHEL-09-232103" severity="medium">
+    <VMSinfo VKey="270175" SVKey="270175" VRelease="1137691"/>
+    <title text="RHEL 9 &quot;/etc/audit/&quot; must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupownership_audit_configuration" ownerid="RHEL-09-232104" severity="medium">
+    <VMSinfo VKey="270176" SVKey="270176" VRelease="1137691"/>
+    <title text="RHEL 9 &quot;/etc/audit/&quot; must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_backup_etc_group" ownerid="RHEL-09-232105" severity="medium">
+    <VMSinfo VKey="257901" SVKey="257901" VRelease="991589"/>
+    <title text="RHEL 9 /etc/group- file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_etc_gshadow" ownerid="RHEL-09-232110" severity="medium">
+    <VMSinfo VKey="257902" SVKey="257902" VRelease="991589"/>
+    <title text="RHEL 9 /etc/gshadow file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_etc_gshadow" ownerid="RHEL-09-232115" severity="medium">
+    <VMSinfo VKey="257903" SVKey="257903" VRelease="991589"/>
+    <title text="RHEL 9 /etc/gshadow file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_backup_etc_gshadow" ownerid="RHEL-09-232120" severity="medium">
+    <VMSinfo VKey="257904" SVKey="257904" VRelease="991589"/>
+    <title text="RHEL 9 /etc/gshadow- file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_backup_etc_gshadow" ownerid="RHEL-09-232125" severity="medium">
+    <VMSinfo VKey="257905" SVKey="257905" VRelease="991589"/>
+    <title text="RHEL 9 /etc/gshadow- file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_etc_passwd" ownerid="RHEL-09-232130" severity="medium">
+    <VMSinfo VKey="257906" SVKey="257906" VRelease="991589"/>
+    <title text="RHEL 9 /etc/passwd file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_etc_passwd" ownerid="RHEL-09-232135" severity="medium">
+    <VMSinfo VKey="257907" SVKey="257907" VRelease="991589"/>
+    <title text="RHEL 9 /etc/passwd file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_backup_etc_passwd" ownerid="RHEL-09-232140" severity="medium">
+    <VMSinfo VKey="257908" SVKey="257908" VRelease="991589"/>
+    <title text="RHEL 9 /etc/passwd- file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_backup_etc_passwd" ownerid="RHEL-09-232145" severity="medium">
+    <VMSinfo VKey="257909" SVKey="257909" VRelease="991589"/>
+    <title text="RHEL 9 /etc/passwd- file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_etc_shadow" ownerid="RHEL-09-232150" severity="medium">
+    <VMSinfo VKey="257910" SVKey="257910" VRelease="991589"/>
+    <title text="RHEL 9 /etc/shadow file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_etc_shadow" ownerid="RHEL-09-232155" severity="medium">
+    <VMSinfo VKey="257911" SVKey="257911" VRelease="991589"/>
+    <title text="RHEL 9 /etc/shadow file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_backup_etc_shadow" ownerid="RHEL-09-232160" severity="medium">
+    <VMSinfo VKey="257912" SVKey="257912" VRelease="991589"/>
+    <title text="RHEL 9 /etc/shadow- file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_backup_etc_shadow" ownerid="RHEL-09-232165" severity="medium">
+    <VMSinfo VKey="257913" SVKey="257913" VRelease="991589"/>
+    <title text="RHEL 9 /etc/shadow- file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_var_log" ownerid="RHEL-09-232170" severity="medium">
+    <VMSinfo VKey="257914" SVKey="257914" VRelease="1044969"/>
+    <title text="RHEL 9 /var/log directory must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_var_log" ownerid="RHEL-09-232175" severity="medium">
+    <VMSinfo VKey="257915" SVKey="257915" VRelease="1044971"/>
+    <title text="RHEL 9 /var/log directory must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_var_log_messages" ownerid="RHEL-09-232180" severity="medium">
+    <VMSinfo VKey="257916" SVKey="257916" VRelease="1101916"/>
+    <title text="RHEL 9 /var/log/messages file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_var_log_messages" ownerid="RHEL-09-232185" severity="medium">
+    <VMSinfo VKey="257917" SVKey="257917" VRelease="1101914"/>
+    <title text="RHEL 9 /var/log/messages file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_ownership_binary_dirs" ownerid="RHEL-09-232190" severity="medium">
+    <VMSinfo VKey="257918" SVKey="257918" VRelease="1044977"/>
+    <title text="RHEL 9 system commands must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupownership_system_commands_dirs" ownerid="RHEL-09-232195" severity="medium">
+    <VMSinfo VKey="257919" SVKey="257919" VRelease="1044979"/>
+    <title text="RHEL 9 system commands must be group-owned by root or a system account."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_ownership_library_dirs" ownerid="RHEL-09-232200" severity="medium">
+    <VMSinfo VKey="257920" SVKey="257920" VRelease="1101926"/>
+    <title text="RHEL 9 library files must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="root_permissions_syslibrary_files" ownerid="RHEL-09-232205" severity="medium">
+    <VMSinfo VKey="257921" SVKey="257921" VRelease="1106308"/>
+    <title text="RHEL 9 library files must be group-owned by root or a system account."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dir_ownership_library_dirs" ownerid="RHEL-09-232210" severity="medium">
+    <VMSinfo VKey="257922" SVKey="257922" VRelease="1044988"/>
+    <title text="RHEL 9 library directories must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dir_group_ownership_library_dirs" ownerid="RHEL-09-232215" severity="medium">
+    <VMSinfo VKey="257923" SVKey="257923" VRelease="1044991"/>
+    <title text="RHEL 9 library directories must be group-owned by root or a system account."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_audit_tools_ownership" ownerid="RHEL-09-232220" severity="medium">
+    <VMSinfo VKey="257924" SVKey="257924" VRelease="991557"/>
+    <title text="RHEL 9 audit tools must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_audit_tools_group_ownership" ownerid="RHEL-09-232225" severity="medium">
+    <VMSinfo VKey="257925" SVKey="257925" VRelease="991557"/>
+    <title text="RHEL 9 audit tools must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_owner_crontab" ownerid="RHEL-09-232230" severity="medium">
+    <VMSinfo VKey="257926" SVKey="257926" VRelease="991589"/>
+    <title text="RHEL 9 cron configuration files directory must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupowner_crontab" ownerid="RHEL-09-232235" severity="medium">
+    <VMSinfo VKey="257927" SVKey="257927" VRelease="991589"/>
+    <title text="RHEL 9 cron configuration files directory must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dir_perms_world_writable_system_owned" ownerid="RHEL-09-232240" severity="medium">
+    <VMSinfo VKey="257928" SVKey="257928" VRelease="1155576"/>
+    <title text="All RHEL 9 world-writable directories must be owned by root, sys, bin, or an application user."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dir_perms_world_writable_sticky_bits" ownerid="RHEL-09-232245" severity="medium">
+    <VMSinfo VKey="257929" SVKey="257929" VRelease="1137695"/>
+    <title text="A sticky bit must be set on all RHEL 9 public directories."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_ungroupowned" ownerid="RHEL-09-232250" severity="medium">
+    <VMSinfo VKey="257930" SVKey="257930" VRelease="991589"/>
+    <title text="All RHEL 9 local files and directories must have a valid group owner."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="no_files_unowned_by_user" ownerid="RHEL-09-232255" severity="medium">
+    <VMSinfo VKey="257931" SVKey="257931" VRelease="991589"/>
+    <title text="All RHEL 9 local files and directories must have a valid owner."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="selinux_all_devicefiles_labeled" ownerid="RHEL-09-232260" severity="medium">
+    <VMSinfo VKey="257932" SVKey="257932" VRelease="1014838"/>
+    <title text="RHEL 9 must be configured so that all system device files are correctly labeled to prevent unauthorized modification."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_etc_shadow" ownerid="RHEL-09-232270" severity="medium">
+    <VMSinfo VKey="257934" SVKey="257934" VRelease="991589"/>
+    <title text="RHEL 9 /etc/shadow file must have mode 0000 to prevent unauthorized access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_firewalld_installed" ownerid="RHEL-09-251010" severity="medium">
+    <VMSinfo VKey="257935" SVKey="257935" VRelease="1044994"/>
+    <title text="RHEL 9 must have the firewalld package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_firewalld_enabled" ownerid="RHEL-09-251015" severity="medium">
+    <VMSinfo VKey="257936" SVKey="257936" VRelease="1044995"/>
+    <title text="The firewalld service on RHEL 9 must be active."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="configured_firewalld_default_deny" ownerid="RHEL-09-251020" severity="medium">
+    <VMSinfo VKey="257937" SVKey="257937" VRelease="1106310"/>
+    <title text="The RHEL 9 firewall must employ a deny-all, allow-by-exception policy for allowing connections to other systems."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="firewalld-backend" ownerid="RHEL-09-251030" severity="medium">
+    <VMSinfo VKey="257939" SVKey="257939" VRelease="1044997"/>
+    <title text="RHEL 9 must protect against or limit the effects of denial-of-service (DoS) attacks by ensuring rate-limiting measures on impacted network interfaces are implemented."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="firewalld_sshd_port_enabled" ownerid="RHEL-09-251035" severity="medium">
+    <VMSinfo VKey="257940" SVKey="257940" VRelease="1106312"/>
+    <title text="RHEL 9 must be configured to prohibit or restrict the use of functions, ports, protocols, and/or services, as defined in the Ports, Protocols, and Services Management (PPSM) Category Assignments List (CAL) and vulnerability assessments."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="network_sniffer_disabled" ownerid="RHEL-09-251040" severity="medium">
+    <VMSinfo VKey="257941" SVKey="257941" VRelease="991589"/>
+    <title text="RHEL 9 network interfaces must not be in promiscuous mode."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_core_bpf_jit_harden" ownerid="RHEL-09-251045" severity="medium">
+    <VMSinfo VKey="257942" SVKey="257942" VRelease="1155718"/>
+    <title text="RHEL 9 must enable hardening for the Berkeley Packet Filter just-in-time compiler."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_chrony_installed" ownerid="RHEL-09-252010" severity="medium">
+    <VMSinfo VKey="257943" SVKey="257943" VRelease="1045001"/>
+    <title text="RHEL 9 must have the chrony package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_chronyd_enabled" ownerid="RHEL-09-252015" severity="medium">
+    <VMSinfo VKey="257944" SVKey="257944" VRelease="1038944"/>
+    <title text="RHEL 9 chronyd service must be enabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="chronyd_server_directive" ownerid="RHEL-09-252020" severity="medium">
+    <VMSinfo VKey="257945" SVKey="257945" VRelease="1038944"/>
+    <title text="RHEL 9 must securely compare internal information system clocks at least every 24 hours."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="chronyd_client_only" ownerid="RHEL-09-252025" severity="low">
+    <VMSinfo VKey="257946" SVKey="257946" VRelease="1184307"/>
+    <title text="RHEL 9 must disable the chrony daemon from acting as a server."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="chronyd_no_chronyc_network" ownerid="RHEL-09-252030" severity="low">
+    <VMSinfo VKey="257947" SVKey="257947" VRelease="958480"/>
+    <title text="RHEL 9 must disable network management of the chrony daemon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="network_configure_name_resolution" ownerid="RHEL-09-252035" severity="medium">
+    <VMSinfo VKey="257948" SVKey="257948" VRelease="1045004"/>
+    <title text="RHEL 9 systems using Domain Name Servers (DNS) resolution must have at least two name servers configured."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="networkmanager_dns_mode" ownerid="RHEL-09-252040" severity="medium">
+    <VMSinfo VKey="257949" SVKey="257949" VRelease="1134947"/>
+    <title text="RHEL 9 must configure a DNS processing mode in Network Manager."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="libreswan_approved_tunnels" ownerid="RHEL-09-252045" severity="medium">
+    <VMSinfo VKey="257950" SVKey="257950" VRelease="1045006"/>
+    <title text="RHEL 9 must not have unauthorized IP tunnels configured."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="postfix_prevent_unrestricted_relay" ownerid="RHEL-09-252050" severity="medium">
+    <VMSinfo VKey="257951" SVKey="257951" VRelease="1014843"/>
+    <title text="RHEL 9 must be configured to prevent unrestricted mail relaying."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="postfix_client_configure_mail_alias_postmaster" ownerid="RHEL-09-252060" severity="medium">
+    <VMSinfo VKey="257953" SVKey="257953" VRelease="958424"/>
+    <title text="RHEL 9 must forward mail from postmaster to the root account using a postfix alias."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_libreswan_installed" ownerid="RHEL-09-252065" severity="medium">
+    <VMSinfo VKey="257954" SVKey="257954" VRelease="1106315"/>
+    <title text="RHEL 9 libreswan package must be installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="no_host_based_files" ownerid="RHEL-09-252070" severity="high">
+    <VMSinfo VKey="257955" SVKey="257955" VRelease="991589"/>
+    <title text="There must be no shosts.equiv files on RHEL 9."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="no_user_host_based_files" ownerid="RHEL-09-252075" severity="high">
+    <VMSinfo VKey="257956" SVKey="257956" VRelease="991589"/>
+    <title text="There must be no .shosts files on RHEL 9."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_tcp_syncookies" ownerid="RHEL-09-253010" severity="medium">
+    <VMSinfo VKey="257957" SVKey="257957" VRelease="1155618"/>
+    <title text="RHEL 9 must be configured to use TCP syncookies."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_all_accept_redirects" ownerid="RHEL-09-253015" severity="medium">
+    <VMSinfo VKey="257958" SVKey="257958" VRelease="1155721"/>
+    <title text="RHEL 9 must ignore Internet Protocol version 4 (IPv4) Internet Control Message Protocol (ICMP) redirect messages."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_all_accept_source_route" ownerid="RHEL-09-253020" severity="medium">
+    <VMSinfo VKey="257959" SVKey="257959" VRelease="1155724"/>
+    <title text="RHEL 9 must not forward Internet Protocol version 4 (IPv4) source-routed packets."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_all_log_martians" ownerid="RHEL-09-253025" severity="medium">
+    <VMSinfo VKey="257960" SVKey="257960" VRelease="1155727"/>
+    <title text="RHEL 9 must log IPv4 packets with impossible addresses."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_default_log_martians" ownerid="RHEL-09-253030" severity="medium">
+    <VMSinfo VKey="257961" SVKey="257961" VRelease="1155730"/>
+    <title text="RHEL 9 must log IPv4 packets with impossible addresses by default."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_all_rp_filter" ownerid="RHEL-09-253035" severity="medium">
+    <VMSinfo VKey="257962" SVKey="257962" VRelease="1155733"/>
+    <title text="RHEL 9 must use reverse path filtering on all IPv4 interfaces."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_default_accept_redirects" ownerid="RHEL-09-253040" severity="medium">
+    <VMSinfo VKey="257963" SVKey="257963" VRelease="1155736"/>
+    <title text="RHEL 9 must prevent IPv4 Internet Control Message Protocol (ICMP) redirect messages from being accepted."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_default_accept_source_route" ownerid="RHEL-09-253045" severity="medium">
+    <VMSinfo VKey="257964" SVKey="257964" VRelease="1155739"/>
+    <title text="RHEL 9 must not forward IPv4 source-routed packets by default."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_default_rp_filter" ownerid="RHEL-09-253050" severity="medium">
+    <VMSinfo VKey="257965" SVKey="257965" VRelease="1155646"/>
+    <title text="RHEL 9 must use a reverse-path filter for IPv4 network traffic when possible by default."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_icmp_echo_ignore_broadcasts" ownerid="RHEL-09-253055" severity="medium">
+    <VMSinfo VKey="257966" SVKey="257966" VRelease="1155742"/>
+    <title text="RHEL 9 must not respond to Internet Control Message Protocol (ICMP) echoes sent to a broadcast address."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_icmp_ignore_bogus_error_responses" ownerid="RHEL-09-253060" severity="medium">
+    <VMSinfo VKey="257967" SVKey="257967" VRelease="1155745"/>
+    <title text="RHEL 9 must limit the number of bogus Internet Control Message Protocol (ICMP) response errors logs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_all_send_redirects" ownerid="RHEL-09-253065" severity="medium">
+    <VMSinfo VKey="257968" SVKey="257968" VRelease="1155748"/>
+    <title text="RHEL 9 must not send Internet Control Message Protocol (ICMP) redirects."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_default_send_redirects" ownerid="RHEL-09-253070" severity="medium">
+    <VMSinfo VKey="257969" SVKey="257969" VRelease="1155623"/>
+    <title text="RHEL 9 must not allow interfaces to perform Internet Control Message Protocol (ICMP) redirects by default."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv4_conf_all_forwarding" ownerid="RHEL-09-253075" severity="medium">
+    <VMSinfo VKey="257970" SVKey="257970" VRelease="1155751"/>
+    <title text="RHEL 9 must not enable IPv4 packet forwarding unless the system is a router."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_all_accept_ra" ownerid="RHEL-09-254010" severity="medium">
+    <VMSinfo VKey="257971" SVKey="257971" VRelease="1155754"/>
+    <title text="RHEL 9 must not accept router advertisements on all IPv6 interfaces."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_all_accept_redirects" ownerid="RHEL-09-254015" severity="medium">
+    <VMSinfo VKey="257972" SVKey="257972" VRelease="1155757"/>
+    <title text="RHEL 9 must ignore IPv6 Internet Control Message Protocol (ICMP) redirect messages."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_all_accept_source_route" ownerid="RHEL-09-254020" severity="medium">
+    <VMSinfo VKey="257973" SVKey="257973" VRelease="1155760"/>
+    <title text="RHEL 9 must not forward IPv6 source-routed packets."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_all_forwarding" ownerid="RHEL-09-254025" severity="medium">
+    <VMSinfo VKey="257974" SVKey="257974" VRelease="1155763"/>
+    <title text="RHEL 9 must not enable IPv6 packet forwarding unless the system is a router."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_default_accept_ra" ownerid="RHEL-09-254030" severity="medium">
+    <VMSinfo VKey="257975" SVKey="257975" VRelease="1155766"/>
+    <title text="RHEL 9 must not accept router advertisements on all IPv6 interfaces by default."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_default_accept_redirects" ownerid="RHEL-09-254035" severity="medium">
+    <VMSinfo VKey="257976" SVKey="257976" VRelease="1155769"/>
+    <title text="RHEL 9 must prevent IPv6 Internet Control Message Protocol (ICMP) redirect messages from being accepted."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_net_ipv6_conf_default_accept_source_route" ownerid="RHEL-09-254040" severity="medium">
+    <VMSinfo VKey="257977" SVKey="257977" VRelease="1155772"/>
+    <title text="RHEL 9 must not forward IPv6 source-routed packets by default."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_openssh-server_installed" ownerid="RHEL-09-255010" severity="medium">
+    <VMSinfo VKey="257978" SVKey="257978" VRelease="1045013"/>
+    <title text="All RHEL 9 networked systems must have SSH installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_sshd_enabled" ownerid="RHEL-09-255015" severity="medium">
+    <VMSinfo VKey="257979" SVKey="257979" VRelease="958908"/>
+    <title text="All RHEL 9 networked systems must have and implement SSH to protect the confidentiality and integrity of transmitted and received information, as well as information during preparation for transmission."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_openssh-clients_installed" ownerid="RHEL-09-255020" severity="medium">
+    <VMSinfo VKey="257980" SVKey="257980" VRelease="1045016"/>
+    <title text="RHEL 9 must have the openssh-clients package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_enable_warning_banner" ownerid="RHEL-09-255025" severity="medium">
+    <VMSinfo VKey="257981" SVKey="257981" VRelease="1101970"/>
+    <title text="RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a SSH logon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_set_loglevel_verbose" ownerid="RHEL-09-255030" severity="medium">
+    <VMSinfo VKey="257982" SVKey="257982" VRelease="1045021"/>
+    <title text="RHEL 9 must log SSH connection attempts and failures to the server."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_enable_pubkey_auth" ownerid="RHEL-09-255035" severity="medium">
+    <VMSinfo VKey="257983" SVKey="257983" VRelease="1045024"/>
+    <title text="RHEL 9 SSHD must accept public key authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_empty_passwords" ownerid="RHEL-09-255040" severity="high">
+    <VMSinfo VKey="257984" SVKey="257984" VRelease="1045026"/>
+    <title text="RHEL 9 SSHD must not allow blank passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_root_login" ownerid="RHEL-09-255045" severity="medium">
+    <VMSinfo VKey="257985" SVKey="257985" VRelease="1069364"/>
+    <title text="RHEL 9 must not permit direct logons to the root account using remote access via SSH."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_enable_pam" ownerid="RHEL-09-255050" severity="high">
+    <VMSinfo VKey="257986" SVKey="257986" VRelease="1045030"/>
+    <title text="RHEL 9 must enable the Pluggable Authentication Module (PAM) interface for SSHD."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="harden_sshd_ciphers_openssh_conf_crypto_policy" ownerid="RHEL-09-255064" severity="high">
+    <VMSinfo VKey="270177" SVKey="270177" VRelease="1184308"/>
+    <title text="The RHEL 9 SSH client must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_include_crypto_policy" ownerid="RHEL-09-255065" severity="high">
+    <VMSinfo VKey="257989" SVKey="257989" VRelease="1184309"/>
+    <title text="The RHEL 9 SSH server must be configured to use only DOD-approved encryption ciphers employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="harden_sshd_macs_openssh_conf_crypto_policy" ownerid="RHEL-09-255070" severity="high">
+    <VMSinfo VKey="270178" SVKey="270178" VRelease="1184310"/>
+    <title text="The RHEL 9 SSH client must be configured to use only DOD-approved Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH client connections."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="harden_sshd_macs_opensshserver_conf_crypto_policy" ownerid="RHEL-09-255075" severity="high">
+    <VMSinfo VKey="257991" SVKey="257991" VRelease="1184311"/>
+    <title text="The RHEL 9 SSH server must be configured to use only Message Authentication Codes (MACs) employing FIPS 140-3 validated cryptographic hash algorithms to protect the confidentiality of SSH server connections."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="disable_host_auth" ownerid="RHEL-09-255080" severity="medium">
+    <VMSinfo VKey="257992" SVKey="257992" VRelease="1045047"/>
+    <title text="RHEL 9 must not allow a noncertificate trusted host SSH logon to the system."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_do_not_permit_user_env" ownerid="RHEL-09-255085" severity="medium">
+    <VMSinfo VKey="257993" SVKey="257993" VRelease="1045049"/>
+    <title text="RHEL 9 must not allow users to override SSH environment variables."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_rekey_limit" ownerid="RHEL-09-255090" severity="medium">
+    <VMSinfo VKey="257994" SVKey="257994" VRelease="1045051"/>
+    <title text="RHEL 9 must force a frequent session key renegotiation for SSH connections to the server."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_set_keepalive" ownerid="RHEL-09-255095" severity="medium">
+    <VMSinfo VKey="257995" SVKey="257995" VRelease="1045053"/>
+    <title text="RHEL 9 must be configured so that all network connections associated with SSH traffic terminate after becoming unresponsive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_set_idle_timeout" ownerid="RHEL-09-255100" severity="medium">
+    <VMSinfo VKey="257996" SVKey="257996" VRelease="1134915"/>
+    <title text="RHEL 9 must be configured so that all network connections associated with SSH traffic are terminated after 10 minutes of becoming unresponsive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_sshd_50_redhat_exists" ownerid="RHEL-09-255105" severity="medium">
+    <VMSinfo VKey="257997" SVKey="257997" VRelease="1069370"/>
+    <title text="RHEL 9 SSH server configuration file must be group-owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_sshd_50_redhat_exists" ownerid="RHEL-09-255110" severity="medium">
+    <VMSinfo VKey="257998" SVKey="257998" VRelease="1082181"/>
+    <title text="The RHEL 9 SSH server configuration file must be owned by root."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_sshd_drop_in_config" ownerid="RHEL-09-255115" severity="medium">
+    <VMSinfo VKey="257999" SVKey="257999" VRelease="1155686"/>
+    <title text="RHEL 9 SSH server configuration files' permissions must not be modified."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_sshd_private_key" ownerid="RHEL-09-255120" severity="medium">
+    <VMSinfo VKey="258000" SVKey="258000" VRelease="1045063"/>
+    <title text="RHEL 9 SSH private host key files must have mode 0640 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_sshd_pub_key" ownerid="RHEL-09-255125" severity="medium">
+    <VMSinfo VKey="258001" SVKey="258001" VRelease="991589"/>
+    <title text="RHEL 9 SSH public host key files must have mode 0644 or less permissive."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_compression" ownerid="RHEL-09-255130" severity="medium">
+    <VMSinfo VKey="258002" SVKey="258002" VRelease="1155590"/>
+    <title text="RHEL 9 SSH daemon must not allow compression or must only allow compression after successful authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_gssapi_auth" ownerid="RHEL-09-255135" severity="medium">
+    <VMSinfo VKey="258003" SVKey="258003" VRelease="1045065"/>
+    <title text="RHEL 9 SSH daemon must not allow GSSAPI authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_kerb_auth" ownerid="RHEL-09-255140" severity="medium">
+    <VMSinfo VKey="258004" SVKey="258004" VRelease="1045067"/>
+    <title text="RHEL 9 SSH daemon must not allow Kerberos authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_rhosts" ownerid="RHEL-09-255145" severity="medium">
+    <VMSinfo VKey="258005" SVKey="258005" VRelease="1045069"/>
+    <title text="RHEL 9 SSH daemon must not allow rhosts authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_user_known_hosts" ownerid="RHEL-09-255150" severity="medium">
+    <VMSinfo VKey="258006" SVKey="258006" VRelease="1045071"/>
+    <title text="RHEL 9 SSH daemon must not allow known hosts authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_disable_x11_forwarding" ownerid="RHEL-09-255155" severity="medium">
+    <VMSinfo VKey="258007" SVKey="258007" VRelease="1045073"/>
+    <title text="RHEL 9 SSH daemon must disable remote X connections for interactive users."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_enable_strictmodes" ownerid="RHEL-09-255160" severity="medium">
+    <VMSinfo VKey="258008" SVKey="258008" VRelease="1045075"/>
+    <title text="RHEL 9 SSH daemon must perform strict mode checking of home directory configuration files."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_print_last_log" ownerid="RHEL-09-255165" severity="medium">
+    <VMSinfo VKey="258009" SVKey="258009" VRelease="1045077"/>
+    <title text="RHEL 9 SSH daemon must display the date and time of the last successful account logon upon an SSH logon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sshd_x11_use_localhost" ownerid="RHEL-09-255175" severity="medium">
+    <VMSinfo VKey="258011" SVKey="258011" VRelease="1045079"/>
+    <title text="RHEL 9 SSH daemon must prevent remote hosts from connecting to the proxy display."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_banner_enabled" ownerid="RHEL-09-271010" severity="medium">
+    <VMSinfo VKey="258012" SVKey="258012" VRelease="1014855"/>
+    <title text="RHEL 9 must display the Standard Mandatory DOD Notice and Consent Banner before granting local or remote access to the system via a graphical user logon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_banner_enabled" ownerid="RHEL-09-271015" severity="medium">
+    <VMSinfo VKey="258013" SVKey="258013" VRelease="1045082"/>
+    <title text="RHEL 9 must prevent a user from overriding the banner-message-enable setting for the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_automount_open" ownerid="RHEL-09-271020" severity="medium">
+    <VMSinfo VKey="258014" SVKey="258014" VRelease="1045084"/>
+    <title text="RHEL 9 must disable the graphical user interface automount function unless required."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_automount_open" ownerid="RHEL-09-271025" severity="medium">
+    <VMSinfo VKey="258015" SVKey="258015" VRelease="1045086"/>
+    <title text="RHEL 9 must prevent a user from overriding the disabling of the graphical user interface automount function."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_autorun" ownerid="RHEL-09-271030" severity="medium">
+    <VMSinfo VKey="258016" SVKey="258016" VRelease="958804"/>
+    <title text="RHEL 9 must disable the graphical user interface autorun function unless required."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_autorun" ownerid="RHEL-09-271035" severity="medium">
+    <VMSinfo VKey="258017" SVKey="258017" VRelease="1155688"/>
+    <title text="RHEL 9 must prevent a user from overriding the disabling of the graphical user interface autorun function."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="gnome_gdm_disable_automatic_login" ownerid="RHEL-09-271040" severity="high">
+    <VMSinfo VKey="258018" SVKey="258018" VRelease="1045090"/>
+    <title text="RHEL 9 must not allow unattended or automatic logon via the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_lock_screen_on_smartcard_removal" ownerid="RHEL-09-271045" severity="medium">
+    <VMSinfo VKey="258019" SVKey="258019" VRelease="1045092"/>
+    <title text="RHEL 9 must be able to initiate directly a session lock for all connection types using smart card when the smart card is removed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_lock_screen_on_smartcard_removal" ownerid="RHEL-09-271050" severity="medium">
+    <VMSinfo VKey="258020" SVKey="258020" VRelease="1045094"/>
+    <title text="RHEL 9 must prevent a user from overriding the disabling of the graphical user smart card removal action."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_screensaver_lock_enabled" ownerid="RHEL-09-271055" severity="medium">
+    <VMSinfo VKey="258021" SVKey="258021" VRelease="1015088"/>
+    <title text="RHEL 9 must enable a user session lock until that user re-establishes access using established identification and authentication procedures for graphical user sessions."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_screensaver_lock_enabled" ownerid="RHEL-09-271060" severity="medium">
+    <VMSinfo VKey="258022" SVKey="258022" VRelease="1045097"/>
+    <title text="RHEL 9 must prevent a user from overriding the screensaver lock-enabled setting for the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_screensaver_idle_delay" ownerid="RHEL-09-271065" severity="medium">
+    <VMSinfo VKey="258023" SVKey="258023" VRelease="1155656"/>
+    <title text="RHEL 9 must automatically lock graphical user sessions after 10 minutes of inactivity."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_session_idle_user_locks" ownerid="RHEL-09-271070" severity="medium">
+    <VMSinfo VKey="258024" SVKey="258024" VRelease="1045100"/>
+    <title text="RHEL 9 must prevent a user from overriding the session idle-delay setting for the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_screensaver_lock_delay" ownerid="RHEL-09-271075" severity="medium">
+    <VMSinfo VKey="258025" SVKey="258025" VRelease="958402"/>
+    <title text="RHEL 9 must initiate a session lock for graphical user interfaces when the screensaver is activated."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_screensaver_user_locks" ownerid="RHEL-09-271080" severity="medium">
+    <VMSinfo VKey="258026" SVKey="258026" VRelease="1045103"/>
+    <title text="RHEL 9 must prevent a user from overriding the session lock-delay setting for the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_screensaver_mode_blank" ownerid="RHEL-09-271085" severity="medium">
+    <VMSinfo VKey="258027" SVKey="258027" VRelease="1045106"/>
+    <title text="RHEL 9 must conceal, via the session lock, information previously visible on the display with a publicly viewable image."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_db_up_to_date" ownerid="RHEL-09-271090" severity="medium">
+    <VMSinfo VKey="258028" SVKey="258028" VRelease="991589"/>
+    <title text="RHEL 9 effective dconf policy must match the policy keyfiles."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_restart_shutdown" ownerid="RHEL-09-271095" severity="medium">
+    <VMSinfo VKey="258029" SVKey="258029" VRelease="1045109"/>
+    <title text="RHEL 9 must disable the ability of a user to restart the system from the login screen."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_restart_shutdown" ownerid="RHEL-09-271100" severity="medium">
+    <VMSinfo VKey="258030" SVKey="258030" VRelease="1045112"/>
+    <title text="RHEL 9 must prevent a user from overriding the disable-restart-buttons setting for the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_ctrlaltdel_reboot" ownerid="RHEL-09-271105" severity="medium">
+    <VMSinfo VKey="258031" SVKey="258031" VRelease="1134920"/>
+    <title text="RHEL 9 must disable the ability of a user to accidentally press Ctrl-Alt-Del and cause a system to shut down or reboot."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_ctrlaltdel_reboot" ownerid="RHEL-09-271110" severity="medium">
+    <VMSinfo VKey="258032" SVKey="258032" VRelease="1045117"/>
+    <title text="RHEL 9 must prevent a user from overriding the Ctrl-Alt-Del sequence settings for the graphical user interface."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="dconf_gnome_disable_user_list" ownerid="RHEL-09-271115" severity="medium">
+    <VMSinfo VKey="258033" SVKey="258033" VRelease="1045120"/>
+    <title text="RHEL 9 must disable the user list at logon for graphical user interfaces."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_usb-storage_disabled" ownerid="RHEL-09-291010" severity="medium">
+    <VMSinfo VKey="258034" SVKey="258034" VRelease="1051267"/>
+    <title text="RHEL 9 must be configured to disable USB mass storage."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_usbguard_installed" ownerid="RHEL-09-291015" severity="medium">
+    <VMSinfo VKey="258035" SVKey="258035" VRelease="1045125"/>
+    <title text="RHEL 9 must have the USBGuard package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_usbguard_enabled" ownerid="RHEL-09-291020" severity="medium">
+    <VMSinfo VKey="258036" SVKey="258036" VRelease="1014861"/>
+    <title text="RHEL 9 must have the USBGuard package enabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="configure_usbguard_auditbackend" ownerid="RHEL-09-291025" severity="low">
+    <VMSinfo VKey="258037" SVKey="258037" VRelease="1014863"/>
+    <title text="RHEL 9 must enable Linux audit logging for the USBGuard daemon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="usbguard_generate_policy" ownerid="RHEL-09-291030" severity="medium">
+    <VMSinfo VKey="258038" SVKey="258038" VRelease="1045128"/>
+    <title text="RHEL 9 must block unauthorized peripherals before establishing a connection."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="kernel_module_bluetooth_disabled" ownerid="RHEL-09-291035" severity="medium">
+    <VMSinfo VKey="258039" SVKey="258039" VRelease="1045131"/>
+    <title text="RHEL 9 Bluetooth must be disabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="wireless_disable_interfaces" ownerid="RHEL-09-291040" severity="medium">
+    <VMSinfo VKey="258040" SVKey="258040" VRelease="991568"/>
+    <title text="RHEL 9 wireless network adapters must be disabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_maximum_age_login_defs" ownerid="RHEL-09-411010" severity="medium">
+    <VMSinfo VKey="258041" SVKey="258041" VRelease="1038967"/>
+    <title text="RHEL 9 user account passwords for new users or password changes must have a 60-day maximum password lifetime restriction in /etc/login.defs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_set_max_life_existing" ownerid="RHEL-09-411015" severity="medium">
+    <VMSinfo VKey="258042" SVKey="258042" VRelease="1045133"/>
+    <title text="RHEL 9 user account passwords must have a 60-day maximum password lifetime restriction."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_have_homedir_login_defs" ownerid="RHEL-09-411020" severity="medium">
+    <VMSinfo VKey="258043" SVKey="258043" VRelease="991589"/>
+    <title text="All RHEL 9 local interactive user accounts must be assigned a home directory upon creation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_umask_interactive_users" ownerid="RHEL-09-411025" severity="medium">
+    <VMSinfo VKey="258044" SVKey="258044" VRelease="1184313"/>
+    <title text="RHEL 9 must set the umask value to 077 for all local interactive user accounts."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="account_unique_id" ownerid="RHEL-09-411030" severity="medium">
+    <VMSinfo VKey="258045" SVKey="258045" VRelease="958482"/>
+    <title text="RHEL 9 duplicate User IDs (UIDs) must not exist for interactive users."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="no_shelllogin_for_systemaccounts" ownerid="RHEL-09-411035" severity="medium">
+    <VMSinfo VKey="258046" SVKey="258046" VRelease="991589"/>
+    <title text="RHEL 9 system accounts must not have an interactive login shell."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="account_temp_expire_date" ownerid="RHEL-09-411040" severity="medium">
+    <VMSinfo VKey="258047" SVKey="258047" VRelease="1101951"/>
+    <title text="RHEL 9 must automatically expire temporary accounts within 72 hours."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="gid_passwd_group_same" ownerid="RHEL-09-411045" severity="medium">
+    <VMSinfo VKey="258048" SVKey="258048" VRelease="1069380"/>
+    <title text="All RHEL 9 interactive users must have a primary group that exists."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="account_disable_post_pw_expiration" ownerid="RHEL-09-411050" severity="medium">
+    <VMSinfo VKey="258049" SVKey="258049" VRelease="1015092"/>
+    <title text="RHEL 9 must disable account identifiers (individuals, groups, roles, and devices) after 35 days of inactivity."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_user_home_paths_only" ownerid="RHEL-09-411055" severity="medium">
+    <VMSinfo VKey="258050" SVKey="258050" VRelease="1045137"/>
+    <title text="Executable search paths within the initialization files of all local interactive RHEL 9 users must only contain paths that resolve to the system default or the users home directory."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_user_interactive_home_directory_defined" ownerid="RHEL-09-411060" severity="medium">
+    <VMSinfo VKey="258051" SVKey="258051" VRelease="991589"/>
+    <title text="All RHEL 9 local interactive users must have a home directory assigned in the /etc/passwd file."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_user_interactive_home_directory_exists" ownerid="RHEL-09-411065" severity="medium">
+    <VMSinfo VKey="258052" SVKey="258052" VRelease="1184315"/>
+    <title text="All RHEL 9 local interactive user home directories defined in the /etc/passwd file must exist."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_groupownership_home_directories" ownerid="RHEL-09-411070" severity="medium">
+    <VMSinfo VKey="258053" SVKey="258053" VRelease="1184318"/>
+    <title text="All RHEL 9 local interactive user home directories must be group-owned by the home directory owner's primary group."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_passwords_pam_faillock_deny" ownerid="RHEL-09-411075" severity="medium">
+    <VMSinfo VKey="258054" SVKey="258054" VRelease="958736"/>
+    <title text="RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_passwords_pam_faillock_deny_root" ownerid="RHEL-09-411080" severity="medium">
+    <VMSinfo VKey="258055" SVKey="258055" VRelease="1045140"/>
+    <title text="RHEL 9 must automatically lock the root account until the root account is released by an administrator when three unsuccessful logon attempts occur during a 15-minute time period."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_passwords_pam_faillock_interval" ownerid="RHEL-09-411085" severity="medium">
+    <VMSinfo VKey="258056" SVKey="258056" VRelease="1045143"/>
+    <title text="RHEL 9 must automatically lock an account when three unsuccessful logon attempts occur during a 15-minute time period."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_passwords_pam_faillock_unlock_time" ownerid="RHEL-09-411090" severity="medium">
+    <VMSinfo VKey="258057" SVKey="258057" VRelease="1045146"/>
+    <title text="RHEL 9 must maintain an account lock until the locked account is released by an administrator."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_authorized_local_users" ownerid="RHEL-09-411095" severity="medium">
+    <VMSinfo VKey="258058" SVKey="258058" VRelease="1045148"/>
+    <title text="RHEL 9 must not have unauthorized accounts."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_no_uid_except_zero" ownerid="RHEL-09-411100" severity="high">
+    <VMSinfo VKey="258059" SVKey="258059" VRelease="991589"/>
+    <title text="The root account must be the only account having unrestricted access to RHEL 9 system."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_passwords_pam_faillock_dir" ownerid="RHEL-09-411105" severity="medium">
+    <VMSinfo VKey="258060" SVKey="258060" VRelease="1045150"/>
+    <title text="RHEL 9 must ensure account lockouts persist."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="group_unique_id" ownerid="RHEL-09-411110" severity="medium">
+    <VMSinfo VKey="258061" SVKey="258061" VRelease="958482"/>
+    <title text="RHEL 9 groups must have unique Group ID (GID)."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_tmout" ownerid="RHEL-09-412035" severity="medium">
+    <VMSinfo VKey="258068" SVKey="258068" VRelease="1101950"/>
+    <title text="RHEL 9 must automatically exit interactive command shell user sessions after 10 minutes of inactivity."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_max_concurrent_login_sessions" ownerid="RHEL-09-412040" severity="low">
+    <VMSinfo VKey="258069" SVKey="258069" VRelease="958398"/>
+    <title text="RHEL 9 must limit the number of concurrent sessions to ten for all accounts and/or account types."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_passwords_pam_faillock_audit" ownerid="RHEL-09-412045" severity="medium">
+    <VMSinfo VKey="258070" SVKey="258070" VRelease="1045153"/>
+    <title text="RHEL 9 must log username information when unsuccessful logon attempts occur."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_logon_fail_delay" ownerid="RHEL-09-412050" severity="medium">
+    <VMSinfo VKey="258071" SVKey="258071" VRelease="991588"/>
+    <title text="RHEL 9 must enforce a delay of at least four seconds between logon prompts following a failed logon attempt."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_umask_etc_bashrc" ownerid="RHEL-09-412055" severity="medium">
+    <VMSinfo VKey="258072" SVKey="258072" VRelease="1184320"/>
+    <title text="RHEL 9 must define default permissions for the bash shell."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_umask_etc_csh_cshrc" ownerid="RHEL-09-412060" severity="medium">
+    <VMSinfo VKey="258073" SVKey="258073" VRelease="1184322"/>
+    <title text="RHEL 9 must define default permissions for the c shell."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_umask_etc_login_defs" ownerid="RHEL-09-412065" severity="medium">
+    <VMSinfo VKey="258074" SVKey="258074" VRelease="991590"/>
+    <title text="RHEL 9 must define default permissions for all authenticated users in such a way that the user can only read and modify their own files."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_umask_etc_profile" ownerid="RHEL-09-412070" severity="medium">
+    <VMSinfo VKey="258075" SVKey="258075" VRelease="1184324"/>
+    <title text="RHEL 9 must define default permissions for the system default profile."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="logind_session_timeout" ownerid="RHEL-09-412080" severity="medium">
+    <VMSinfo VKey="258077" SVKey="258077" VRelease="1155659"/>
+    <title text="RHEL 9 must terminate idle user sessions."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="selinux_state" ownerid="RHEL-09-431010" severity="high">
+    <VMSinfo VKey="258078" SVKey="258078" VRelease="958944"/>
+    <title text="RHEL 9 must use a Linux Security Module configured to enforce limits on system services."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="selinux_policytype" ownerid="RHEL-09-431015" severity="medium">
+    <VMSinfo VKey="258079" SVKey="258079" VRelease="1045159"/>
+    <title text="RHEL 9 must enable the SELinux targeted policy."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="selinux_context_elevation_for_sudo" ownerid="RHEL-09-431016" severity="medium">
+    <VMSinfo VKey="272496" SVKey="272496" VRelease="1155582"/>
+    <title text="RHEL 9 must elevate the SELinux context when an administrator calls the sudo command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="account_password_selinux_faillock_dir" ownerid="RHEL-09-431020" severity="medium">
+    <VMSinfo VKey="258080" SVKey="258080" VRelease="1045162"/>
+    <title text="RHEL 9 must configure SELinux context type to allow the use of a nondefault faillock tally directory."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_policycoreutils_installed" ownerid="RHEL-09-431025" severity="medium">
+    <VMSinfo VKey="258081" SVKey="258081" VRelease="1045164"/>
+    <title text="RHEL 9 must have policycoreutils package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_policycoreutils-python-utils_installed" ownerid="RHEL-09-431030" severity="medium">
+    <VMSinfo VKey="258082" SVKey="258082" VRelease="1045166"/>
+    <title text="RHEL 9 policycoreutils-python-utils package must be installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_sudo_installed" ownerid="RHEL-09-432010" severity="medium">
+    <VMSinfo VKey="258083" SVKey="258083" VRelease="1045168"/>
+    <title text="RHEL 9 must have the sudo package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sudo_require_reauthentication" ownerid="RHEL-09-432015" severity="medium">
+    <VMSinfo VKey="258084" SVKey="258084" VRelease="1050789"/>
+    <title text="RHEL 9 must require reauthentication when using the &quot;sudo&quot; command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sudoers_validate_passwd" ownerid="RHEL-09-432020" severity="medium">
+    <VMSinfo VKey="258085" SVKey="258085" VRelease="1045173"/>
+    <title text="RHEL 9 must use the invoking user's password for privilege escalation when using &quot;sudo&quot;."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sudo_remove_no_authenticate" ownerid="RHEL-09-432025" severity="medium">
+    <VMSinfo VKey="258086" SVKey="258086" VRelease="1102063"/>
+    <title text="RHEL 9 must require users to reauthenticate for privilege escalation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sudo_restrict_privilege_elevation_to_authorized" ownerid="RHEL-09-432030" severity="medium">
+    <VMSinfo VKey="258087" SVKey="258087" VRelease="1102071"/>
+    <title text="RHEL 9 must restrict privilege elevation to authorized personnel."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="use_pam_wheel_for_su" ownerid="RHEL-09-432035" severity="medium">
+    <VMSinfo VKey="258088" SVKey="258088" VRelease="1155643"/>
+    <title text="RHEL 9 must restrict the use of the &quot;su&quot; command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_fapolicyd_installed" ownerid="RHEL-09-433010" severity="medium">
+    <VMSinfo VKey="258089" SVKey="258089" VRelease="1045179"/>
+    <title text="RHEL 9 fapolicy module must be installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_fapolicyd_enabled" ownerid="RHEL-09-433015" severity="medium">
+    <VMSinfo VKey="258090" SVKey="258090" VRelease="958808"/>
+    <title text="RHEL 9 fapolicy module must be enabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="fapolicy_default_deny" ownerid="RHEL-09-433016" severity="medium">
+    <VMSinfo VKey="270180" SVKey="270180" VRelease="1184327"/>
+    <title text="The RHEL 9 fapolicy module must be configured to employ a deny-all, permit-by-exception policy to allow the execution of authorized software programs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_pwquality_retry" ownerid="RHEL-09-611010" severity="medium">
+    <VMSinfo VKey="258091" SVKey="258091" VRelease="1045185"/>
+    <title text="RHEL 9 must ensure the password complexity module in the system-auth file is configured for three retries or less."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="no_empty_passwords" ownerid="RHEL-09-611025" severity="high">
+    <VMSinfo VKey="258094" SVKey="258094" VRelease="1045187"/>
+    <title text="RHEL 9 must not allow blank or null passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="account_password_pam_faillock_system_auth" ownerid="RHEL-09-611030" severity="medium">
+    <VMSinfo VKey="258095" SVKey="258095" VRelease="1045189"/>
+    <title text="RHEL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/system-auth file."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="account_password_pam_faillock_password_auth" ownerid="RHEL-09-611035" severity="medium">
+    <VMSinfo VKey="258096" SVKey="258096" VRelease="1045191"/>
+    <title text="RHEL 9 must configure the use of the pam_faillock.so module in the /etc/pam.d/password-auth file."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_pwquality_password_auth" ownerid="RHEL-09-611040" severity="medium">
+    <VMSinfo VKey="258097" SVKey="258097" VRelease="1045193"/>
+    <title text="RHEL 9 must ensure the password complexity module is enabled in the password-auth file."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_pwquality_system_auth" ownerid="RHEL-09-611045" severity="medium">
+    <VMSinfo VKey="258098" SVKey="258098" VRelease="1045195"/>
+    <title text="RHEL 9 must ensure the password complexity module is enabled in the system-auth file."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_unix_rounds_password_auth" ownerid="RHEL-09-611050" severity="medium">
+    <VMSinfo VKey="258099" SVKey="258099" VRelease="1045198"/>
+    <title text="RHEL 9 password-auth must be configured to use a sufficient number of hashing rounds."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_unix_rounds_system_auth" ownerid="RHEL-09-611055" severity="medium">
+    <VMSinfo VKey="258100" SVKey="258100" VRelease="1045201"/>
+    <title text="RHEL 9 system-auth must be configured to use a sufficient number of hashing rounds."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_enforce_root" ownerid="RHEL-09-611060" severity="medium">
+    <VMSinfo VKey="258101" SVKey="258101" VRelease="1045204"/>
+    <title text="RHEL 9 must enforce password complexity rules for the root account."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_lcredit" ownerid="RHEL-09-611065" severity="medium">
+    <VMSinfo VKey="258102" SVKey="258102" VRelease="1045207"/>
+    <title text="RHEL 9 must enforce password complexity by requiring that at least one lowercase character be used."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_dcredit" ownerid="RHEL-09-611070" severity="medium">
+    <VMSinfo VKey="258103" SVKey="258103" VRelease="1045210"/>
+    <title text="RHEL 9 must enforce password complexity by requiring that at least one numeric character be used."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_minimum_age_login_defs" ownerid="RHEL-09-611075" severity="medium">
+    <VMSinfo VKey="258104" SVKey="258104" VRelease="1015104"/>
+    <title text="RHEL 9 passwords for new users or password changes must have a 24 hours minimum password lifetime restriction in /etc/login.defs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_set_min_life_existing" ownerid="RHEL-09-611080" severity="medium">
+    <VMSinfo VKey="258105" SVKey="258105" VRelease="1045212"/>
+    <title text="RHEL 9 passwords must have a 24 hours minimum password lifetime restriction in /etc/shadow."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sudo_remove_nopasswd" ownerid="RHEL-09-611085" severity="medium">
+    <VMSinfo VKey="258106" SVKey="258106" VRelease="1102061"/>
+    <title text="RHEL 9 must require users to provide a password for privilege escalation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_minlen" ownerid="RHEL-09-611090" severity="medium">
+    <VMSinfo VKey="258107" SVKey="258107" VRelease="1045218"/>
+    <title text="RHEL 9 passwords must be created with a minimum of 15 characters."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_ocredit" ownerid="RHEL-09-611100" severity="medium">
+    <VMSinfo VKey="258109" SVKey="258109" VRelease="1045220"/>
+    <title text="RHEL 9 must enforce password complexity by requiring that at least one special character be used."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_dictcheck" ownerid="RHEL-09-611105" severity="medium">
+    <VMSinfo VKey="258110" SVKey="258110" VRelease="1045223"/>
+    <title text="RHEL 9 must prevent the use of dictionary words for passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_ucredit" ownerid="RHEL-09-611110" severity="medium">
+    <VMSinfo VKey="258111" SVKey="258111" VRelease="1045226"/>
+    <title text="RHEL 9 must enforce password complexity by requiring that at least one uppercase character be used."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_difok" ownerid="RHEL-09-611115" severity="medium">
+    <VMSinfo VKey="258112" SVKey="258112" VRelease="1045229"/>
+    <title text="RHEL 9 must require the change of at least eight characters when passwords are changed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_maxclassrepeat" ownerid="RHEL-09-611120" severity="medium">
+    <VMSinfo VKey="258113" SVKey="258113" VRelease="1045232"/>
+    <title text="RHEL 9 must require the maximum number of repeating characters of the same character class be limited to four when passwords are changed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_maxrepeat" ownerid="RHEL-09-611125" severity="medium">
+    <VMSinfo VKey="258114" SVKey="258114" VRelease="1045235"/>
+    <title text="RHEL 9 must require the maximum number of repeating characters be limited to three when passwords are changed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_pam_minclass" ownerid="RHEL-09-611130" severity="medium">
+    <VMSinfo VKey="258115" SVKey="258115" VRelease="1045238"/>
+    <title text="RHEL 9 must require the change of at least four character classes when passwords are changed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="set_password_hashing_algorithm_libuserconf" ownerid="RHEL-09-611135" severity="medium">
+    <VMSinfo VKey="258116" SVKey="258116" VRelease="1045240"/>
+    <title text="RHEL 9 must be configured so that user and group account administration utilities are configured to store only encrypted representations of passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="set_password_hashing_algorithm_logindefs" ownerid="RHEL-09-611140" severity="medium">
+    <VMSinfo VKey="258117" SVKey="258117" VRelease="1015116"/>
+    <title text="RHEL 9 must be configured to use the shadow file to store only encrypted representations of passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="disallow_bypass_password_sudo" ownerid="RHEL-09-611145" severity="medium">
+    <VMSinfo VKey="258118" SVKey="258118" VRelease="1050789"/>
+    <title text="RHEL 9 must not be configured to bypass password requirements for privilege escalation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="no_empty_passwords_etc_shadow" ownerid="RHEL-09-611155" severity="medium">
+    <VMSinfo VKey="258120" SVKey="258120" VRelease="991589"/>
+    <title text="RHEL 9 must not have accounts configured with blank or null passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="configure_opensc_card_drivers" ownerid="RHEL-09-611160" severity="medium">
+    <VMSinfo VKey="258121" SVKey="258121" VRelease="1155682"/>
+    <title text="RHEL 9 must use the common access card (CAC) smart card driver."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sssd_enable_smartcards" ownerid="RHEL-09-611165" severity="medium">
+    <VMSinfo VKey="258122" SVKey="258122" VRelease="1045246"/>
+    <title text="RHEL 9 must enable certificate based smart card authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sssd_certificate_verification" ownerid="RHEL-09-611170" severity="medium">
+    <VMSinfo VKey="258123" SVKey="258123" VRelease="1134923"/>
+    <title text="RHEL 9 must implement certificate status checking for multifactor authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_pcsc-lite_installed" ownerid="RHEL-09-611175" severity="medium">
+    <VMSinfo VKey="258124" SVKey="258124" VRelease="1045250"/>
+    <title text="RHEL 9 must have the pcsc-lite package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_pcscd_enabled" ownerid="RHEL-09-611180" severity="medium">
+    <VMSinfo VKey="258125" SVKey="258125" VRelease="1045253"/>
+    <title text="The pcscd service on RHEL 9 must be active."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_opensc_installed" ownerid="RHEL-09-611185" severity="medium">
+    <VMSinfo VKey="258126" SVKey="258126" VRelease="1045255"/>
+    <title text="RHEL 9 must have the opensc package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="ssh_keys_passphrase_protected" ownerid="RHEL-09-611190" severity="medium">
+    <VMSinfo VKey="258127" SVKey="258127" VRelease="1155648"/>
+    <title text="RHEL 9, for PKI-based authentication, must enforce authorized access to the corresponding private key."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="require_emergency_target_auth" ownerid="RHEL-09-611195" severity="medium">
+    <VMSinfo VKey="258128" SVKey="258128" VRelease="1155626"/>
+    <title text="RHEL 9 must require authentication to access emergency mode."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="require_singleuser_auth" ownerid="RHEL-09-611200" severity="medium">
+    <VMSinfo VKey="258129" SVKey="258129" VRelease="1155628"/>
+    <title text="RHEL 9 must require authentication to access single-user mode."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sssd_has_trust_anchor" ownerid="RHEL-09-631010" severity="medium">
+    <VMSinfo VKey="258131" SVKey="258131" VRelease="1134927"/>
+    <title text="RHEL 9, for PKI-based authentication, must validate certificates by constructing a certification path (which includes status information) to an accepted trust anchor."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sssd_enable_certmap" ownerid="RHEL-09-631015" severity="medium">
+    <VMSinfo VKey="258132" SVKey="258132" VRelease="1134929"/>
+    <title text="RHEL 9 must map the authenticated identity to the user or group account for PKI-based authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sssd_offline_cred_expiration" ownerid="RHEL-09-631020" severity="medium">
+    <VMSinfo VKey="258133" SVKey="258133" VRelease="1045263"/>
+    <title text="RHEL 9 must prohibit the use of cached authenticators after one day."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="aide_build_database" ownerid="RHEL-09-651010" severity="medium">
+    <VMSinfo VKey="258134" SVKey="258134" VRelease="1155620"/>
+    <title text="RHEL 9 must have the AIDE package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="aide_scan_notification" ownerid="RHEL-09-651015" severity="medium">
+    <VMSinfo VKey="258135" SVKey="258135" VRelease="1045267"/>
+    <title text="RHEL 9 must routinely check the baseline configuration for unauthorized changes and notify the system administrator when anomalies in the operation of any security functions are discovered."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="aide_use_fips_hashes" ownerid="RHEL-09-651020" severity="medium">
+    <VMSinfo VKey="258136" SVKey="258136" VRelease="1045270"/>
+    <title text="RHEL 9 must use a file integrity tool that is configured to use FIPS 140-3-approved cryptographic hashes for validating file contents and directories."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="aide_check_audit_tools" ownerid="RHEL-09-651025" severity="medium">
+    <VMSinfo VKey="258137" SVKey="258137" VRelease="1102081"/>
+    <title text="RHEL 9 must use cryptographic mechanisms to protect the integrity of audit tools."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="aide_verify_acls" ownerid="RHEL-09-651030" severity="low">
+    <VMSinfo VKey="258138" SVKey="258138" VRelease="1045274"/>
+    <title text="RHEL 9 must be configured so that the file integrity tool verifies Access Control Lists (ACLs)."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="aide_verify_ext_attributes" ownerid="RHEL-09-651035" severity="low">
+    <VMSinfo VKey="258139" SVKey="258139" VRelease="1045276"/>
+    <title text="RHEL 9 must be configured so that the file integrity tool verifies extended attributes."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_rsyslog_installed" ownerid="RHEL-09-652010" severity="medium">
+    <VMSinfo VKey="258140" SVKey="258140" VRelease="1106460"/>
+    <title text="RHEL 9 must have the rsyslog package installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_rsyslog-gnutls_installed" ownerid="RHEL-09-652015" severity="medium">
+    <VMSinfo VKey="258141" SVKey="258141" VRelease="1045280"/>
+    <title text="RHEL 9 must have the packages required for encrypting offloaded audit logs installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_rsyslog_enabled" ownerid="RHEL-09-652020" severity="medium">
+    <VMSinfo VKey="258142" SVKey="258142" VRelease="991589"/>
+    <title text="The rsyslog service on RHEL 9 must be active."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_nolisten" ownerid="RHEL-09-652025" severity="medium">
+    <VMSinfo VKey="258143" SVKey="258143" VRelease="1184329"/>
+    <title text="RHEL 9 must be configured so that the rsyslog daemon does not accept log messages from other servers unless the server is being used for log aggregation."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_remote_access_monitoring" ownerid="RHEL-09-652030" severity="medium">
+    <VMSinfo VKey="258144" SVKey="258144" VRelease="1045286"/>
+    <title text="All RHEL 9 remote access methods must be monitored."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_encrypt_offload_actionsendstreamdriverauthmode" ownerid="RHEL-09-652040" severity="medium">
+    <VMSinfo VKey="258146" SVKey="258146" VRelease="1045288"/>
+    <title text="RHEL 9 must authenticate the remote logging server for offloading audit logs via rsyslog."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_encrypt_offload_actionsendstreamdrivermode" ownerid="RHEL-09-652045" severity="medium">
+    <VMSinfo VKey="258147" SVKey="258147" VRelease="1045290"/>
+    <title text="RHEL 9 must encrypt the transfer of audit records offloaded onto a different system or media from the system being audited via rsyslog."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_encrypt_offload_defaultnetstreamdriver" ownerid="RHEL-09-652050" severity="medium">
+    <VMSinfo VKey="258148" SVKey="258148" VRelease="1045292"/>
+    <title text="RHEL 9 must encrypt via the gtls driver the transfer of audit records offloaded onto a different system or media from the system being audited via rsyslog."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_remote_loghost" ownerid="RHEL-09-652055" severity="medium">
+    <VMSinfo VKey="258149" SVKey="258149" VRelease="1155580"/>
+    <title text="RHEL 9 must be configured to forward audit records via TCP to a different system or media from the system being audited via rsyslog."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="rsyslog_cron_logging" ownerid="RHEL-09-652060" severity="medium">
+    <VMSinfo VKey="258150" SVKey="258150" VRelease="1045296"/>
+    <title text="RHEL 9 must use cron logging."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_audit_installed" ownerid="RHEL-09-653010" severity="medium">
+    <VMSinfo VKey="258151" SVKey="258151" VRelease="1045298"/>
+    <title text="RHEL 9 audit package must be installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="service_auditd_enabled" ownerid="RHEL-09-653015" severity="medium">
+    <VMSinfo VKey="258152" SVKey="258152" VRelease="1015127"/>
+    <title text="RHEL 9 audit service must be enabled."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_disk_error_action_stig" ownerid="RHEL-09-653020" severity="medium">
+    <VMSinfo VKey="258153" SVKey="258153" VRelease="1038966"/>
+    <title text="RHEL 9 audit system must take appropriate action when an error writing to the audit storage volume occurs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_disk_full_action_stig" ownerid="RHEL-09-653025" severity="medium">
+    <VMSinfo VKey="258154" SVKey="258154" VRelease="1038966"/>
+    <title text="RHEL 9 audit system must take appropriate action when the audit storage volume is full."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_audispd_configure_sufficiently_large_partition" ownerid="RHEL-09-653030" severity="medium">
+    <VMSinfo VKey="258155" SVKey="258155" VRelease="1045300"/>
+    <title text="RHEL 9 must allocate audit record storage capacity to store at least one week's worth of audit records."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_retention_space_left_percentage" ownerid="RHEL-09-653035" severity="medium">
+    <VMSinfo VKey="258156" SVKey="258156" VRelease="1106364"/>
+    <title text="RHEL 9 must take action when allocated audit record storage volume reaches 75 percent of the repository maximum audit record storage capacity."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_retention_space_left_action" ownerid="RHEL-09-653040" severity="medium">
+    <VMSinfo VKey="258157" SVKey="258157" VRelease="1134932"/>
+    <title text="RHEL 9 must notify the system administrator (SA) and information system security officer (ISSO) (at a minimum) when allocated audit record storage volume reaches 75 percent utilization."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_retention_admin_space_left_percentage" ownerid="RHEL-09-653045" severity="medium">
+    <VMSinfo VKey="258158" SVKey="258158" VRelease="971542"/>
+    <title text="RHEL 9 must take action when allocated audit record storage volume reaches 95 percent of the audit record storage capacity."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_retention_admin_space_left_action" ownerid="RHEL-09-653050" severity="medium">
+    <VMSinfo VKey="258159" SVKey="258159" VRelease="971542"/>
+    <title text="RHEL 9 must take action when allocated audit record storage volume reaches 95 percent of the repository maximum audit record storage capacity."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_retention_max_log_file_action_stig" ownerid="RHEL-09-653055" severity="medium">
+    <VMSinfo VKey="258160" SVKey="258160" VRelease="1038966"/>
+    <title text="RHEL 9 audit system must take appropriate action when the audit files have reached maximum size."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_name_format" ownerid="RHEL-09-653060" severity="medium">
+    <VMSinfo VKey="258161" SVKey="258161" VRelease="958416"/>
+    <title text="RHEL 9 must label all offloaded audit logs before sending them to the central log server."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_overflow_action" ownerid="RHEL-09-653065" severity="medium">
+    <VMSinfo VKey="258162" SVKey="258162" VRelease="1184331"/>
+    <title text="RHEL 9 must take appropriate action when the internal event queue is full."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_data_retention_action_mail_acct" ownerid="RHEL-09-653070" severity="medium">
+    <VMSinfo VKey="258163" SVKey="258163" VRelease="958424"/>
+    <title text="RHEL 9 System Administrator (SA) and/or information system security officer (ISSO) (at a minimum) must be alerted of an audit processing failure event."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_local_events" ownerid="RHEL-09-653075" severity="medium">
+    <VMSinfo VKey="258164" SVKey="258164" VRelease="1045301"/>
+    <title text="RHEL 9 audit system must audit local events."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="directory_group_ownership_var_log_audit" ownerid="RHEL-09-653080" severity="medium">
+    <VMSinfo VKey="258165" SVKey="258165" VRelease="958434"/>
+    <title text="RHEL 9 audit logs must be group-owned by root or by a restricted logging group to prevent unauthorized read access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="directory_ownership_var_log_audit" ownerid="RHEL-09-653085" severity="medium">
+    <VMSinfo VKey="258166" SVKey="258166" VRelease="1045303"/>
+    <title text="RHEL 9 audit log directory must be owned by root to prevent unauthorized read access."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_var_log_audit" ownerid="RHEL-09-653090" severity="medium">
+    <VMSinfo VKey="258167" SVKey="258167" VRelease="1155630"/>
+    <title text="RHEL 9 audit logs file must have mode 0600 or less permissive to prevent unauthorized access to the audit log."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_freq" ownerid="RHEL-09-653095" severity="medium">
+    <VMSinfo VKey="258168" SVKey="258168" VRelease="958428"/>
+    <title text="RHEL 9 must periodically flush audit records to disk to prevent the loss of audit records."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_log_format" ownerid="RHEL-09-653100" severity="medium">
+    <VMSinfo VKey="258169" SVKey="258169" VRelease="991556"/>
+    <title text="RHEL 9 must produce audit records containing information to establish the identity of any individual or process associated with the event."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="auditd_write_logs" ownerid="RHEL-09-653105" severity="medium">
+    <VMSinfo VKey="258170" SVKey="258170" VRelease="991589"/>
+    <title text="RHEL 9 must write audit records to disk."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="file_permissions_etc_audit_auditd" ownerid="RHEL-09-653110" severity="medium">
+    <VMSinfo VKey="258171" SVKey="258171" VRelease="1134934"/>
+    <title text="RHEL 9 must allow only the information system security manager (ISSM) (or individuals or roles appointed by the ISSM) to select which auditable events are to be audited."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="grub2_audit_backlog_limit_argument" ownerid="RHEL-09-653120" severity="low">
+    <VMSinfo VKey="258173" SVKey="258173" VRelease="1101933"/>
+    <title text="RHEL 9 must allocate an audit_backlog_limit of sufficient size to capture processes that start prior to the audit daemon."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="postfix_client_configure_mail_alias" ownerid="RHEL-09-653125" severity="medium">
+    <VMSinfo VKey="258174" SVKey="258174" VRelease="958424"/>
+    <title text="RHEL 9 must have mail aliases to notify the information system security officer (ISSO) and system administrator (SA) (at a minimum) in the event of an audit processing failure."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="package_audispd-plugins_installed" ownerid="RHEL-09-653130" severity="medium">
+    <VMSinfo VKey="258175" SVKey="258175" VRelease="1045310"/>
+    <title text="RHEL 9 audispd-plugins package must be installed."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_suid_privilege_function" ownerid="RHEL-09-654010" severity="medium">
+    <VMSinfo VKey="258176" SVKey="258176" VRelease="1155595"/>
+    <title text="RHEL 9 must audit uses of the &quot;execve&quot; system call."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_dac_modification_fchmodat" ownerid="RHEL-09-654015" severity="medium">
+    <VMSinfo VKey="258177" SVKey="258177" VRelease="1155597"/>
+    <title text="RHEL 9 must audit all uses of the chmod, fchmod, and fchmodat system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_dac_modification_lchown" ownerid="RHEL-09-654020" severity="medium">
+    <VMSinfo VKey="258178" SVKey="258178" VRelease="1155599"/>
+    <title text="RHEL 9 must audit all uses of the chown, fchown, fchownat, and lchown system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_dac_modification_setxattr" ownerid="RHEL-09-654025" severity="medium">
+    <VMSinfo VKey="258179" SVKey="258179" VRelease="1155601"/>
+    <title text="RHEL 9 must audit all uses of the setxattr, fsetxattr, lsetxattr, removexattr, fremovexattr, and lremovexattr system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_umount" ownerid="RHEL-09-654030" severity="medium">
+    <VMSinfo VKey="258180" SVKey="258180" VRelease="1045325"/>
+    <title text="RHEL 9 must audit all uses of umount system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_execution_chacl" ownerid="RHEL-09-654035" severity="medium">
+    <VMSinfo VKey="258181" SVKey="258181" VRelease="1045328"/>
+    <title text="RHEL 9 must audit all uses of the chacl command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_execution_setfacl" ownerid="RHEL-09-654040" severity="medium">
+    <VMSinfo VKey="258182" SVKey="258182" VRelease="1045331"/>
+    <title text="RHEL 9 must audit all uses of the setfacl command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_execution_chcon" ownerid="RHEL-09-654045" severity="medium">
+    <VMSinfo VKey="258183" SVKey="258183" VRelease="1045334"/>
+    <title text="RHEL 9 must audit all uses of the chcon command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_execution_semanage" ownerid="RHEL-09-654050" severity="medium">
+    <VMSinfo VKey="258184" SVKey="258184" VRelease="1045337"/>
+    <title text="RHEL 9 must audit all uses of the semanage command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_execution_setfiles" ownerid="RHEL-09-654055" severity="medium">
+    <VMSinfo VKey="258185" SVKey="258185" VRelease="1045340"/>
+    <title text="RHEL 9 must audit all uses of the setfiles command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_execution_setsebool" ownerid="RHEL-09-654060" severity="medium">
+    <VMSinfo VKey="258186" SVKey="258186" VRelease="1045343"/>
+    <title text="RHEL 9 must audit all uses of the setsebool command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_file_deletion_events_unlinkat" ownerid="RHEL-09-654065" severity="medium">
+    <VMSinfo VKey="258187" SVKey="258187" VRelease="1155603"/>
+    <title text="RHEL 9 must audit all uses of the rename, unlink, rmdir, renameat, and unlinkat system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_unsuccessful_file_modification_truncate" ownerid="RHEL-09-654070" severity="medium">
+    <VMSinfo VKey="258188" SVKey="258188" VRelease="1155605"/>
+    <title text="RHEL 9 must audit all uses of the truncate, ftruncate, creat, open, openat, and open_by_handle_at system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_kernel_module_loading_delete" ownerid="RHEL-09-654075" severity="medium">
+    <VMSinfo VKey="258189" SVKey="258189" VRelease="1155607"/>
+    <title text="RHEL 9 must audit all uses of the delete_module system call."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_kernel_module_loading_init" ownerid="RHEL-09-654080" severity="medium">
+    <VMSinfo VKey="258190" SVKey="258190" VRelease="1155609"/>
+    <title text="RHEL 9 must audit all uses of the init_module and finit_module system calls."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_chage" ownerid="RHEL-09-654085" severity="medium">
+    <VMSinfo VKey="258191" SVKey="258191" VRelease="1045358"/>
+    <title text="RHEL 9 must audit all uses of the chage command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_chsh" ownerid="RHEL-09-654090" severity="medium">
+    <VMSinfo VKey="258192" SVKey="258192" VRelease="1045361"/>
+    <title text="RHEL 9 must audit all uses of the chsh command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_crontab" ownerid="RHEL-09-654095" severity="medium">
+    <VMSinfo VKey="258193" SVKey="258193" VRelease="1045364"/>
+    <title text="RHEL 9 must audit all uses of the crontab command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_var_spool_cron" ownerid="RHEL-09-654097" severity="medium">
+    <VMSinfo VKey="279936" SVKey="279936" VRelease="1156361"/>
+    <title text="RHEL 9 must audit any script or executable called by cron as root or by any privileged user."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_gpasswd" ownerid="RHEL-09-654100" severity="medium">
+    <VMSinfo VKey="258194" SVKey="258194" VRelease="1045367"/>
+    <title text="RHEL 9 must audit all uses of the gpasswd command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_kmod" ownerid="RHEL-09-654105" severity="medium">
+    <VMSinfo VKey="258195" SVKey="258195" VRelease="1045370"/>
+    <title text="RHEL 9 must audit all uses of the kmod command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_newgrp" ownerid="RHEL-09-654110" severity="medium">
+    <VMSinfo VKey="258196" SVKey="258196" VRelease="1045373"/>
+    <title text="RHEL 9 must audit all uses of the newgrp command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_pam_timestamp_check" ownerid="RHEL-09-654115" severity="medium">
+    <VMSinfo VKey="258197" SVKey="258197" VRelease="1045376"/>
+    <title text="RHEL 9 must audit all uses of the pam_timestamp_check command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_passwd" ownerid="RHEL-09-654120" severity="medium">
+    <VMSinfo VKey="258198" SVKey="258198" VRelease="1045379"/>
+    <title text="RHEL 9 must audit all uses of the passwd command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_postdrop" ownerid="RHEL-09-654125" severity="medium">
+    <VMSinfo VKey="258199" SVKey="258199" VRelease="1045382"/>
+    <title text="RHEL 9 must audit all uses of the postdrop command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_postqueue" ownerid="RHEL-09-654130" severity="medium">
+    <VMSinfo VKey="258200" SVKey="258200" VRelease="1045385"/>
+    <title text="RHEL 9 must audit all uses of the postqueue command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_ssh_agent" ownerid="RHEL-09-654135" severity="medium">
+    <VMSinfo VKey="258201" SVKey="258201" VRelease="1045388"/>
+    <title text="RHEL 9 must audit all uses of the ssh-agent command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_ssh_keysign" ownerid="RHEL-09-654140" severity="medium">
+    <VMSinfo VKey="258202" SVKey="258202" VRelease="1045391"/>
+    <title text="RHEL 9 must audit all uses of the ssh-keysign command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_su" ownerid="RHEL-09-654145" severity="medium">
+    <VMSinfo VKey="258203" SVKey="258203" VRelease="1045394"/>
+    <title text="RHEL 9 must audit all uses of the su command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_sudo" ownerid="RHEL-09-654150" severity="medium">
+    <VMSinfo VKey="258204" SVKey="258204" VRelease="1045397"/>
+    <title text="RHEL 9 must audit all uses of the sudo command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_sudoedit" ownerid="RHEL-09-654155" severity="medium">
+    <VMSinfo VKey="258205" SVKey="258205" VRelease="1045400"/>
+    <title text="RHEL 9 must audit all uses of the sudoedit command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_unix_chkpwd" ownerid="RHEL-09-654160" severity="medium">
+    <VMSinfo VKey="258206" SVKey="258206" VRelease="1045403"/>
+    <title text="RHEL 9 must audit all uses of the unix_chkpwd command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_unix_update" ownerid="RHEL-09-654165" severity="medium">
+    <VMSinfo VKey="258207" SVKey="258207" VRelease="1045406"/>
+    <title text="RHEL 9 must audit all uses of the unix_update command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_userhelper" ownerid="RHEL-09-654170" severity="medium">
+    <VMSinfo VKey="258208" SVKey="258208" VRelease="1045409"/>
+    <title text="RHEL 9 must audit all uses of the userhelper command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_usermod" ownerid="RHEL-09-654175" severity="medium">
+    <VMSinfo VKey="258209" SVKey="258209" VRelease="1045412"/>
+    <title text="RHEL 9 must audit all uses of the usermod command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_privileged_commands_mount" ownerid="RHEL-09-654180" severity="medium">
+    <VMSinfo VKey="258210" SVKey="258210" VRelease="1045415"/>
+    <title text="RHEL 9 must audit all uses of the mount command."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_privileged_commands_init" ownerid="RHEL-09-654185" severity="medium">
+    <VMSinfo VKey="258211" SVKey="258211" VRelease="1045418"/>
+    <title text="Successful/unsuccessful uses of the init command in RHEL 9 must generate an audit record."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_privileged_commands_poweroff" ownerid="RHEL-09-654190" severity="medium">
+    <VMSinfo VKey="258212" SVKey="258212" VRelease="1045421"/>
+    <title text="Successful/unsuccessful uses of the poweroff command in RHEL 9 must generate an audit record."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_privileged_commands_reboot" ownerid="RHEL-09-654195" severity="medium">
+    <VMSinfo VKey="258213" SVKey="258213" VRelease="1045424"/>
+    <title text="Successful/unsuccessful uses of the reboot command in RHEL 9 must generate an audit record."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_privileged_commands_shutdown" ownerid="RHEL-09-654200" severity="medium">
+    <VMSinfo VKey="258214" SVKey="258214" VRelease="1045427"/>
+    <title text="Successful/unsuccessful uses of the shutdown command in RHEL 9 must generate an audit record."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_dac_modification_umount" ownerid="RHEL-09-654205" severity="medium">
+    <VMSinfo VKey="258215" SVKey="258215" VRelease="1155611"/>
+    <title text="Successful/unsuccessful uses of the umount system call in RHEL 9 must generate an audit record."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_dac_modification_umount2" ownerid="RHEL-09-654210" severity="medium">
+    <VMSinfo VKey="258216" SVKey="258216" VRelease="1155613"/>
+    <title text="Successful/unsuccessful uses of the umount2 system call in RHEL 9 must generate an audit record."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_sudoers" ownerid="RHEL-09-654215" severity="medium">
+    <VMSinfo VKey="258217" SVKey="258217" VRelease="1045436"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_sudoers_d" ownerid="RHEL-09-654220" severity="medium">
+    <VMSinfo VKey="258218" SVKey="258218" VRelease="1101981"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/sudoers.d/ directory."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_usergroup_modification_group" ownerid="RHEL-09-654225" severity="medium">
+    <VMSinfo VKey="258219" SVKey="258219" VRelease="1015130"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/group."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_usergroup_modification_gshadow" ownerid="RHEL-09-654230" severity="medium">
+    <VMSinfo VKey="258220" SVKey="258220" VRelease="1015131"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/gshadow."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_usergroup_modification_opasswd" ownerid="RHEL-09-654235" severity="medium">
+    <VMSinfo VKey="258221" SVKey="258221" VRelease="1015132"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/opasswd."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_usergroup_modification_passwd" ownerid="RHEL-09-654240" severity="medium">
+    <VMSinfo VKey="258222" SVKey="258222" VRelease="1015133"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/passwd."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_usergroup_modification_shadow" ownerid="RHEL-09-654245" severity="medium">
+    <VMSinfo VKey="258223" SVKey="258223" VRelease="1015134"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /etc/shadow."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_login_events_faillock" ownerid="RHEL-09-654250" severity="medium">
+    <VMSinfo VKey="258224" SVKey="258224" VRelease="1014988"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/faillock."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_login_events_lastlog" ownerid="RHEL-09-654255" severity="medium">
+    <VMSinfo VKey="258225" SVKey="258225" VRelease="1014990"/>
+    <title text="RHEL 9 must generate audit records for all account creations, modifications, disabling, and termination events that affect /var/log/lastlog."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_system_shutdown" ownerid="RHEL-09-654265" severity="medium">
+    <VMSinfo VKey="258227" SVKey="258227" VRelease="1014992"/>
+    <title text="RHEL 9 must take appropriate action when a critical audit processing failure occurs."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="XXXX" ownerid="RHEL-09-654270" severity="medium">
+    <VMSinfo VKey="258228" SVKey="258228" VRelease="991572"/>
+    <title text="RHEL 9 audit system must protect logon UIDs from unauthorized change."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="audit_rules_immutable" ownerid="RHEL-09-654275" severity="medium">
+    <VMSinfo VKey="258229" SVKey="258229" VRelease="958434"/>
+    <title text="RHEL 9 audit system must protect auditing rules from unauthorized change."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="sysctl_crypto_fips_enabled" ownerid="RHEL-09-671010" severity="high">
+    <VMSinfo VKey="258230" SVKey="258230" VRelease="1184334"/>
+    <title text="RHEL 9 must enable FIPS mode."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="accounts_password_all_shadowed_sha512" ownerid="RHEL-09-671015" severity="medium">
+    <VMSinfo VKey="258231" SVKey="258231" VRelease="1069375"/>
+    <title text="RHEL 9 must employ FIPS 140-3 approved cryptographic hashing algorithms for all stored passwords."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="configure_libreswan_crypto_policy" ownerid="RHEL-09-671020" severity="high">
+    <VMSinfo VKey="258232" SVKey="258232" VRelease="1184335"/>
+    <title text="RHEL 9 IP tunnels must use FIPS 140-3 approved cryptographic algorithms."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="set_password_hashing_algorithm_passwordauth" ownerid="RHEL-09-671025" severity="medium">
+    <VMSinfo VKey="258233" SVKey="258233" VRelease="1015136"/>
+    <title text="RHEL 9 pam_unix.so module must be configured in the password-auth file to use a FIPS 140-3 approved cryptographic hashing algorithm for system authentication."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="XXXX" ownerid="RHEL-09-672020" severity="high">
+    <VMSinfo VKey="258236" SVKey="258236" VRelease="1101920"/>
+    <title text="RHEL 9 cryptographic policy must not be overridden."/>
+  </overlay>
+  <overlay owner="disastig" ruleid="configure_bind_crypto_policy" ownerid="RHEL-09-672050" severity="high">
+    <VMSinfo VKey="258242" SVKey="258242" VRelease="1184336"/>
+    <title text="RHEL 9 must implement DOD-approved encryption in the bind package."/>
+  </overlay>
+</overlays>

@@ -1,0 +1,44 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - NIST-800-53-AU-4(1)
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_syslogng_enabled
+
+- name: Enable syslog-ng Service - Enable service syslog-ng
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable syslog-ng Service - Enable Service syslog-ng
+    ansible.builtin.systemd:
+      name: syslog-ng
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"syslog-ng" in ansible_facts.packages'
+  tags:
+  - NIST-800-53-AU-4(1)
+  - NIST-800-53-CM-6(a)
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_syslogng_enabled
+  - special_service_block
+  when: '"kernel-core" in ansible_facts.packages'

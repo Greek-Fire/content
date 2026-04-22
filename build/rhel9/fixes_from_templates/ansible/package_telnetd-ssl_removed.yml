@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall the ssl compliant telnet server: Ensure telnetd-ssl is removed"
+  ansible.builtin.package:
+    name: "telnetd-ssl"
+    state: absent

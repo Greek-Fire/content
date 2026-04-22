@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_etc_passwd_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_passwd_newown: "0"
+
+- name: Test for existence /etc/passwd
+  ansible.builtin.stat:
+    path: "/etc/passwd"
+  register: file_exists
+
+- name: Ensure owner on /etc/passwd
+  ansible.builtin.file:
+    path: "/etc/passwd"
+    follow: false
+    owner: "{{ file_owner_etc_passwd_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

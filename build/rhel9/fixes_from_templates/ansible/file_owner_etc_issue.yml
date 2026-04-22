@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_owner_etc_issue_newown variable if represented by uid
+  ansible.builtin.set_fact:
+    file_owner_etc_issue_newown: "0"
+
+- name: Test for existence /etc/issue
+  ansible.builtin.stat:
+    path: "/etc/issue"
+  register: file_exists
+
+- name: Ensure owner on /etc/issue
+  ansible.builtin.file:
+    path: "/etc/issue"
+    follow: false
+    owner: "{{ file_owner_etc_issue_newown }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

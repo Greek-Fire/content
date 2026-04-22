@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-sudoers_default_includedir:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure sudo only includes the default configuration directory</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-86477-7" source="CCE" />
+        <oval-def:reference ref_id="sudoers_default_includedir" source="ssg" />
+        <oval-def:description>Check if sudo includes only the default includedir</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="OR">
+        <oval-def:criteria operator="AND">
+          <oval-def:criterion comment="Check /etc/sudoers doesn't have any #include or @include" test_ref="oval:ssg-test_sudoers_without_include:tst:1" />
+          <oval-def:criterion comment="Check /etc/sudoers doesn't have any #includedir" test_ref="oval:ssg-test_sudoers_without_includedir:tst:1" />
+        </oval-def:criteria>
+        <oval-def:criteria operator="AND">
+          <oval-def:criterion comment="Check /etc/sudoers for #includedir" test_ref="oval:ssg-test_sudoers_default_includedir:tst:1" />
+          <oval-def:criterion comment="Check /etc/sudoers doesn't have any #include" test_ref="oval:ssg-test_sudoers_without_include:tst:1" />
+          <oval-def:criterion comment="Check /etc/sudoers doesn't have any @includedir" test_ref="oval:ssg-test_sudoers_without_includedir_new:tst:1" />
+          <oval-def:criterion comment="Check /etc/sudoers.d doesn't have any #include or #includedir" test_ref="oval:ssg-test_sudoersd_without_includes:tst:1" />
+        </oval-def:criteria>
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <ind:textfilecontent54_test id="oval:ssg-test_sudoers_default_includedir:tst:1" version="1" check="all" comment="test only one sudoers #includedir" check_existence="only_one_exists" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_sudoers_default_includedir:obj:1" />
+      <ind:state state_ref="oval:ssg-state_sudoers_default_includedir:ste:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_sudoers_without_include:tst:1" version="1" check="all" comment="test none sudoers #include or @include" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_sudoers_without_include:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_sudoers_without_includedir_new:tst:1" version="1" check="all" comment="test none sudoers @includedir" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_sudoers_without_include_new:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_sudoers_without_includedir:tst:1" version="1" check="all" comment="test none sudoers #includedir or @includdir" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_sudoers_without_includedir:obj:1" />
+    </ind:textfilecontent54_test>
+    <ind:textfilecontent54_test id="oval:ssg-test_sudoersd_without_includes:tst:1" version="1" check="all" comment="test none sudoers.d #include, @include, #includedir or @includedir" check_existence="none_exist" state_operator="AND">
+      <ind:object object_ref="oval:ssg-object_sudoersd_without_includes:obj:1" />
+    </ind:textfilecontent54_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_sudoers_default_includedir:obj:1" version="1">
+      <ind:filepath>/etc/sudoers</ind:filepath>
+      <ind:pattern operation="pattern match">^#includedir[\s]+(.*)$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_sudoers_without_include:obj:1" version="1">
+      <ind:filepath>/etc/sudoers</ind:filepath>
+      <ind:pattern operation="pattern match">^[#@]include[\s]+.*$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_sudoers_without_include_new:obj:1" version="1">
+      <ind:filepath>/etc/sudoers</ind:filepath>
+      <ind:pattern operation="pattern match">^@includedir[\s]+.*$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_sudoers_without_includedir:obj:1" version="1">
+      <ind:filepath>/etc/sudoers</ind:filepath>
+      <ind:pattern operation="pattern match">^[#@]includedir[\s]+.*$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_sudoersd_without_includes:obj:1" version="1">
+      <ind:path>/etc/sudoers.d/</ind:path>
+      <ind:filename operation="pattern match">.*</ind:filename>
+      <ind:pattern operation="pattern match">^[#@]include(?:dir)?[\s]+.*$</ind:pattern>
+      <ind:instance operation="greater than or equal" datatype="int">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_sudoers_default_includedir:ste:1" version="1" operator="AND">
+      <ind:subexpression operation="equals">/etc/sudoers.d</ind:subexpression>
+    </ind:textfilecontent54_state>
+  </oval-def:states>
+</oval-def:oval_definitions>

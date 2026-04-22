@@ -1,0 +1,54 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+
+
+
+
+
+
+
+
+
+- name: Find /run/log/journal/ file(s) recursively
+  ansible.builtin.command: 'find -P /run/log/journal/  -perm /u+s,g+w,o+xwrt  -type d '
+  register: files_found
+  changed_when: False
+  failed_when: False
+  check_mode: no
+
+- name: Set permissions for /run/log/journal/ file(s)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "u-s,g-w,o-xwrt"
+    state: "directory"
+  with_items:
+    - "{{ files_found.stdout_lines }}"
+
+
+
+
+
+
+
+
+
+
+- name: Find /var/log/journal/ file(s) recursively
+  ansible.builtin.command: 'find -P /var/log/journal/  -perm /u+s,g+w,o+xwrt  -type d '
+  register: files_found
+  changed_when: False
+  failed_when: False
+  check_mode: no
+
+- name: Set permissions for /var/log/journal/ file(s)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: "u-s,g-w,o-xwrt"
+    state: "directory"
+  with_items:
+    - "{{ files_found.stdout_lines }}"
+
+

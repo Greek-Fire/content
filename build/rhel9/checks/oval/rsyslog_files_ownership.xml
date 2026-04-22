@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='utf-8'?>
+<oval-def:oval_definitions xmlns:ind="http://oval.mitre.org/XMLSchema/oval-definitions-5#independent" xmlns:oval="http://oval.mitre.org/XMLSchema/oval-common-5" xmlns:oval-def="http://oval.mitre.org/XMLSchema/oval-definitions-5" xmlns:unix="http://oval.mitre.org/XMLSchema/oval-definitions-5#unix" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://oval.mitre.org/XMLSchema/oval-common-5 oval-common-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5 oval-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#independent independent-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#unix unix-definitions-schema.xsd  http://oval.mitre.org/XMLSchema/oval-definitions-5#linux linux-definitions-schema.xsd">
+  <oval-def:generator>
+    <oval:product_name>OVALFileLinker from SCAP Security Guide</oval:product_name>
+    <oval:product_version>ssg: [0, 1, 81], python: 3.12.12</oval:product_version>
+    <oval:schema_version>5.11</oval:schema_version>
+    <oval:timestamp>2026-04-22T17:16:04</oval:timestamp>
+  </oval-def:generator>
+  <oval-def:definitions>
+    <oval-def:definition id="oval:ssg-rsyslog_files_ownership:def:1" version="1" class="compliance">
+      <oval-def:metadata>
+        <oval-def:title>Ensure Log Files Are Owned By Appropriate User</oval-def:title>
+        <oval-def:affected family="unix">
+          <oval-def:platform>Red Hat Enterprise Linux 9</oval-def:platform>
+        </oval-def:affected>
+        <oval-def:reference ref_id="CCE-83946-4" source="CCE" />
+        <oval-def:reference ref_id="rsyslog_files_ownership" source="ssg" />
+        <oval-def:description>All syslog log files should have appropriate ownership.</oval-def:description>
+      </oval-def:metadata>
+      <oval-def:criteria operator="AND">
+        <oval-def:criterion comment="Check if all system log files have appropriate owner set" test_ref="oval:ssg-test_rsyslog_files_ownership:tst:1" />
+      </oval-def:criteria>
+    </oval-def:definition>
+  </oval-def:definitions>
+  <oval-def:tests>
+    <unix:file_test id="oval:ssg-test_rsyslog_files_ownership:tst:1" version="1" check="all" comment="System log files have appropriate owner set" check_existence="all_exist" state_operator="AND">
+      <unix:object object_ref="oval:ssg-object_rsyslog_files_ownership_owner:obj:1" />
+      <unix:state state_ref="oval:ssg-state_rsyslog_files_ownership:ste:1" />
+    </unix:file_test>
+  </oval-def:tests>
+  <oval-def:objects>
+    <ind:textfilecontent54_object id="oval:ssg-object_rsyslog_files_ownership_include_config_value:obj:1" version="1" comment="rsyslog's $IncludeConfig and include() statements values.">
+      <ind:filepath>/etc/rsyslog.conf</ind:filepath>
+      <ind:pattern operation="pattern match">^(?:include\([\n\s]*file="([^\s;]+)".*|\$IncludeConfig[\s]+([^\s;]+))$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+    </ind:textfilecontent54_object>
+    <ind:variable_object id="oval:ssg-object_var_rsyslog_files_ownership_include_config_regex:obj:1" version="1" comment="Make variable object from regex variable.">
+      <ind:var_ref>oval:ssg-var_rsyslog_files_ownership_include_config_regex:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:variable_object id="oval:ssg-object_var_rsyslog_files_ownership_syslog_config:obj:1" version="1" comment="Make variable object from local variable.">
+      <ind:var_ref>oval:ssg-var_rsyslog_files_ownership_syslog_config:var:1</ind:var_ref>
+    </ind:variable_object>
+    <ind:variable_object id="oval:ssg-object_var_rsyslog_files_ownership_all_conf_files:obj:1" version="1" comment="Variable containing all rsyslog configuration files.">
+      <oval-def:set>
+        <oval-def:object_reference>oval:ssg-object_var_rsyslog_files_ownership_include_config_regex:obj:1</oval-def:object_reference>
+        <oval-def:object_reference>oval:ssg-object_var_rsyslog_files_ownership_syslog_config:obj:1</oval-def:object_reference>
+      </oval-def:set>
+    </ind:variable_object>
+    <ind:textfilecontent54_object id="oval:ssg-object_rsyslog_files_ownership_log_files_paths:obj:1" version="1" comment="All rsyslog log files collected from rsyslog configuration files.">
+      <ind:filepath operation="pattern match" var_check="at least one" var_ref="oval:ssg-var_rsyslog_files_ownership_all_conf_files:var:1" />
+      <ind:pattern operation="pattern match">^\s*[^#$].*?(?:\b[Ff]ile="([^"\s]+)"|[\s]+-?(\/[^:;\s]+)).*$</ind:pattern>
+      <ind:instance datatype="int" operation="greater than or equal">1</ind:instance>
+      <oval-def:filter action="exclude">oval:ssg-state_rsyslog_files_ownership_ignore_include_paths:ste:1</oval-def:filter>
+    </ind:textfilecontent54_object>
+    <unix:file_object id="oval:ssg-object_rsyslog_files_ownership_owner:obj:1" version="1" comment="All system log files collected from rsyslog configuration files">
+      <unix:filepath datatype="string" var_check="at least one" var_ref="oval:ssg-var_rsyslog_files_ownership_log_files_paths:var:1" />
+    </unix:file_object>
+    <ind:textfilecontent54_object id="oval:ssg-obj_rsyslog_files_ownership_owner_uid:obj:1" version="1" comment="UID of user root">
+      <ind:filepath>/etc/passwd</ind:filepath>
+      <ind:pattern operation="pattern match">^root:\w+:(\w+):.*</ind:pattern>
+      <ind:instance datatype="int" operation="equals">1</ind:instance>
+    </ind:textfilecontent54_object>
+  </oval-def:objects>
+  <oval-def:states>
+    <ind:textfilecontent54_state id="oval:ssg-state_rsyslog_files_ownership_ignore_include_paths:ste:1" version="1" operator="AND" comment="ignore">
+      <ind:text operation="pattern match">(?:include\([\n\s]*\b[Ff]ile="[^\s;]+"|\$IncludeConfig[\s]+[^\s;]+|^\s+\b[Ff]ile="|\/dev\/.*)</ind:text>
+    </ind:textfilecontent54_state>
+    <unix:file_state id="oval:ssg-state_rsyslog_files_ownership:ste:1" version="1" operator="AND">
+      <unix:type operation="equals">regular</unix:type>
+      <unix:user_id datatype="int" var_ref="oval:ssg-var_rsyslog_files_ownership_owner_uid:var:1" />
+    </unix:file_state>
+  </oval-def:states>
+  <oval-def:variables>
+    <oval-def:local_variable id="oval:ssg-var_rsyslog_files_ownership_include_config_regex:var:1" version="1" datatype="string" comment="rsyslog's include config values converted to regex.">
+      <oval-def:unique>
+        <oval-def:glob_to_regex>
+          <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_rsyslog_files_ownership_include_config_value:obj:1" />
+        </oval-def:glob_to_regex>
+      </oval-def:unique>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_rsyslog_files_ownership_syslog_config:var:1" version="1" datatype="string" comment="Main rsyslog configuration file.">
+      <oval-def:literal_component datatype="string">^/etc/rsyslog.conf$</oval-def:literal_component>
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_rsyslog_files_ownership_all_conf_files:var:1" version="1" datatype="string" comment="Locations of all rsyslog configuration files as collection.">
+      <oval-def:object_component object_ref="oval:ssg-object_var_rsyslog_files_ownership_all_conf_files:obj:1" item_field="value" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_rsyslog_files_ownership_log_files_paths:var:1" version="1" datatype="string" comment="File paths of all rsyslog log files">
+      <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-object_rsyslog_files_ownership_log_files_paths:obj:1" />
+    </oval-def:local_variable>
+    <oval-def:local_variable id="oval:ssg-var_rsyslog_files_ownership_owner_uid:var:1" version="1" datatype="int" comment="UID of user root">
+      <oval-def:object_component item_field="subexpression" object_ref="oval:ssg-obj_rsyslog_files_ownership_owner_uid:obj:1" />
+    </oval-def:local_variable>
+  </oval-def:variables>
+</oval-def:oval_definitions>

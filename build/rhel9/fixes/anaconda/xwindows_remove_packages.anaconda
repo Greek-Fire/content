@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+
+# remove packages
+
+package --remove=xorg-x11-server-Xorg
+
+package --remove=xorg-x11-server-common
+
+package --remove=xorg-x11-server-utils
+
+package --remove=xorg-x11-server-Xwayland

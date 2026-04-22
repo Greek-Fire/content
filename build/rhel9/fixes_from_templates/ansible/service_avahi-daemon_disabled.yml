@@ -1,0 +1,39 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+- name: "Disable Avahi Server Software - Disable service avahi-daemon"
+  block:
+  - name: "Disable Avahi Server Software - Collect systemd Services Present in the System"
+    ansible.builtin.command: systemctl -q list-unit-files --type service
+    register: service_exists
+    changed_when: false
+    failed_when: service_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Avahi Server Software - Ensure avahi-daemon.service is Masked"
+    ansible.builtin.systemd:
+      name: "avahi-daemon.service"
+      state: "stopped"
+      enabled: false
+      masked: true
+    when: 'service_exists.stdout_lines is search("avahi-daemon.service", multiline=True)'
+
+  - name: "Unit Socket Exists - avahi-daemon.socket"
+    ansible.builtin.command: systemctl -q list-unit-files avahi-daemon.socket
+    register: socket_file_exists
+    changed_when: false
+    failed_when: socket_file_exists.rc not in [0, 1]
+    check_mode: false
+
+  - name: "Disable Avahi Server Software - Disable Socket avahi-daemon"
+    ansible.builtin.systemd:
+      name: "avahi-daemon.socket"
+      enabled: false
+      state: "stopped"
+      masked: true
+    when: 'socket_file_exists.stdout_lines is search("avahi-daemon.socket", multiline=True)'
+  tags:
+  - special_service_block

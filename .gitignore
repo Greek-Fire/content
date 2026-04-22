@@ -8,7 +8,9 @@
 # Build files
 rpmbuild
 container_build/
-build/
+build/*
+!build/rhel9/
+!build/rhel9/**
 
 # Ignore docs generated API sources
 docs/api/

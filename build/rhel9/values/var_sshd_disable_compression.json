@@ -1,0 +1,1 @@
+{"description": "Specify the compression setting for SSH connections.", "type": "string", "operator": "equals", "interactive": false, "options": {"no": "no", "delayed": "delayed", "default": "no"}, "warnings": [], "title": "SSH Compression Setting", "definition_location": "/home/greek_fire/.git/content/linux_os/guide/services/ssh/ssh_server/var_sshd_disable_compression.var"}

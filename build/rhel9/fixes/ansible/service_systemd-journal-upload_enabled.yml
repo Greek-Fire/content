@@ -1,0 +1,43 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_systemd-journal-upload_enabled
+
+- name: Enable systemd-journal-upload Service - Enable service systemd-journal-upload
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable systemd-journal-upload Service - Enable Service systemd-journal-upload
+    ansible.builtin.systemd:
+      name: systemd-journal-upload
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"systemd-journal-remote" in ansible_facts.packages'
+  tags:
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_systemd-journal-upload_enabled
+  - special_service_block
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - ( ansible_virtualization_type not in ["docker", "lxc", "openvz", "podman", "container"]
+    and "systemd-journal-remote" in ansible_facts.packages )

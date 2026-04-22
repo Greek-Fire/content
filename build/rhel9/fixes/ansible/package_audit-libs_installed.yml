@@ -1,0 +1,46 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86772-1
+  - NIST-800-53-AC-7(a)
+  - NIST-800-53-AU-12(2)
+  - NIST-800-53-AU-14
+  - NIST-800-53-AU-2(a)
+  - NIST-800-53-AU-7(1)
+  - NIST-800-53-AU-7(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.2.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_audit-libs_installed
+
+- name: Ensure audit-libs is installed
+  ansible.builtin.package:
+    name: audit-libs
+    state: present
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86772-1
+  - NIST-800-53-AC-7(a)
+  - NIST-800-53-AU-12(2)
+  - NIST-800-53-AU-14
+  - NIST-800-53-AU-2(a)
+  - NIST-800-53-AU-7(1)
+  - NIST-800-53-AU-7(2)
+  - NIST-800-53-CM-6(a)
+  - PCI-DSS-Req-10.2.1
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - package_audit-libs_installed

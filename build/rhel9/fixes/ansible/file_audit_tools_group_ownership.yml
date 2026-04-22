@@ -1,0 +1,279 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Set the file_audit_tools_group_ownership_newgroup variable if represented
+    by gid
+  ansible.builtin.set_fact:
+    file_audit_tools_group_ownership_newgroup: '0'
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/auditctl
+  ansible.builtin.stat:
+    path: /sbin/auditctl
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/auditctl
+  ansible.builtin.file:
+    path: /sbin/auditctl
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/aureport
+  ansible.builtin.stat:
+    path: /sbin/aureport
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/aureport
+  ansible.builtin.file:
+    path: /sbin/aureport
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/ausearch
+  ansible.builtin.stat:
+    path: /sbin/ausearch
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/ausearch
+  ansible.builtin.file:
+    path: /sbin/ausearch
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/autrace
+  ansible.builtin.stat:
+    path: /sbin/autrace
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/autrace
+  ansible.builtin.file:
+    path: /sbin/autrace
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/auditd
+  ansible.builtin.stat:
+    path: /sbin/auditd
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/auditd
+  ansible.builtin.file:
+    path: /sbin/auditd
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/rsyslogd
+  ansible.builtin.stat:
+    path: /sbin/rsyslogd
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/rsyslogd
+  ansible.builtin.file:
+    path: /sbin/rsyslogd
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Test for existence /sbin/augenrules
+  ansible.builtin.stat:
+    path: /sbin/augenrules
+  register: file_exists
+  when: '"kernel-core" in ansible_facts.packages'
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+
+- name: Ensure group owner on /sbin/augenrules
+  ansible.builtin.file:
+    path: /sbin/augenrules
+    follow: false
+    group: '{{ file_audit_tools_group_ownership_newgroup }}'
+  when:
+  - '"kernel-core" in ansible_facts.packages'
+  - file_exists.stat is defined and file_exists.stat.exists
+  tags:
+  - CCE-86240-9
+  - DISA-STIG-RHEL-09-232225
+  - NIST-800-53-AU-9
+  - configure_strategy
+  - file_audit_tools_group_ownership
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed

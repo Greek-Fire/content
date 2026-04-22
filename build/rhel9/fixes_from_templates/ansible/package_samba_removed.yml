@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall Samba Package: Ensure samba is removed"
+  ansible.builtin.package:
+    name: "samba"
+    state: absent

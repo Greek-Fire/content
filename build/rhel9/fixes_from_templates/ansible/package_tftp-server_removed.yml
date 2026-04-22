@@ -1,0 +1,11 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = disable
+# complexity = low
+# disruption = low
+
+
+- name: "Uninstall tftp-server Package: Ensure tftp-server is removed"
+  ansible.builtin.package:
+    name: "tftp-server"
+    state: absent

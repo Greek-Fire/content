@@ -1,0 +1,49 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = enable
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84205-4
+  - DISA-STIG-RHEL-09-291020
+  - NIST-800-53-CM-8(3)(a)
+  - NIST-800-53-IA-3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_usbguard_enabled
+
+- name: Enable the USBGuard Service - Enable service usbguard
+  block:
+
+  - name: Gather the package facts
+    ansible.builtin.package_facts:
+      manager: auto
+
+  - name: Enable the USBGuard Service - Enable Service usbguard
+    ansible.builtin.systemd:
+      name: usbguard
+      enabled: true
+      state: started
+      masked: false
+    when:
+    - '"usbguard" in ansible_facts.packages'
+  tags:
+  - CCE-84205-4
+  - DISA-STIG-RHEL-09-291020
+  - NIST-800-53-CM-8(3)(a)
+  - NIST-800-53-IA-3
+  - enable_strategy
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - no_reboot_needed
+  - service_usbguard_enabled
+  - special_service_block
+  when: ( ansible_architecture != "s390x" and "kernel-core" in ansible_facts.packages
+    )

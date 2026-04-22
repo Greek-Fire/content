@@ -1,0 +1,65 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-84206-2
+  - DISA-STIG-RHEL-09-291025
+  - NIST-800-53-AU-2
+  - NIST-800-53-CM-8(3)
+  - NIST-800-53-IA-3
+  - configure_strategy
+  - configure_usbguard_auditbackend
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed
+
+- name: Log USBGuard daemon audit events using Linux Audit
+  block:
+
+  - name: Check for duplicate values
+    ansible.builtin.lineinfile:
+      path: /etc/usbguard/usbguard-daemon.conf
+      create: true
+      regexp: (?i)^[ \\t]*AuditBackend=
+      state: absent
+    check_mode: true
+    changed_when: false
+    register: dupes
+
+  - name: Deduplicate values from /etc/usbguard/usbguard-daemon.conf
+    ansible.builtin.lineinfile:
+      path: /etc/usbguard/usbguard-daemon.conf
+      create: true
+      regexp: (?i)^[ \\t]*AuditBackend=
+      state: absent
+    when: dupes.found is defined and dupes.found > 1
+
+  - name: Insert correct line to /etc/usbguard/usbguard-daemon.conf
+    ansible.builtin.lineinfile:
+      path: /etc/usbguard/usbguard-daemon.conf
+      create: true
+      regexp: (?i)^[ \\t]*AuditBackend=
+      line: AuditBackend=LinuxAudit
+      state: present
+  when:
+  - ( ansible_architecture != "s390x" and "kernel-core" in ansible_facts.packages
+    )
+  - '"usbguard" in ansible_facts.packages'
+  tags:
+  - CCE-84206-2
+  - DISA-STIG-RHEL-09-291025
+  - NIST-800-53-AU-2
+  - NIST-800-53-CM-8(3)
+  - NIST-800-53-IA-3
+  - configure_strategy
+  - configure_usbguard_auditbackend
+  - low_complexity
+  - low_disruption
+  - low_severity
+  - no_reboot_needed

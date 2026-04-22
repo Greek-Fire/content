@@ -1,0 +1,30 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Check that the systemd-journal group is defined
+  ansible.builtin.getent:
+    database: group
+    key: systemd-journal
+  ignore_errors: yes
+  when: file_groupowner_system_journal_newgroup is undefined
+
+- name: Set the file_groupowner_system_journal_newgroup variable if systemd-journal found
+  ansible.builtin.set_fact:
+    file_groupowner_system_journal_newgroup: "systemd-journal"
+  when: ansible_facts.getent_group["systemd-journal"] is defined
+
+- name: Test for existence ^/var/log/journal/.*/system.journal$
+  ansible.builtin.stat:
+    path: "^/var/log/journal/.*/system.journal$"
+  register: file_exists
+
+- name: Ensure group owner on ^/var/log/journal/.*/system.journal$
+  ansible.builtin.file:
+    path: "^/var/log/journal/.*/system.journal$"
+    follow: false
+    group: "{{ file_groupowner_system_journal_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,22 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = configure
+# complexity = low
+# disruption = low
+- name: Set the file_groupowner_sshd_config_newgroup variable if represented by gid
+  ansible.builtin.set_fact:
+    file_groupowner_sshd_config_newgroup: "0"
+
+- name: Test for existence /etc/ssh/sshd_config
+  ansible.builtin.stat:
+    path: "/etc/ssh/sshd_config"
+  register: file_exists
+
+- name: Ensure group owner on /etc/ssh/sshd_config
+  ansible.builtin.file:
+    path: "/etc/ssh/sshd_config"
+    follow: false
+    group: "{{ file_groupowner_sshd_config_newgroup }}"
+  when: file_exists.stat is defined and file_exists.stat.exists
+
+

@@ -1,0 +1,112 @@
+# platform = multi_platform_all
+# reboot = false
+# strategy = restrict
+# complexity = low
+# disruption = low
+- name: Gather the package facts
+  package_facts:
+    manager: auto
+  tags:
+  - CCE-86805-9
+  - DISA-STIG-RHEL-09-252040
+  - NIST-800-53-CM-6(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - networkmanager_dns_mode
+  - no_reboot_needed
+  - restrict_strategy
+- (xccdf-var var_networkmanager_dns_mode)
+
+- name: NetworkManager DNS Mode Must Be Must Configured - Search for a section in
+    files
+  ansible.builtin.find:
+    paths: '{{item.path}}'
+    patterns: '{{item.pattern}}'
+    contains: ^\s*\[main\]
+    read_whole_file: true
+    use_regex: true
+  register: systemd_dropin_files_with_section
+  loop:
+  - path: '{{ ''/etc/NetworkManager/NetworkManager.conf'' | dirname }}'
+    pattern: '{{ ''/etc/NetworkManager/NetworkManager.conf'' | basename | regex_escape
+      }}'
+  - path: /etc/NetworkManager/conf.d
+    pattern: .*\.conf
+  when: '"NetworkManager" in ansible_facts.packages'
+  tags:
+  - CCE-86805-9
+  - DISA-STIG-RHEL-09-252040
+  - NIST-800-53-CM-6(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - networkmanager_dns_mode
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: NetworkManager DNS Mode Must Be Must Configured - Count number of files which
+    contain the correct section
+  ansible.builtin.set_fact:
+    count_of_systemd_dropin_files_with_section: '{{systemd_dropin_files_with_section.results
+      | map(attribute=''matched'') | list | map(''int'') | sum}}'
+  when: '"NetworkManager" in ansible_facts.packages'
+  tags:
+  - CCE-86805-9
+  - DISA-STIG-RHEL-09-252040
+  - NIST-800-53-CM-6(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - networkmanager_dns_mode
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: NetworkManager DNS Mode Must Be Must Configured - Add missing configuration
+    to correct section
+  community.general.ini_file:
+    path: '{{item}}'
+    section: main
+    option: dns
+    value: '{{var_networkmanager_dns_mode}}'
+    state: present
+    no_extra_spaces: true
+  when:
+  - '"NetworkManager" in ansible_facts.packages'
+  - count_of_systemd_dropin_files_with_section | int > 0
+  loop: '{{systemd_dropin_files_with_section.results | sum(attribute=''files'', start=[])
+    | map(attribute=''path'') | list }}'
+  tags:
+  - CCE-86805-9
+  - DISA-STIG-RHEL-09-252040
+  - NIST-800-53-CM-6(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - networkmanager_dns_mode
+  - no_reboot_needed
+  - restrict_strategy
+
+- name: NetworkManager DNS Mode Must Be Must Configured - Add configuration to new
+    remediation file
+  community.general.ini_file:
+    path: /etc/NetworkManager/conf.d/complianceascode_hardening.conf
+    section: main
+    option: dns
+    value: '{{var_networkmanager_dns_mode}}'
+    state: present
+    no_extra_spaces: true
+    create: true
+  when:
+  - '"NetworkManager" in ansible_facts.packages'
+  - count_of_systemd_dropin_files_with_section | int == 0
+  tags:
+  - CCE-86805-9
+  - DISA-STIG-RHEL-09-252040
+  - NIST-800-53-CM-6(b)
+  - low_complexity
+  - low_disruption
+  - medium_severity
+  - networkmanager_dns_mode
+  - no_reboot_needed
+  - restrict_strategy
